@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Microsoft.EntityFrameworkCore;
+using Ferrero.GestorDeProjetos.Web.Data;
+
 namespace Ferrero.GestorDeProjetos.UI.Web
 {
     public class Startup
@@ -31,6 +34,8 @@ namespace Ferrero.GestorDeProjetos.UI.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<GestorDBContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
