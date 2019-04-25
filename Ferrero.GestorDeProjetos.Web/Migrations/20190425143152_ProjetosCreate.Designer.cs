@@ -3,25 +3,29 @@ using System;
 using Ferrero.GestorDeProjetos.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(GestorDBContext))]
-    [Migration("20190422052305_ProjetosCreate")]
+    [Migration("20190425143152_ProjetosCreate")]
     partial class ProjetosCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085");
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Concluido");
 
@@ -35,7 +39,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR")
                         .HasMaxLength(50);
 
                     b.HasKey("ID");

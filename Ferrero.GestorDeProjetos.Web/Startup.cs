@@ -35,8 +35,7 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             });
 
             services.AddDbContext<GestorDBContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

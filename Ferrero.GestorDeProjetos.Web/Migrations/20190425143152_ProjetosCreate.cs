@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
@@ -12,8 +13,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 columns: table => new
                 {
                     ID = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nome = table.Column<string>(type: "NVARCHAR", maxLength: 50, nullable: false),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(maxLength: 50, nullable: false),
                     Descricao = table.Column<string>(nullable: true),
                     DataDeInicio = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     DataDeTermino = table.Column<DateTime>(type: "DATETIME", nullable: false),

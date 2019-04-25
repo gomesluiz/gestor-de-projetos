@@ -18,7 +18,6 @@ namespace Ferrero.GestorDeProjetos.Web.Data
       {
         entity.HasKey(e => e.ID);
         entity.Property(e => e.Nome)
-          .HasColumnType("NVARCHAR")
           .HasMaxLength(50)
           .IsRequired();
         entity.Property(e => e.DataDeInicio)
