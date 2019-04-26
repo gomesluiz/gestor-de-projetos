@@ -16,13 +16,13 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     
     [DataType(DataType.Date)]
     [Display(Name = "Data de Início")]
-    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
     [Required(ErrorMessage = "Por favor, entre com a data de início do projeto.")]
     public DateTime DataDeInicio { get; set; }
     
     [DataType(DataType.Date)]
     [Display(Name = "Data de Término")]
-    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
     [Required(ErrorMessage = "Por favor, entre com a data estimada de término do projeto.")]
     public DateTime DataDeTermino { get; set; }
     

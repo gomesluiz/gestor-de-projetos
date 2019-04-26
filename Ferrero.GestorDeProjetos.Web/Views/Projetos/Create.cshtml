@@ -25,14 +25,14 @@
           <div class="form-group">
               <label asp-for="DataDeInicio" class="control-label"></label>
               <input asp-for="DataDeInicio" class="form-control" style="text-align:right;"/>
-              <span asp-validation-for="DataDeInicio" class="text-danger"></span>
+              <span asp-validation-for="DataDeInicio" asp-format="{0:yyyy-MM-dd}" class="text-danger"></span>
           </div>
         </div>
         <div class="col-md-3">
           <div class="form-group">
               <label asp-for="DataDeTermino" class="control-label"></label>
               <input asp-for="DataDeTermino" class="form-control" style="text-align:right;"/>
-              <span asp-validation-for="DataDeTermino" class="text-danger"></span>
+              <span asp-validation-for="DataDeTermino" asp-format="{0:yyyy-MM-dd}" class="text-danger"></span>
           </div>
         </div>
         <div class="col-md-2">
