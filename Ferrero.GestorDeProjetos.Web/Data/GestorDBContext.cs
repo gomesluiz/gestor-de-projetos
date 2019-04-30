@@ -27,6 +27,14 @@ namespace Ferrero.GestorDeProjetos.Web.Data
         entity.Property(e => e.Concluido)
           .IsRequired();
       });
+
+      mb.Entity<CentroDeCusto>(entity =>
+      {
+        entity.HasKey(e => e.ID);
+        entity.Property(e => e.Nome)
+          .HasMaxLength(50)
+          .IsRequired();
+      });
     }
   }
 }
