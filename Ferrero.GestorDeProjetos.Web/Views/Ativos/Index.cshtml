@@ -1,4 +1,4 @@
-@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.Projeto>
+@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.Ativo>
 
 @{
     ViewData["Title"] = "Index";
@@ -34,24 +34,24 @@
 <table class="table table-bordered table-sm">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Nome)           </th>
-            <th>@Html.DisplayNameFor(model => model.Descricao)      </th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.DataDeInicio)   </th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.DataDeTermino)  </th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Descricao)</th>
+            <th>@Html.DisplayNameFor(model => model.Localizacao)</th>
+            <th>@Html.DisplayNameFor(model => model.OrdemDeInvestimento)</th>
+            <th>@Html.DisplayNameFor(model => model.Situacao)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
-            <td>@Html.DisplayFor(modelItem => item.Descricao)     </td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
-            <td class="text-center">
-                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">Atualizar</a>
+            <td class="text-center">@Html.DisplayFor(modelItem => item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
+            <td>@Html.DisplayFor(modelItem => item.Localizacao)</td>
+            <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento)</td>
+            <td class="text-center">@Html.DisplayFor(modelItem => item.Situacao)</td>
+            <td>
+                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">Atualizar</a> |
                 <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">Remover</a>
             </td>
         </tr>

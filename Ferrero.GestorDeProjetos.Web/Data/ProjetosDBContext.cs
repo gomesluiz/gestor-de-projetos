@@ -5,21 +5,24 @@ using Ferrero.GestorDeProjetos.Web.Models;
 
 namespace Ferrero.GestorDeProjetos.Web.Data
 {
-  public class GestorDBContext : DbContext
+  public class ProjetosDBContext : DbContext
   {
-    public GestorDBContext(DbContextOptions<GestorDBContext> options)
+    public ProjetosDBContext(DbContextOptions<ProjetosDBContext> options)
     : base(options) { }
 
     public DbSet<Projeto> Projetos { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder mb)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-      mb.Entity<Projeto>(entity =>
+      // Model Projeto
+      builder.Entity<Projeto>(entity =>
       {
-        entity.HasKey(e => e.ID);
+        entity.HasKey(e => e.Id);
         entity.Property(e => e.Nome)
           .HasMaxLength(50)
           .IsRequired();
+        entity.Property(e => e.Descricao)
+          .HasMaxLength(250);
         entity.Property(e => e.DataDeInicio)
           .HasColumnType("DATETIME");
         entity.Property(e => e.DataDeTermino)
@@ -28,18 +31,24 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .IsRequired();
       });
 
-      mb.Entity<CentroDeCusto>(entity =>
+      // Model CentroDeCusto
+      builder.Entity<CentroDeCusto>(entity =>
       {
-        entity.HasKey(e => e.ID);
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .ValueGeneratedNever()
+          .IsRequired();
         entity.Property(e => e.Nome)
           .HasMaxLength(50)
           .IsRequired();
       });
-      /* 
-      mb.Entity<Ativo>(entity =>
+
+      // Model Ativo
+      builder.Entity<Ativo>(entity =>
       {
-        entity.HasKey(e => e.ID);
-        entity.Property(e => e.CentroDeCusto.ID)
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .ValueGeneratedNever()
           .IsRequired();
         entity.Property(e => e.Localizacao)
           .HasMaxLength(50)
@@ -50,7 +59,9 @@ namespace Ferrero.GestorDeProjetos.Web.Data
         entity.Property(e => e.Situacao)
           .IsRequired();
       });
-      */
+
     }
+
+    public DbSet<Ferrero.GestorDeProjetos.Web.Models.Ativo> Ativo { get; set; }
   }
 }

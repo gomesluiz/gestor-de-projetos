@@ -4,14 +4,16 @@ using Ferrero.GestorDeProjetos.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    [DbContext(typeof(GestorDBContext))]
-    partial class GestorDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ProjetosDBContext))]
+    [Migration("20190501203309_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,22 +21,49 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
+                {
+                    b.Property<long>("Id");
+
+                    b.Property<int?>("CentroDeCustoId");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Localizacao")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("OrdemDeInvestimento")
+                        .IsRequired()
+                        .HasMaxLength(7);
+
+                    b.Property<int>("Situacao");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CentroDeCustoId");
+
+                    b.ToTable("Ativo");
+                });
+
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", b =>
                 {
-                    b.Property<int>("ID");
+                    b.Property<int>("Id");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("CentroDeCusto");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -46,15 +75,23 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<DateTime>("DataDeTermino")
                         .HasColumnType("DATETIME");
 
-                    b.Property<string>("Descricao");
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(250);
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Projetos");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", "CentroDeCusto")
+                        .WithMany()
+                        .HasForeignKey("CentroDeCustoId");
                 });
 #pragma warning restore 612, 618
         }

@@ -34,7 +34,7 @@ namespace Ferrero.GestorDeProjetos.UI.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<GestorDBContext>(options =>
+            services.AddDbContext<ProjetosDBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

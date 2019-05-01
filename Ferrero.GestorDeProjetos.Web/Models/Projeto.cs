@@ -6,12 +6,14 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
   /// Esta classe contém os atributos e métodos de um projeto.
   /// </summary>
   public class Projeto {
-    public int ID { get; set; }
+    public int Id { get; set; }
 
+    [StringLength(50, ErrorMessage = "O nome do projeto deve possuir no máximo 50 caracteres.")]
     [Required(ErrorMessage = "Por favor, digite o nome do projeto.")]
     public string Nome { get; set; }
     
 
+    [StringLength(250, ErrorMessage = "A descrição do projeto deve possuir no máximo 250 caracteres.")]
     public string Descricao { get; set; }
     
     [DataType(DataType.Date)]

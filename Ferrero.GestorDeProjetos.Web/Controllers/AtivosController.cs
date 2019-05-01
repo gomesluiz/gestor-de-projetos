@@ -10,67 +10,85 @@ using Ferrero.GestorDeProjetos.Web.Models;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-    public class ProjetosController : Controller
+    public class AtivosController : Controller
     {
         private readonly ProjetosDBContext _context;
 
-        public ProjetosController(ProjetosDBContext context)
+        public AtivosController(ProjetosDBContext context)
         {
             _context = context;
         }
 
-        // GET: Projetos
+        // GET: Ativos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projetos.ToListAsync());
+            return View(await _context.Ativo.ToListAsync());
         }
 
-        // GET: Projetos/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Projetos/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,Descricao,DataDeInicio,DataDeTermino,Concluido")] Projeto projeto)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(projeto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(projeto);
-        }
-
-        // GET: Projetos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Ativos/Details/5
+        public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var projeto = await _context.Projetos.FindAsync(id);
-            if (projeto == null)
+            var ativo = await _context.Ativo
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ativo == null)
             {
                 return NotFound();
             }
-            return View(projeto);
+
+            return View(ativo);
         }
 
-        // POST: Projetos/Edit/5
+        // GET: Ativos/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Ativos/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,DataDeInicio,DataDeTermino,Concluido")] Projeto projeto)
+        public async Task<IActionResult> Create([Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,Situacao")] Ativo ativo)
         {
-            if (id != projeto.Id)
+            if (ModelState.IsValid)
+            {
+                _context.Add(ativo);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(ativo);
+        }
+
+        // GET: Ativos/Edit/5
+        public async Task<IActionResult> Edit(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ativo = await _context.Ativo.FindAsync(id);
+            if (ativo == null)
+            {
+                return NotFound();
+            }
+            return View(ativo);
+        }
+
+        // POST: Ativos/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,Situacao")] Ativo ativo)
+        {
+            if (id != ativo.Id)
             {
                 return NotFound();
             }
@@ -79,12 +97,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 try
                 {
-                    _context.Update(projeto);
+                    _context.Update(ativo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjetoExists(projeto.Id))
+                    if (!AtivoExists(ativo.Id))
                     {
                         return NotFound();
                     }
@@ -95,41 +113,41 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(projeto);
+            return View(ativo);
         }
 
-        // GET: Projetos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Ativos/Delete/5
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var projeto = await _context.Projetos
+            var ativo = await _context.Ativo
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
+            if (ativo == null)
             {
                 return NotFound();
             }
 
-            return View(projeto);
+            return View(ativo);
         }
 
-        // POST: Projetos/Delete/5
+        // POST: Ativos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var projeto = await _context.Projetos.FindAsync(id);
-            _context.Projetos.Remove(projeto);
+            var ativo = await _context.Ativo.FindAsync(id);
+            _context.Ativo.Remove(ativo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProjetoExists(int id)
+        private bool AtivoExists(long id)
         {
-            return _context.Projetos.Any(e => e.Id == id);
+            return _context.Ativo.Any(e => e.Id == id);
         }
     }
 }
