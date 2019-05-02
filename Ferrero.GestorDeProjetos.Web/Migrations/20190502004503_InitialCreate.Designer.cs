@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190501203309_InitialCreate")]
+    [Migration("20190502004503_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.HasIndex("CentroDeCustoId");
 
-                    b.ToTable("Ativo");
+                    b.ToTable("Ativos");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", b =>
@@ -58,7 +58,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CentroDeCusto");
+                    b.ToTable("CentrosDeCusto");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>

@@ -22,7 +22,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Ativos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ativo.ToListAsync());
+            return View(await _context.Ativos.ToListAsync());
         }
 
         // GET: Ativos/Details/5
@@ -33,7 +33,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return NotFound();
             }
 
-            var ativo = await _context.Ativo
+            var ativo = await _context.Ativos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ativo == null)
             {
@@ -73,7 +73,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return NotFound();
             }
 
-            var ativo = await _context.Ativo.FindAsync(id);
+            var ativo = await _context.Ativos.FindAsync(id);
             if (ativo == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return NotFound();
             }
 
-            var ativo = await _context.Ativo
+            var ativo = await _context.Ativos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ativo == null)
             {
@@ -139,15 +139,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var ativo = await _context.Ativo.FindAsync(id);
-            _context.Ativo.Remove(ativo);
+            var ativo = await _context.Ativos.FindAsync(id);
+            _context.Ativos.Remove(ativo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AtivoExists(long id)
         {
-            return _context.Ativo.Any(e => e.Id == id);
+            return _context.Ativos.Any(e => e.Id == id);
         }
     }
 }

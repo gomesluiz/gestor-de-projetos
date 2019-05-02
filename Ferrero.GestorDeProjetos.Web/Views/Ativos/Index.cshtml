@@ -5,7 +5,16 @@
 }
 
 <h3></h3>
-
+<div class="row">
+  <hr />
+  <ul class="nav nav-pills">
+    <li role="presentation"><a asp-controller="Projetos" asp-action="Index">Projetos</a></li>
+    <li role="presentation"  class="active"><a  asp-controller="Ativos" asp-action="Index">Ativos</a></li>
+    <li role="presentation"><a href="#">Centros de Custos</a></li>
+    <li role="presentation"><a href="#">Fornecedores</a></li>
+  </ul>
+  <hr />
+</div>
 <div class="row">
   <!--
   <div class="text-left col-md-10">
@@ -22,7 +31,7 @@
     </form>
   </div>
   -->
-  <div class="text-left col-md-2">
+  <div class="text-left col-xs-2 col-md-2">
     <p>
     <a type="button" class="btn btn-success" asp-action="Create">
       <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -34,11 +43,11 @@
 <table class="table table-bordered table-sm">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Id)</th>
             <th>@Html.DisplayNameFor(model => model.Descricao)</th>
             <th>@Html.DisplayNameFor(model => model.Localizacao)</th>
-            <th>@Html.DisplayNameFor(model => model.OrdemDeInvestimento)</th>
-            <th>@Html.DisplayNameFor(model => model.Situacao)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Situacao)</th>
             <th></th>
         </tr>
     </thead>
@@ -50,9 +59,9 @@
             <td>@Html.DisplayFor(modelItem => item.Localizacao)</td>
             <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento)</td>
             <td class="text-center">@Html.DisplayFor(modelItem => item.Situacao)</td>
-            <td>
-                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">Atualizar</a> |
-                <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">Remover</a>
+            <td class="text-center">
+                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></a>
+                <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>
             </td>
         </tr>
 }

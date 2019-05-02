@@ -9,7 +9,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CentroDeCusto",
+                name: "CentrosDeCusto",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
@@ -17,7 +17,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CentroDeCusto", x => x.Id);
+                    table.PrimaryKey("PK_CentrosDeCusto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,7 +38,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ativo",
+                name: "Ativos",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false),
@@ -50,31 +50,31 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ativo", x => x.Id);
+                    table.PrimaryKey("PK_Ativos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ativo_CentroDeCusto_CentroDeCustoId",
+                        name: "FK_Ativos_CentrosDeCusto_CentroDeCustoId",
                         column: x => x.CentroDeCustoId,
-                        principalTable: "CentroDeCusto",
+                        principalTable: "CentrosDeCusto",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ativo_CentroDeCustoId",
-                table: "Ativo",
+                name: "IX_Ativos_CentroDeCustoId",
+                table: "Ativos",
                 column: "CentroDeCustoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Ativo");
+                name: "Ativos");
 
             migrationBuilder.DropTable(
                 name: "Projetos");
 
             migrationBuilder.DropTable(
-                name: "CentroDeCusto");
+                name: "CentrosDeCusto");
         }
     }
 }

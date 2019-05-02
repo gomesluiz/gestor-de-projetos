@@ -10,8 +10,10 @@ namespace Ferrero.GestorDeProjetos.Web.Data
     public ProjetosDBContext(DbContextOptions<ProjetosDBContext> options)
     : base(options) { }
 
+    public DbSet<Ativo> Ativos { get; set; }
+    public DbSet<CentroDeCusto> CentrosDeCusto { get; set; }
     public DbSet<Projeto> Projetos { get; set; }
-
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
       // Model Projeto
@@ -61,7 +63,5 @@ namespace Ferrero.GestorDeProjetos.Web.Data
       });
 
     }
-
-    public DbSet<Ferrero.GestorDeProjetos.Web.Models.Ativo> Ativo { get; set; }
   }
 }
