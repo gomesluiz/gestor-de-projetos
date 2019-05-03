@@ -17,9 +17,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [StringLength(50, ErrorMessage = "O nome da localização deve possuir no máximo 50 caracteres.")]
     [Required(ErrorMessage = "Por favor, entre com localizacao do ativo.")]
     public string Localizacao { get; set; }
-    
+
+    [StringLength(7, ErrorMessage = "A ordem de investimento deve possuir no máximo 7 caracteres.")]
     [Required(ErrorMessage = "Por favor, entre com  numero da ordem de investimento.")]
-    
     [Display(Name = "Ordem de Investimento")]
     public string OrdemDeInvestimento { get; set; }
     
