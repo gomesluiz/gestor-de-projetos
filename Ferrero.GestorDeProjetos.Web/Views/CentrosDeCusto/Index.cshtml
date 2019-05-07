@@ -1,4 +1,4 @@
-@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.Ativo>
+@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,8 +9,8 @@
   <hr />
   <ul class="nav nav-pills">
     <li role="presentation"><a asp-controller="Projetos" asp-action="Index">Projetos</a></li>
-    <li role="presentation"  class="active"><a  asp-controller="Ativos" asp-action="Index">Ativos</a></li>
-    <li role="presentation"><a asp-controller="CentrosDeCusto" asp-action="Index">Centros de Custos</a></li>
+    <li role="presentation"><a asp-controller="Ativos" asp-action="Index">Ativos</a></li>
+    <li role="presentation" class="active"><a asp-controller="Ativos" asp-action="Index">Centros de Custos</a></li>
     <li role="presentation"><a href="#">Fornecedores</a></li>
   </ul>
   <hr />
@@ -41,25 +41,27 @@
   </div>
 </div>
 
-<table class="table table-bordered table-sm">
+<table class="table">
     <thead>
         <tr>
-            <th class="text-center">@Html.DisplayNameFor(model => model.Id)</th>
-            <th>@Html.DisplayNameFor(model => model.Descricao)</th>
-            <th>@Html.DisplayNameFor(model => model.Localizacao)</th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento)</th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.Situacao)</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.Id)</td>
-            <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
-            <td>@Html.DisplayFor(modelItem => item.Localizacao)</td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento)</td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.Situacao)</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
             <td class="text-center">
                 <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></a>
                 <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>

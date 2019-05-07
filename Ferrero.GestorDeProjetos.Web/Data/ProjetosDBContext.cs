@@ -13,6 +13,7 @@ namespace Ferrero.GestorDeProjetos.Web.Data
     public DbSet<Ativo> Ativos { get; set; }
     public DbSet<CentroDeCusto> CentrosDeCusto { get; set; }
     public DbSet<Projeto> Projetos { get; set; }
+    public DbSet<Fornecedor> Fornecedores { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -20,6 +21,8 @@ namespace Ferrero.GestorDeProjetos.Web.Data
       builder.Entity<Projeto>(entity =>
       {
         entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .IsRequired();
         entity.Property(e => e.Nome)
           .HasMaxLength(50)
           .IsRequired();
@@ -62,6 +65,16 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .IsRequired();
       });
 
+      // Model Fornecedor
+      builder.Entity<Fornecedor>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .IsRequired();
+        entity.Property(e => e.Nome)
+          .HasMaxLength(50)
+          .IsRequired();
+      });
     }
   }
 }
