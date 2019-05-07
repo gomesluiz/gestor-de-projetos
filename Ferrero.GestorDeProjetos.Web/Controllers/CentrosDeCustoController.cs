@@ -101,7 +101,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -119,7 +119,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     {
                         ModelState.AddModelError("", "Não é possível editar este centro de custo. " + 
                           "Tente novamente, e se o problema persistir " + 
-                          "entre em contato com o administrador do sistema.");;
+                          "entre em contato com o administrador do sistema.");
                     }
                 }
                 return RedirectToAction(nameof(Index));
@@ -135,14 +135,23 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return NotFound();
             }
 
-            var centroDeCusto = await _context.CentrosDeCusto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (centroDeCusto == null)
+            try 
             {
+              var centroDeCusto = await _context.CentrosDeCusto
+                .FirstOrDefaultAsync(m => m.Id == id);
+              if (centroDeCusto == null)
+              {
                 return NotFound();
+              }
+              return View(centroDeCusto);
             }
-
-            return View(centroDeCusto);
+            catch(DbException)
+            {
+              ModelState.AddModelError("", "Não é possível consultar consultar dados deste centro de custo. " + 
+                          "Tente novamente, e se o problema persistir " + 
+                          "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
 
         // POST: CentrosDeCusto/Delete/5
