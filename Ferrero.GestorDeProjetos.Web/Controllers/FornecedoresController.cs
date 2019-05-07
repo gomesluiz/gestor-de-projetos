@@ -119,7 +119,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError("", "Não é possível editar este fornecedor. " + 
+                          "Tente novamente, e se o problema persistir " + 
+                          "entre em contato com o administrador do sistema.");
                     }
                 }
                 return RedirectToAction(nameof(Index));

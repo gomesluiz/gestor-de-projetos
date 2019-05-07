@@ -101,13 +101,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 return NotFound();
             }
-
-            bool ExisteCentroDeCusto = _context.CentrosDeCusto.Any(cc => cc.Id == centroDeCusto.Id);
-            if (ExisteCentroDeCusto == true)
-            {
-              ModelState.AddModelError("Id", "Este centro de custo já existe!");
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
@@ -123,7 +117,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError("", "Não é possível editar este centro de custo. " + 
+                          "Tente novamente, e se o problema persistir " + 
+                          "entre em contato com o administrador do sistema.");;
                     }
                 }
                 return RedirectToAction(nameof(Index));
