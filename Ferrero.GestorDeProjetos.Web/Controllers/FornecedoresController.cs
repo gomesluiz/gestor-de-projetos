@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Fornecedores
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Fornecedores.ToListAsync());
+            try 
+            {
+              var fornecedores = await _context.Fornecedores.ToListAsync();
+              return View(fornecedores);
+            } 
+            catch (DbException)
+            {
+              ModelState.AddModelError("", "Não é possível consultas os dados de fornecedores. " + 
+                "Tente novamente, e se o problema persistir " + 
+                "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
 
         // GET: Fornecedores/Details/5
@@ -54,13 +66,21 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Fornecedor fornecedor)
+        public async Task<IActionResult> Create([Bind("Nome")] Fornecedor fornecedor)
         {
             if (ModelState.IsValid)
             {
+              try{
                 _context.Add(fornecedor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+              }
+              catch (DbUpdateException)
+              {
+                ModelState.AddModelError("", "Não é possível incluir este fornecedor. " + 
+                  "Tente novamente, e se o problema persistir " + 
+                  "entre em contato com o administrador do sistema.");
+              }
             }
             return View(fornecedor);
         }
