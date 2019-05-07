@@ -1,12 +1,11 @@
 @model Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novo Centro de Custo";
 }
 
-<h2>Create</h2>
-
-<h4>CentroDeCusto</h4>
+<h2>Novo</h2>
+<h4>Centro de Custo</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,15 +21,16 @@
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="text-right">
+              <button class="btn btn-success" type="submit">
+                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar
+              </button>
+              <a asp-action="Index" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+              </a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

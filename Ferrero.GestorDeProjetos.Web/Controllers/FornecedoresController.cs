@@ -30,7 +30,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             } 
             catch (DbException)
             {
-              ModelState.AddModelError("", "Não é possível consultas os dados de fornecedores. " + 
+              ModelState.AddModelError("", "Não é possível consultar os dados de fornecedores. " + 
                 "Tente novamente, e se o problema persistir " + 
                 "entre em contato com o administrador do sistema.");
             }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,25 +23,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: CentrosDeCusto
         public async Task<IActionResult> Index()
         {
-            return View(await _context.CentrosDeCusto.ToListAsync());
-        }
-
-        // GET: CentrosDeCusto/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            try 
             {
-                return NotFound();
+              var centros = await _context.CentrosDeCusto.ToListAsync(); 
+              return View(centros);
             }
-
-            var centroDeCusto = await _context.CentrosDeCusto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (centroDeCusto == null)
+            catch (DbException)
             {
-                return NotFound();
+              ModelState.AddModelError("", "Não é possível consultar os dados de centros de custo. " + 
+                "Tente novamente, e se o problema persistir " + 
+                "entre em contato com o administrador do sistema.");
             }
-
-            return View(centroDeCusto);
+            return View();
         }
 
         // GET: CentrosDeCusto/Create
@@ -54,13 +48,28 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] CentroDeCusto centroDeCusto)
+        public async Task<IActionResult> Create([Bind("Id, Nome")] CentroDeCusto centroDeCusto)
         {
+            bool ExisteCentroDeCusto = _context.CentrosDeCusto.Any(cc => cc.Id == centroDeCusto.Id);
+            if (ExisteCentroDeCusto == true)
+            {
+              ModelState.AddModelError("Id", "Este centro de custo já existe!");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(centroDeCusto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try 
+                {
+                  _context.Add(centroDeCusto);
+                  await _context.SaveChangesAsync();
+                  return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                  ModelState.AddModelError("", "Não é possível incluir este centro de custo. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+                }
             }
             return View(centroDeCusto);
         }
@@ -91,6 +100,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             if (id != centroDeCusto.Id)
             {
                 return NotFound();
+            }
+
+            bool ExisteCentroDeCusto = _context.CentrosDeCusto.Any(cc => cc.Id == centroDeCusto.Id);
+            if (ExisteCentroDeCusto == true)
+            {
+              ModelState.AddModelError("Id", "Este centro de custo já existe!");
             }
 
             if (ModelState.IsValid)
