@@ -37,24 +37,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // GET: Fornecedores/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var fornecedor = await _context.Fornecedores
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (fornecedor == null)
-            {
-                return NotFound();
-            }
-
-            return View(fornecedor);
-        }
-
         // GET: Fornecedores/Create
         public IActionResult Create()
         {
@@ -90,15 +72,24 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+              return NotFound();
             }
 
-            var fornecedor = await _context.Fornecedores.FindAsync(id);
-            if (fornecedor == null)
-            {
+            try {
+              var fornecedor = await _context.Fornecedores.FindAsync(id);
+              if (fornecedor == null)
+              {
                 return NotFound();
+              }
+              return View(fornecedor);
             }
-            return View(fornecedor);
+            catch (DbException)
+            {
+              ModelState.AddModelError("", "Não é possível encontrar este fornecedor. " + 
+                  "Tente novamente, e se o problema persistir " + 
+                  "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
 
         // POST: Fornecedores/Edit/5
