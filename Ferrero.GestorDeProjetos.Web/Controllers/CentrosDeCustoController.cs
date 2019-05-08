@@ -82,12 +82,21 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return NotFound();
             }
 
-            var centroDeCusto = await _context.CentrosDeCusto.FindAsync(id);
-            if (centroDeCusto == null)
-            {
-                return NotFound();
+            try{
+              var centroDeCusto = await _context.CentrosDeCusto.FindAsync(id);
+              if (centroDeCusto == null)
+              {
+                  return NotFound();
+              }
+              return View(centroDeCusto);
             }
-            return View(centroDeCusto);
+            catch(DbException)
+            {
+              ModelState.AddModelError("", "Não é possível modificar este ativo. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
 
         // POST: CentrosDeCusto/Edit/5

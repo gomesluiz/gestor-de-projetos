@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,24 +26,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View(await _context.Ativos.ToListAsync());
         }
 
-        // GET: Ativos/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ativo = await _context.Ativos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ativo == null)
-            {
-                return NotFound();
-            }
-
-            return View(ativo);
-        }
-
         // GET: Ativos/Create
         public IActionResult Create()
         {
@@ -65,10 +48,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
             if (ModelState.IsValid)
             {
+                try {
                 Ativo ativo = ConvertToModel(ativoViewModel);
                 _context.Add(ativo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+                }
+                catch(DbUpdateException)
+                {
+                  ModelState.AddModelError("", "Não é possível incluir este ativo. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+                }
             }
 
             PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
@@ -83,12 +74,29 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return NotFound();
             }
 
-            var ativo = await _context.Ativos.FindAsync(id);
-            if (ativo == null)
+            try
             {
+              var ativo = await _context.Ativos
+                .Include(m => m.CentroDeCusto)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == id)
+                ;
+              if (ativo == null)
+              {
                 return NotFound();
+              }
+
+              AtivoViewModel ativoViewModel = ConvertToViewModel(ativo);
+              PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
+              return View(ativoViewModel);
             }
-            return View(ativo);
+            catch(DbException)
+            {
+              ModelState.AddModelError("", "Não é possível editar este ativo. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
 
         // POST: Ativos/Edit/5
@@ -96,9 +104,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,Situacao")] Ativo ativo)
+        public async Task<IActionResult> Edit(long id, 
+          [Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,CentroDeCustoId,Situacao")] AtivoViewModel ativoViewModel)
         {
-            if (id != ativo.Id)
+            
+            if (id != ativoViewModel.Id)
             {
                 return NotFound();
             }
@@ -107,23 +117,27 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 try
                 {
+                    Ativo ativo = ConvertToModel(ativoViewModel);
                     _context.Update(ativo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AtivoExists(ativo.Id))
+                    if (!AtivoExists(ativoViewModel.Id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                      ModelState.AddModelError("", "Não é possível editar este ativo. " + 
+                        "Tente novamente, e se o problema persistir " + 
+                        "entre em contato com o administrador do sistema.");
                     }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ativo);
+            PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
+            return View(ativoViewModel);
         }
 
         // GET: Ativos/Delete/5
@@ -170,6 +184,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               OrdemDeInvestimento = ativoViewModel.OrdemDeInvestimento, 
               Situacao = ativoViewModel.Situacao,
               CentroDeCusto = _context.CentrosDeCusto.Find(ativoViewModel.CentroDeCustoId)
+            };
+        }
+
+        private  AtivoViewModel ConvertToViewModel(Ativo ativo)
+        {
+          return new AtivoViewModel {
+              Id = ativo.Id,
+              Descricao = ativo.Descricao,
+              Localizacao = ativo.Localizacao,
+              OrdemDeInvestimento = ativo.OrdemDeInvestimento, 
+              Situacao = ativo.Situacao,
+              CentroDeCustoId = ativo.CentroDeCusto.Id
             };
         }
         private void PopulateCentrosDeCustoDropDownList(object centroDeCustoSelecionado = null)
