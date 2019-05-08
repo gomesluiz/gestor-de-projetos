@@ -25,9 +25,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<int?>("CentroDeCustoId");
 
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("Descricao");
 
                     b.Property<string>("Localizacao")
                         .IsRequired()

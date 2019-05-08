@@ -55,7 +55,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false),
-                    Descricao = table.Column<string>(maxLength: 50, nullable: false),
+                    Descricao = table.Column<string>(nullable: true),
                     Localizacao = table.Column<string>(maxLength: 50, nullable: false),
                     OrdemDeInvestimento = table.Column<string>(maxLength: 7, nullable: false),
                     Situacao = table.Column<int>(nullable: false),
