@@ -143,19 +143,32 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Ativos/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+          if (id == null)
+          {
+              return NotFound();
+          }
 
+          try
+          {
             var ativo = await _context.Ativos
+                .Include(m => m.CentroDeCusto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ativo == null)
             {
-                return NotFound();
+              return NotFound();
             }
-
-            return View(ativo);
+            AtivoViewModel ativoViewModel = ConvertToViewModel(ativo);
+            PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
+            return View(ativoViewModel);
+          }
+          catch(DbException)
+          {
+            ModelState.AddModelError("", "Não é possível remover este ativo. " + 
+                  "Tente novamente, e se o problema persistir " + 
+                  "entre em contato com o administrador do sistema.");
+          }
+          return View();
         }
 
         // POST: Ativos/Delete/5
@@ -168,7 +181,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
 
         private bool AtivoExists(long id)
         {
