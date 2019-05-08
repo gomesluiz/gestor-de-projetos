@@ -1,11 +1,10 @@
-@model Ferrero.GestorDeProjetos.Web.Models.Ativo
+@model Ferrero.GestorDeProjetos.Web.Models.ViewModels.AtivoViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
-
+<h2>Novo</h2>
 <h4>Ativo</h4>
 <hr />
 <div class="row">
@@ -26,27 +25,37 @@
                 <label asp-for="Localizacao" class="control-label"></label>
                 <input maxlength="50" asp-for="Localizacao" class="form-control" />
                 <span asp-validation-for="Localizacao" class="text-danger"></span>
-            </div>
-            
+            </div>    
             <div class="form-group">
                 <label asp-for="OrdemDeInvestimento" class="control-label"></label>
                 <input maxlength="7" asp-for="OrdemDeInvestimento" class="form-control" />
                 <span asp-validation-for="OrdemDeInvestimento" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Situacao" class="control-label"></label>
-                <input asp-for="Situacao" class="form-control" />
-                <span asp-validation-for="Situacao" class="text-danger"></span>
+                <label asp-for="CentroDeCustoId" class="control-label"></label>
+                <select asp-for="CentroDeCustoId" class="form-control" asp-items="ViewBag.CentroDeCustoId">
+                    <option value="">-- Selecione o Centro de Custo --</option>
+                </select>
+                <span asp-validation-for="CentroDeCustoId" class="text-danger" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <label asp-for="Situacao" class="control-label"></label>
+                <select asp-for="Situacao" class="form-control">
+                  <option value="0">NÃO TRANSFERIDO</option>
+                  <option value="1">TRANSFERIDO</option>
+                </select>
+                <span asp-validation-for="Situacao" class="text-danger"></span>
+            </div>
+            <div class="text-right">
+              <button class="btn btn-success" type="submit">
+                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar
+              </button>
+              <a asp-action="Index" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+              </a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

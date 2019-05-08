@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ferrero.GestorDeProjetos.Web.Data;
 using Ferrero.GestorDeProjetos.Web.Models;
-
+using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class AtivosController : Controller
@@ -46,6 +46,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Ativos/Create
         public IActionResult Create()
         {
+            PopulateCentrosDeCustoDropDownList();
             return View();
         }
 
@@ -54,15 +55,24 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,Situacao")] Ativo ativo)
+        public async Task<IActionResult> Create([Bind("Id,Descricao, Localizacao,OrdemDeInvestimento,CentroDeCustoId,Situacao")] AtivoViewModel ativoViewModel)
         {
+            bool ExisteAtivo = _context.Ativos.Any(cc => cc.Id == ativoViewModel.Id);
+            if (ExisteAtivo == true)
+            {
+              ModelState.AddModelError("Id", "Este ativo já existe!");
+            }
+
             if (ModelState.IsValid)
             {
+                Ativo ativo = ConvertToModel(ativoViewModel);
                 _context.Add(ativo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(ativo);
+
+            PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
+            return View(ativoViewModel);
         }
 
         // GET: Ativos/Edit/5
@@ -145,9 +155,29 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         private bool AtivoExists(long id)
         {
             return _context.Ativos.Any(e => e.Id == id);
+        }
+
+        private  Ativo ConvertToModel(AtivoViewModel ativoViewModel)
+        {
+          return new Ativo {
+              Id = ativoViewModel.Id,
+              Descricao = ativoViewModel.Descricao,
+              Localizacao = ativoViewModel.Localizacao,
+              OrdemDeInvestimento = ativoViewModel.OrdemDeInvestimento, 
+              Situacao = ativoViewModel.Situacao,
+              CentroDeCusto = _context.CentrosDeCusto.Find(ativoViewModel.CentroDeCustoId)
+            };
+        }
+        private void PopulateCentrosDeCustoDropDownList(object centroDeCustoSelecionado = null)
+        {
+            var centros = from cc in _context.CentrosDeCusto
+                                   orderby cc.Id
+                                   select cc;
+            ViewBag.CentroDeCustoId = new SelectList(centros.AsNoTracking(), "Id", "Nome", centroDeCustoSelecionado);
         }
     }
 }
