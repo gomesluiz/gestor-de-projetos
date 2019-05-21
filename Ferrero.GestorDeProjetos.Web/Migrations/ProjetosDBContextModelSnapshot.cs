@@ -21,7 +21,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
                 {
-                    b.Property<long>("Id");
+                    b.Property<int>("Id");
 
                     b.Property<int?>("CentroDeCustoId");
 
@@ -31,15 +31,15 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("OrdemDeInvestimento")
-                        .IsRequired()
-                        .HasMaxLength(7);
+                    b.Property<int?>("OrdemDeInvestimentoId");
 
                     b.Property<int>("Situacao");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CentroDeCustoId");
+
+                    b.HasIndex("OrdemDeInvestimentoId");
 
                     b.ToTable("Ativos");
                 });
@@ -70,6 +70,27 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fornecedores");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Numero");
+
+                    b.Property<int?>("ProjetoId");
+
+                    b.Property<decimal>("Valor")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("DECIMAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjetoId");
+
+                    b.ToTable("OrdensDeInvestimento");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>
@@ -103,6 +124,17 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", "CentroDeCusto")
                         .WithMany()
                         .HasForeignKey("CentroDeCustoId");
+
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
+                        .WithMany()
+                        .HasForeignKey("OrdemDeInvestimentoId");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                        .WithMany()
+                        .HasForeignKey("ProjetoId");
                 });
 #pragma warning restore 612, 618
         }

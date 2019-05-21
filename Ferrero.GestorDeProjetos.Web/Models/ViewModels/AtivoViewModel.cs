@@ -9,7 +9,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels {
 
     [Required(ErrorMessage = "Por favor, digite o número do ativo.")]
     [Display(Name = "Número")]
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     [StringLength(50, ErrorMessage = "O descrição do ativo deve possuir no máximo 50 caracteres.")]
     [Required(ErrorMessage = "Por favor, digite a descrição do ativo.")]
@@ -19,10 +19,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels {
     [Required(ErrorMessage = "Por favor, entre com localizacao do ativo.")]
     public string Localizacao { get; set; }
 
-    [StringLength(7, ErrorMessage = "A ordem de investimento deve possuir no máximo 7 caracteres.")]
     [Required(ErrorMessage = "Por favor, entre com  numero da ordem de investimento.")]
     [Display(Name = "Ordem de Investimento")]
-    public string OrdemDeInvestimento { get; set; }
+    public int OrdemDeInvestimentoId { get; set; }
     
     public int Situacao { get; set; }
 

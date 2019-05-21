@@ -12,11 +12,49 @@ namespace Ferrero.GestorDeProjetos.Web.Data
 
     public DbSet<Ativo> Ativos { get; set; }
     public DbSet<CentroDeCusto> CentrosDeCusto { get; set; }
-    public DbSet<Projeto> Projetos { get; set; }
     public DbSet<Fornecedor> Fornecedores { get; set; }
+    public DbSet<Projeto> Projetos { get; set; }
+    public DbSet<OrdemDeInvestimento> OrdensDeInvestimento { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
+      // Model Ativo
+      builder.Entity<Ativo>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .ValueGeneratedNever()
+          .IsRequired();
+        entity.Property(e => e.Localizacao)
+          .HasMaxLength(50)
+          .IsRequired();
+        entity.Property(e => e.Situacao)
+          .IsRequired();
+      });
+
+      // Model CentroDeCusto
+      builder.Entity<CentroDeCusto>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .ValueGeneratedNever()
+          .IsRequired();
+        entity.Property(e => e.Nome)
+          .HasMaxLength(50)
+          .IsRequired();
+      });
+
+            // Model Fornecedor
+      builder.Entity<Fornecedor>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .IsRequired();
+        entity.Property(e => e.Nome)
+          .HasMaxLength(50)
+          .IsRequired();
+      });
+    
       // Model Projeto
       builder.Entity<Projeto>(entity =>
       {
@@ -36,45 +74,14 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .IsRequired();
       });
 
-      // Model CentroDeCusto
-      builder.Entity<CentroDeCusto>(entity =>
+      // Model OrdemDeInvestimento
+      builder.Entity<OrdemDeInvestimento>(entity =>
       {
         entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id)
-          .ValueGeneratedNever()
-          .IsRequired();
-        entity.Property(e => e.Nome)
-          .HasMaxLength(50)
+        entity.Property(e => e.Valor)
+          .HasColumnType("DECIMAL")
           .IsRequired();
       });
-
-      // Model Ativo
-      builder.Entity<Ativo>(entity =>
-      {
-        entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id)
-          .ValueGeneratedNever()
-          .IsRequired();
-        entity.Property(e => e.Localizacao)
-          .HasMaxLength(50)
-          .IsRequired();
-        entity.Property(e => e.OrdemDeInvestimento)
-          .HasMaxLength(7)
-          .IsRequired();
-        entity.Property(e => e.Situacao)
-          .IsRequired();
-      });
-
-      // Model Fornecedor
-      builder.Entity<Fornecedor>(entity =>
-      {
-        entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id)
-          .IsRequired();
-        entity.Property(e => e.Nome)
-          .HasMaxLength(50)
-          .IsRequired();
-      });
-    }
+    }  
   }
 }

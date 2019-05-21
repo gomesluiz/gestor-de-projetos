@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialSchemaCreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,13 +51,34 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrdensDeInvestimento",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Numero = table.Column<string>(nullable: true),
+                    ProjetoId = table.Column<int>(nullable: true),
+                    Valor = table.Column<decimal>(type: "DECIMAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdensDeInvestimento", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrdensDeInvestimento_Projetos_ProjetoId",
+                        column: x => x.ProjetoId,
+                        principalTable: "Projetos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ativos",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false),
+                    Id = table.Column<int>(nullable: false),
                     Descricao = table.Column<string>(nullable: true),
                     Localizacao = table.Column<string>(maxLength: 50, nullable: false),
-                    OrdemDeInvestimento = table.Column<string>(maxLength: 7, nullable: false),
+                    OrdemDeInvestimentoId = table.Column<int>(nullable: true),
                     Situacao = table.Column<int>(nullable: false),
                     CentroDeCustoId = table.Column<int>(nullable: true)
                 },
@@ -70,12 +91,28 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         principalTable: "CentrosDeCusto",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ativos_OrdensDeInvestimento_OrdemDeInvestimentoId",
+                        column: x => x.OrdemDeInvestimentoId,
+                        principalTable: "OrdensDeInvestimento",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ativos_CentroDeCustoId",
                 table: "Ativos",
                 column: "CentroDeCustoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ativos_OrdemDeInvestimentoId",
+                table: "Ativos",
+                column: "OrdemDeInvestimentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdensDeInvestimento_ProjetoId",
+                table: "OrdensDeInvestimento",
+                column: "ProjetoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -87,10 +124,13 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "Fornecedores");
 
             migrationBuilder.DropTable(
-                name: "Projetos");
+                name: "CentrosDeCusto");
 
             migrationBuilder.DropTable(
-                name: "CentrosDeCusto");
+                name: "OrdensDeInvestimento");
+
+            migrationBuilder.DropTable(
+                name: "Projetos");
         }
     }
 }

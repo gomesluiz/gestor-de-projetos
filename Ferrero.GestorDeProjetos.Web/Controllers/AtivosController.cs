@@ -193,7 +193,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Id = ativoViewModel.Id,
               Descricao = ativoViewModel.Descricao,
               Localizacao = ativoViewModel.Localizacao,
-              OrdemDeInvestimento = ativoViewModel.OrdemDeInvestimento, 
+              OrdemDeInvestimento = _context.OrdensDeInvestimento.Find(ativoViewModel.OrdemDeInvestimentoId), 
               Situacao = ativoViewModel.Situacao,
               CentroDeCusto = _context.CentrosDeCusto.Find(ativoViewModel.CentroDeCustoId)
             };
@@ -205,11 +205,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Id = ativo.Id,
               Descricao = ativo.Descricao,
               Localizacao = ativo.Localizacao,
-              OrdemDeInvestimento = ativo.OrdemDeInvestimento, 
+              OrdemDeInvestimentoId = ativo.OrdemDeInvestimento.Id, 
               Situacao = ativo.Situacao,
               CentroDeCustoId = ativo.CentroDeCusto.Id
             };
         }
+        
         private void PopulateCentrosDeCustoDropDownList(object centroDeCustoSelecionado = null)
         {
             var centros = from cc in _context.CentrosDeCusto
