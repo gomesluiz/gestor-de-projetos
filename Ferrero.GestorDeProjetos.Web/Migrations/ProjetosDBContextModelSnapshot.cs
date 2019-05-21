@@ -78,7 +78,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Numero");
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(7);
 
                     b.Property<int?>("ProjetoId");
 

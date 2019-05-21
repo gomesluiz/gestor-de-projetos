@@ -56,7 +56,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Numero = table.Column<string>(nullable: true),
+                    Numero = table.Column<string>(maxLength: 7, nullable: false),
                     ProjetoId = table.Column<int>(nullable: true),
                     Valor = table.Column<decimal>(type: "DECIMAL", nullable: false)
                 },

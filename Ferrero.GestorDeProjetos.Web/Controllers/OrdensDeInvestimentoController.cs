@@ -38,7 +38,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-          [Bind("Id, Numero, Valor, ProjetoId")] OrdemDeInvestimentoViewModel ordemDeInvestimentoViewModel
+          [Bind("Id, Numero, ProjetoId, Valor")] OrdemDeInvestimentoViewModel ordemDeInvestimentoViewModel
         )
         {
             bool ExisteOrdemDeInvestimento = _context.OrdensDeInvestimento.Any(

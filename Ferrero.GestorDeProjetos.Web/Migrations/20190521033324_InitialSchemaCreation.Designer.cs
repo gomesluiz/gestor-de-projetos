@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190520145258_InitialSchemaCreation")]
+    [Migration("20190521033324_InitialSchemaCreation")]
     partial class InitialSchemaCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,7 +80,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Numero");
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(7);
 
                     b.Property<int?>("ProjetoId");
 

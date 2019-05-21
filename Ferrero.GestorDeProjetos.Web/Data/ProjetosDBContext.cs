@@ -78,6 +78,9 @@ namespace Ferrero.GestorDeProjetos.Web.Data
       builder.Entity<OrdemDeInvestimento>(entity =>
       {
         entity.HasKey(e => e.Id);
+        entity.Property(e => e.Numero)
+          .HasMaxLength(7)
+          .IsRequired();
         entity.Property(e => e.Valor)
           .HasColumnType("DECIMAL")
           .IsRequired();
