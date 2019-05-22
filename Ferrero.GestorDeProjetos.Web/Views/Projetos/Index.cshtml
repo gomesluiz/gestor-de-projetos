@@ -62,8 +62,8 @@
             <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
             <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
             <td class="text-center">
-                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">Atualizar</a>
-                <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">Remover</a>
+                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></a>
+                <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
             </td>
         </tr>
 }

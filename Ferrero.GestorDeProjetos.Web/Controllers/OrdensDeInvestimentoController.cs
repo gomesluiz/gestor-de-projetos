@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -68,20 +69,37 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
     
-    // GET: OrdensDeInvestimento/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+        // GET: OrdensDeInvestimento/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+          if (id == null)
+          {
+              return NotFound();
+          }
 
-            var ordemDeInvestimento = await _context.OrdensDeInvestimento.FindAsync(id);
+          try
+          {
+              
+            var ordemDeInvestimento = await _context.OrdensDeInvestimento
+              .Include(m => m.Projeto)
+              .AsNoTracking()
+              .FirstOrDefaultAsync(m => m.Id == id);
             if (ordemDeInvestimento == null)
             {
-                return NotFound();
+              return NotFound();
             }
-            return View(ordemDeInvestimento);
+
+            OrdemDeInvestimentoViewModel ordemDeInvestimentoViewModel = ConvertToViewModel(ordemDeInvestimento);
+            PopulateProjetosDropDownList(ordemDeInvestimentoViewModel.ProjetoId);
+            return View(ordemDeInvestimentoViewModel);
+          }
+          catch(DbException)
+          {
+            ModelState.AddModelError("", "Não é possível editar esta ordem de serviço. " + 
+              "Tente novamente, e se o problema persistir " + 
+              "entre em contato com o administrador do sistema.");
+          }
+          return View();
         }
 
         // POST: OrdensDeInvestimento/Edit/5
@@ -89,9 +107,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Numero,Valor")] OrdemDeInvestimento ordemDeInvestimento)
+        public async Task<IActionResult> Edit(int id, 
+          [Bind("Id, Numero, ProjetoId, Valor")] OrdemDeInvestimentoViewModel ordemDeInvestimentoViewModel
+        )
         {
-            if (id != ordemDeInvestimento.Id)
+            if (id != ordemDeInvestimentoViewModel.Id)
             {
                 return NotFound();
             }
@@ -100,12 +120,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 try
                 {
+                    OrdemDeInvestimento ordemDeInvestimento = ConvertToModel(ordemDeInvestimentoViewModel);
                     _context.Update(ordemDeInvestimento);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrdemDeInvestimentoExists(ordemDeInvestimento.Id))
+                    if (!OrdemDeInvestimentoExists(ordemDeInvestimentoViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -116,7 +137,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ordemDeInvestimento);
+            return View(ordemDeInvestimentoViewModel);
         }
 
         // GET: OrdensDeInvestimento/Delete/5
@@ -160,6 +181,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Numero = ordemDeInvestimentoViewModel.Numero,
               Valor = ordemDeInvestimentoViewModel.Valor,
               Projeto = _context.Projetos.Find(ordemDeInvestimentoViewModel.ProjetoId), 
+            };
+        }
+
+        private  OrdemDeInvestimentoViewModel ConvertToViewModel(OrdemDeInvestimento ordemDeInvestimento)
+        {
+          return new OrdemDeInvestimentoViewModel {
+              Id = ordemDeInvestimento.Id,
+              Numero = ordemDeInvestimento.Numero,
+              ProjetoId = ordemDeInvestimento.Projeto.Id,
+              Valor = ordemDeInvestimento.Valor,
             };
         }
 
