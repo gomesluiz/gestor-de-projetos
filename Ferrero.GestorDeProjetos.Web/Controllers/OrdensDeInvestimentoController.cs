@@ -143,19 +143,33 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: OrdensDeInvestimento/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+          if (id == null)
+          {
+              return NotFound();
+          }
 
+          try
+          {
             var ordemDeInvestimento = await _context.OrdensDeInvestimento
+                .Include(m => m.Projeto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ordemDeInvestimento == null)
             {
                 return NotFound();
             }
 
-            return View(ordemDeInvestimento);
+            OrdemDeInvestimentoViewModel ordemDeInvestimentoViewModel = ConvertToViewModel(ordemDeInvestimento);
+            PopulateProjetosDropDownList(ordemDeInvestimentoViewModel.ProjetoId);
+            return View(ordemDeInvestimentoViewModel);
+          }
+          catch(DbException)
+          {
+            ModelState.AddModelError("", "Não é possível remover esta ordem de investimento. " + 
+                "Tente novamente, e se o problema persistir " + 
+                "entre em contato com o administrador do sistema.");
+          }
+          return View();
         }
 
         // POST: OrdensDeInvestimento/Delete/5
@@ -183,7 +197,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Projeto = _context.Projetos.Find(ordemDeInvestimentoViewModel.ProjetoId), 
             };
         }
-
         private  OrdemDeInvestimentoViewModel ConvertToViewModel(OrdemDeInvestimento ordemDeInvestimento)
         {
           return new OrdemDeInvestimentoViewModel {
@@ -193,7 +206,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Valor = ordemDeInvestimento.Valor,
             };
         }
-
         private void PopulateProjetosDropDownList(object projetoSelecionado = null)
         {
             var projetos = from prj in _context.Projetos
