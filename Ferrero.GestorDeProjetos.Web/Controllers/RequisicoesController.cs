@@ -88,7 +88,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         RequisicaoViewModel requisicaoViewModel = ConvertToViewModel(requisicao);
         PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
-        return View(requisicao);
+        return View(requisicaoViewModel);
       }
       catch(DbException)
       {
@@ -100,42 +100,44 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       return View();
     }
 
-  
+    // POST: Requisicoes/Edit/5
+    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+    // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, 
+      [Bind("Id, Numero, Data, NumeroDaOrdemDeCompra, Valor, Descricao, AtivoId")] RequisicaoViewModel requisicaoViewModel)
+    {
+        if (id != requisicaoViewModel.Id)
+        {
+            return NotFound();
+        }
 
-  // POST: Requisicoes/Edit/5
-  // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-  // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-  [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> Edit(int id, [Bind("Id,Numero,Data,NumeroDaOrdemDeCompra,Valor,Descricao,Localizacao")] Requisicao requisicao)
-      {
-          if (id != requisicao.Id)
+        if (ModelState.IsValid)
+        {
+          try
           {
-              return NotFound();
+              Requisicao requisicao = ConvertToModel(requisicaoViewModel);
+              _context.Update(requisicao);
+              await _context.SaveChangesAsync();
           }
+          catch (DbUpdateConcurrencyException)
+          {
+              if (!ExisteRequisicao(requisicaoViewModel.Numero))
+              {
+                  return NotFound();
+              }
+              else
+              {
+                  throw;
+              }
+          }
+          return RedirectToAction(nameof(Index));
+        }
 
-          if (ModelState.IsValid)
-          {
-              try
-              {
-                  _context.Update(requisicao);
-                  await _context.SaveChangesAsync();
-              }
-              catch (DbUpdateConcurrencyException)
-              {
-                  if (!ExisteRequisicao(requisicao.Numero))
-                  {
-                      return NotFound();
-                  }
-                  else
-                  {
-                      throw;
-                  }
-              }
-              return RedirectToAction(nameof(Index));
-          }
-          return View(requisicao);
-      }
+        PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
+        return View(requisicaoViewModel);
+    }
 
       // GET: Requisicoes/Delete/5
       public async Task<IActionResult> Delete(int? id)
