@@ -12,8 +12,6 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     public long NumeroDaOrdemDeCompra { get; set; }
     public double Valor { get; set; }
     public string Descricao { get; set; }
-    public string Localizacao { get; set; }
-    public OrdemDeInvestimento OrdemDeInvestimento { get; set; }
     public Ativo Ativo { get; set; }
   }
 }

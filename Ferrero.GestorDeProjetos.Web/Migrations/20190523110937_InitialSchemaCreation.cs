@@ -110,8 +110,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     NumeroDaOrdemDeCompra = table.Column<long>(nullable: false),
                     Valor = table.Column<double>(nullable: false),
                     Descricao = table.Column<string>(maxLength: 250, nullable: true),
-                    Localizacao = table.Column<string>(maxLength: 50, nullable: true),
-                    OrdemDeInvestimentoId = table.Column<int>(nullable: true),
                     AtivoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -121,12 +119,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         name: "FK_Requisicoes_Ativos_AtivoId",
                         column: x => x.AtivoId,
                         principalTable: "Ativos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Requisicoes_OrdensDeInvestimento_OrdemDeInvestimentoId",
-                        column: x => x.OrdemDeInvestimentoId,
-                        principalTable: "OrdensDeInvestimento",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -150,11 +142,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "IX_Requisicoes_AtivoId",
                 table: "Requisicoes",
                 column: "AtivoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Requisicoes_OrdemDeInvestimentoId",
-                table: "Requisicoes",
-                column: "OrdemDeInvestimentoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

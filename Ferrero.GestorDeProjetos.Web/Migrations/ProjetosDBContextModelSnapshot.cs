@@ -135,22 +135,15 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<string>("Descricao")
                         .HasMaxLength(250);
 
-                    b.Property<string>("Localizacao")
-                        .HasMaxLength(50);
-
                     b.Property<long>("Numero");
 
                     b.Property<long>("NumeroDaOrdemDeCompra");
-
-                    b.Property<int?>("OrdemDeInvestimentoId");
 
                     b.Property<double>("Valor");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AtivoId");
-
-                    b.HasIndex("OrdemDeInvestimentoId");
 
                     b.ToTable("Requisicoes");
                 });
@@ -178,10 +171,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Ativo", "Ativo")
                         .WithMany()
                         .HasForeignKey("AtivoId");
-
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
-                        .WithMany()
-                        .HasForeignKey("OrdemDeInvestimentoId");
                 });
 #pragma warning restore 612, 618
         }
