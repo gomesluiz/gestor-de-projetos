@@ -139,45 +139,60 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         return View(requisicaoViewModel);
     }
 
-      // GET: Requisicoes/Delete/5
-      public async Task<IActionResult> Delete(int? id)
+    // GET: Requisicoes/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+      if (id == null)
       {
-          if (id == null)
-          {
-              return NotFound();
-          }
-
-          var requisicao = await _context.Requisicoes
-              .FirstOrDefaultAsync(m => m.Id == id);
-          if (requisicao == null)
-          {
-              return NotFound();
-          }
-
-          return View(requisicao);
+          return NotFound();
       }
 
-      // POST: Requisicoes/Delete/5
-      [HttpPost, ActionName("Delete")]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> DeleteConfirmed(int id)
+      try
       {
-          var requisicao = await _context.Requisicoes.FindAsync(id);
-          _context.Requisicoes.Remove(requisicao);
-          await _context.SaveChangesAsync();
-          return RedirectToAction(nameof(Index));
+        var requisicao = await _context.Requisicoes
+          .Include(m => m.Ativo)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (requisicao == null)
+        {
+            return NotFound();
+        }
+
+        RequisicaoViewModel requisicaoViewModel = ConvertToViewModel(requisicao);
+        PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
+        return View(requisicaoViewModel);
       }
-      private void PopulateAtivosDropDownList(object ativoSelcionado = null)
+      catch(DbException)
       {
-          var ativos = from aa in _context.Ativos
-                                  orderby aa.Id
-                                  select aa;
-          ViewBag.AtivoId = new SelectList(ativos.AsNoTracking(), "Id", "Descricao", ativoSelcionado);
+        ModelState.AddModelError("", "Não é possível remover esta requisição. " + 
+              "Tente novamente, e se o problema persistir " + 
+              "entre em contato com o administrador do sistema.");
       }
-      private bool ExisteRequisicao(long numero)
-      {
-          return _context.Requisicoes.Any(e => e.Numero == numero);
-      }
+
+      return View();
+    }
+
+    // POST: Requisicoes/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var requisicao = await _context.Requisicoes.FindAsync(id);
+        _context.Requisicoes.Remove(requisicao);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+    private void PopulateAtivosDropDownList(object ativoSelcionado = null)
+    {
+        var ativos = from aa in _context.Ativos
+                                orderby aa.Id
+                                select aa;
+        ViewBag.AtivoId = new SelectList(ativos.AsNoTracking(), "Id", "Descricao", ativoSelcionado);
+    }
+    private bool ExisteRequisicao(long numero)
+    {
+        return _context.Requisicoes.Any(e => e.Numero == numero);
+    }
     private  Requisicao ConvertToModel(RequisicaoViewModel requisicaoViewModel)
     {
       return new Requisicao {

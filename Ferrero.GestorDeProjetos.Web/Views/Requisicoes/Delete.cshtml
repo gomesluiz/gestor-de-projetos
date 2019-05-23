@@ -1,51 +1,61 @@
-@model Ferrero.GestorDeProjetos.Web.Models.Requisicao
+@model Ferrero.GestorDeProjetos.Web.Models.RequisicaoViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Editar requisição";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Requisicao</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Numero)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Numero)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Data)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.NumeroDaOrdemDeCompra)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.NumeroDaOrdemDeCompra)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Valor)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Valor)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<h2>Excluir</h2>
+<h4>Requisição</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Delete">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Numero" class="control-label"></label>
+                <input asp-for="Numero" class="form-control" disabled/>
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Data" class="control-label"></label>
+                <input asp-for="Data" class="form-control" disabled/>
+                <span asp-validation-for="Data" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumeroDaOrdemDeCompra" class="control-label"></label>
+                <input asp-for="NumeroDaOrdemDeCompra" class="form-control" disabled/>
+                <span asp-validation-for="NumeroDaOrdemDeCompra" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Valor" class="control-label"></label>
+                <input asp-for="Valor" class="form-control" disabled/>
+                <span asp-validation-for="Valor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descricao" class="control-label"></label>
+                <input asp-for="Descricao" class="form-control" disabled/>
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AtivoId" class="control-label"></label>
+                <select asp-for="AtivoId" class="form-control" asp-items="ViewBag.AtivoId" disabled>
+                    <option value="">-- Selecione o Ativo --</option>
+                </select>
+                <span asp-validation-for="AtivoId" class="text-danger" />
+            </div>
+            <div class="text-right">
+              <button class="btn btn-danger" type="submit">
+                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Excluir
+              </button>
+              <a asp-action="Index" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+              </a>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
