@@ -99,6 +99,38 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Requisicoes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Numero = table.Column<long>(nullable: false),
+                    Data = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    NumeroDaOrdemDeCompra = table.Column<long>(nullable: false),
+                    Valor = table.Column<double>(nullable: false),
+                    Descricao = table.Column<string>(maxLength: 250, nullable: true),
+                    Localizacao = table.Column<string>(maxLength: 50, nullable: true),
+                    OrdemDeInvestimentoId = table.Column<int>(nullable: true),
+                    AtivoId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Requisicoes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Requisicoes_Ativos_AtivoId",
+                        column: x => x.AtivoId,
+                        principalTable: "Ativos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Requisicoes_OrdensDeInvestimento_OrdemDeInvestimentoId",
+                        column: x => x.OrdemDeInvestimentoId,
+                        principalTable: "OrdensDeInvestimento",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Ativos_CentroDeCustoId",
                 table: "Ativos",
@@ -113,15 +145,28 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "IX_OrdensDeInvestimento_ProjetoId",
                 table: "OrdensDeInvestimento",
                 column: "ProjetoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Requisicoes_AtivoId",
+                table: "Requisicoes",
+                column: "AtivoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Requisicoes_OrdemDeInvestimentoId",
+                table: "Requisicoes",
+                column: "OrdemDeInvestimentoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Ativos");
+                name: "Fornecedores");
 
             migrationBuilder.DropTable(
-                name: "Fornecedores");
+                name: "Requisicoes");
+
+            migrationBuilder.DropTable(
+                name: "Ativos");
 
             migrationBuilder.DropTable(
                 name: "CentrosDeCusto");

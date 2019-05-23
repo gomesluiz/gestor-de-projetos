@@ -1,0 +1,74 @@
+@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.Requisicao>
+
+@{
+    ViewData["Title"] = "Todas as requisições";
+}
+
+<h3></h3>
+<div class="row">
+  <hr />
+  <ul class="nav nav-pills">
+    <li role="presentation"><a asp-controller="Projetos" asp-action="Index">Projetos</a></li>
+    <li role="presentation"><a asp-controller="OrdensDeInvestimento" asp-action="Index">Ordens de Investimento</a></li>
+    <li role="presentation"><a  asp-controller="Ativos" asp-action="Index">Ativos</a></li>
+    <li role="presentation"  class="active"><a asp-controller="Requisicoes" asp-action="Index">Requisições</a></li>
+    <li role="presentation"><a asp-controller="CentrosDeCusto" asp-action="Index">Centros de Custos</a></li>
+    <li role="presentation"><a asp-controller="Fornecedores" asp-action="Index">Fornecedores</a></li>
+  </ul>
+  <hr />
+</div>
+
+<div class="row">
+  <!--
+  <div class="text-left col-md-10">
+    <form class="form-inline">
+      <div class="form-group">         
+          <input type="text" class="form-control col-xs-10" placeholder="Nome do projeto" required />
+      </div>
+      <button type="submit" class="btn btn-default">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+      </button>
+      <button type="submit" class="btn btn-default">
+        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+      </button>
+    </form>
+  </div>
+  -->
+  <div class="text-left col-xs-2 col-md-2">
+    <p>
+    <a type="button" class="btn btn-success" asp-action="Create">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </a>
+    </p>
+  </div>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>@Html.DisplayNameFor(model => model.Numero)</th>
+      <th>@Html.DisplayNameFor(model => model.Data)</th>
+      <th>@Html.DisplayNameFor(model => model.NumeroDaOrdemDeCompra)</th>
+      <th>@Html.DisplayNameFor(model => model.Valor)</th>
+      <th>@Html.DisplayNameFor(model => model.Descricao)</th>
+      <th>@Html.DisplayNameFor(model => model.Localizacao)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+@foreach (var item in Model) {
+  <tr>
+      <td>@Html.DisplayFor(modelItem => item.Numero)</td>
+      <td>@Html.DisplayFor(modelItem => item.Data)</td>
+      <td>@Html.DisplayFor(modelItem => item.NumeroDaOrdemDeCompra)</td>
+      <td>@Html.DisplayFor(modelItem => item.Valor)</td>
+      <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
+      <td>@Html.DisplayFor(modelItem => item.Localizacao)</td>
+      <td class="text-center">
+          <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></a>
+          <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+      </td>
+  </tr>
+}
+  </tbody>
+</table>
