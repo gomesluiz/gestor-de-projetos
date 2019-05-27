@@ -6,7 +6,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
   /// </summary>
   public class NotaFiscal {
     public int Id { get; set; }
-    public string Numero { get; set; }
+    public int Numero { get; set; }
     public DateTime DataDeLancamento { get; set; }
     public Fornecedor Fornecedor { get; set; }
     public OrdemDeCompra OrdemDeCompra { get; set; }

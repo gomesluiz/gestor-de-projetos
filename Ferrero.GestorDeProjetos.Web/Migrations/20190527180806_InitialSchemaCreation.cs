@@ -129,7 +129,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Numero = table.Column<string>(nullable: false),
+                    Numero = table.Column<int>(nullable: false),
                     DataDeLancamento = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     FornecedorId = table.Column<int>(nullable: true),
                     OrdemDeCompraId = table.Column<int>(nullable: true),

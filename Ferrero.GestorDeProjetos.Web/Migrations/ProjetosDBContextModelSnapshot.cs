@@ -85,8 +85,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<long>("Migo");
 
-                    b.Property<string>("Numero")
-                        .IsRequired();
+                    b.Property<int>("Numero");
 
                     b.Property<int?>("OrdemDeCompraId");
 

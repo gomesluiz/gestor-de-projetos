@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190527140417_InitialSchemaCreation")]
+    [Migration("20190527180806_InitialSchemaCreation")]
     partial class InitialSchemaCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,8 +87,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<long>("Migo");
 
-                    b.Property<string>("Numero")
-                        .IsRequired();
+                    b.Property<int>("Numero");
 
                     b.Property<int?>("OrdemDeCompraId");
 

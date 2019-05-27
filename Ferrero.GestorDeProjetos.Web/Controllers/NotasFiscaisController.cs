@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,27 +26,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View(await _context.NotasFiscais.ToListAsync());
         }
 
-        // GET: NotasFiscais/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var notaFiscal = await _context.NotasFiscais
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (notaFiscal == null)
-            {
-                return NotFound();
-            }
-
-            return View(notaFiscal);
-        }
-
         // GET: NotasFiscais/Create
         public IActionResult Create()
         {
+            PopulateFornecedoresDropDownList();
+            PopulateOrdensDeCompraDropDownList();
             return View();
         }
 
@@ -54,15 +39,33 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Numero,DataDeLancamento,Migo,Valor")] NotaFiscal notaFiscal)
+        public async Task<IActionResult> Create(
+          [Bind("Id, Numero, DataDeLancamento, FornecedorId, OrdemDeCompraId, Migo, Valor")] NotaFiscalViewModel notaFiscalViewModel)
         {
+            if (ExisteNotaFiscal(notaFiscalViewModel.Numero, notaFiscalViewModel.FornecedorId))
+            {
+              ModelState.AddModelError("Numero", "Esta nota fiscal já existe!");
+            }
+
             if (ModelState.IsValid)
             {
+              try {
+                NotaFiscal notaFiscal = ConvertToModel(notaFiscalViewModel);
                 _context.Add(notaFiscal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+              }
+              catch(DbException)
+              {
+                ModelState.AddModelError("", "Não é possível incluir esta nota fiscal. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");  
+              }
             }
-            return View(notaFiscal);
+
+            PopulateFornecedoresDropDownList(notaFiscalViewModel.FornecedorId);
+            PopulateOrdensDeCompraDropDownList(notaFiscalViewModel.OrdemDeCompraId);
+            return View(notaFiscalViewModel);
         }
 
         // GET: NotasFiscais/Edit/5
@@ -102,7 +105,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NotaFiscalExists(notaFiscal.Id))
+                    if (!ExisteNotaFiscal(notaFiscal.Id, 0))
                     {
                         return NotFound();
                     }
@@ -145,9 +148,38 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NotaFiscalExists(int id)
+        private void PopulateFornecedoresDropDownList(object fornecedorSelecionado = null)
         {
-            return _context.NotasFiscais.Any(e => e.Id == id);
+          var fornecedores = from e in _context.Fornecedores
+                                  orderby e.Nome
+                                  select e;
+          ViewBag.FornecedorId = new SelectList(fornecedores.AsNoTracking(), "Id", "Nome", fornecedorSelecionado);
+        }
+
+        private void PopulateOrdensDeCompraDropDownList(object ordemDeCompraSelecionada = null)
+        {
+          var ocs = from e in _context.OrdensDeCompra
+                                  orderby e.Numero
+                                  select e;
+          ViewBag.OrdemDeCompraId = new SelectList(ocs.AsNoTracking(), "Id", "Numero", ordemDeCompraSelecionada);
+        }
+
+        private bool ExisteNotaFiscal(long Numero, int FornecedorId)
+        {
+            return _context.NotasFiscais.Any(e => e.Numero == Numero & e.Fornecedor.Id == FornecedorId);
+        }
+
+        private  NotaFiscal ConvertToModel(NotaFiscalViewModel notaFiscalViewModel)
+        {
+          return new NotaFiscal {
+              Id = notaFiscalViewModel.Id,
+              Numero = notaFiscalViewModel.Numero,
+              DataDeLancamento = notaFiscalViewModel.DataDeLancamento,
+              Fornecedor = _context.Fornecedores.Find(notaFiscalViewModel.FornecedorId),
+              OrdemDeCompra = _context.OrdensDeCompra.Find(notaFiscalViewModel.OrdemDeCompraId),
+              Migo = notaFiscalViewModel.Migo,
+              Valor = notaFiscalViewModel.Valor
+            };
         }
     }
 }

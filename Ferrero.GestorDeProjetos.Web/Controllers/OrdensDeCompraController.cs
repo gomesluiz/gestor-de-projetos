@@ -193,6 +193,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     {
         return _context.OrdensDeCompra.Any(e => e.Numero == numero);
     }
+
     private  OrdemDeCompra ConvertToModel(OrdemDeCompraViewModel ordemDeCompraViewModel)
     {
       return new OrdemDeCompra {
@@ -205,6 +206,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           Ativo = _context.Ativos.Find(ordemDeCompraViewModel.AtivoId)
         };
     }
+    
     private OrdemDeCompraViewModel ConvertToViewModel(OrdemDeCompra oc)
     {
       return new OrdemDeCompraViewModel {

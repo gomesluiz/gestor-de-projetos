@@ -10,7 +10,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
 
     [Required(ErrorMessage = "Por favor, digite o número da nota fiscal.")]
     [Display(Name = "Número")]
-    public long Numero { get; set; }
+    public int Numero { get; set; }
 
     [DataType(DataType.Date)]
     [Display(Name = "Data de Lancamento")]
@@ -20,11 +20,11 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
 
     [Required(ErrorMessage = "Por favor, digite o fornecedor da nota fiscal.")]
     [Display(Name = "Fornecedor")]
-    public long FornecedorId { get; set; }
+    public int FornecedorId { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da ordem de compra.")]
     [Display(Name = "Ordem de Compra")]
-    public long OrdemDeCompraId { get; set; }
+    public int OrdemDeCompraId { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da migo.")]
     [Display(Name = "Número da Migo")]
