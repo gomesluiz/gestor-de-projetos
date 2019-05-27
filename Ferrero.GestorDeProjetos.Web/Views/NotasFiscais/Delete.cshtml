@@ -1,0 +1,45 @@
+@model Ferrero.GestorDeProjetos.Web.Models.NotaFiscal
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>NotaFiscal</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Numero)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Numero)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DataDeLancamento)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DataDeLancamento)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Migo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Migo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Valor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Valor)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
