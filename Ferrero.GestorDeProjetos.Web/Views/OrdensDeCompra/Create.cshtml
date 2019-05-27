@@ -1,52 +1,51 @@
-@model Ferrero.GestorDeProjetos.Web.Models.RequisicaoViewModel
+@model Ferrero.GestorDeProjetos.Web.Models.OrdemDeCompraViewModel
 
 @{
-    ViewData["Title"] = "Editar requisição";
+    ViewData["Title"] = "Nova ordem de compra";
 }
 
-<h2>Excluir</h2>
-<h4>Requisição</h4>
+<h2>Nova</h2>
+<h4>Ordem de Compra</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Delete">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Numero" class="control-label"></label>
-                <input asp-for="Numero" class="form-control" disabled/>
+                <input asp-for="Numero" class="form-control" />
                 <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
-                <input asp-for="Data" class="form-control" disabled/>
+                <input asp-for="Data" class="form-control" />
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NumeroDaOrdemDeCompra" class="control-label"></label>
-                <input asp-for="NumeroDaOrdemDeCompra" class="form-control" disabled/>
-                <span asp-validation-for="NumeroDaOrdemDeCompra" class="text-danger"></span>
+                <label asp-for="NumeroDaRequisicao" class="control-label"></label>
+                <input asp-for="NumeroDaRequisicao" class="form-control" />
+                <span asp-validation-for="NumeroDaRequisicao" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Valor" class="control-label"></label>
-                <input asp-for="Valor" class="form-control" disabled/>
+                <input asp-for="Valor" class="form-control" />
                 <span asp-validation-for="Valor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" disabled/>
+                <input asp-for="Descricao" class="form-control" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AtivoId" class="control-label"></label>
-                <select asp-for="AtivoId" class="form-control" asp-items="ViewBag.AtivoId" disabled>
+                <select asp-for="AtivoId" class="form-control" asp-items="ViewBag.AtivoId">
                     <option value="">-- Selecione o Ativo --</option>
                 </select>
                 <span asp-validation-for="AtivoId" class="text-danger" />
             </div>
             <div class="text-right">
-              <button class="btn btn-danger" type="submit">
-                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Excluir
+              <button class="btn btn-success" type="submit">
+                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar
               </button>
               <a asp-action="Index" class="btn btn-default">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar

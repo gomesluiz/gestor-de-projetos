@@ -100,25 +100,55 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Requisicoes",
+                name: "OrdensDeCompra",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Numero = table.Column<long>(nullable: false),
                     Data = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    NumeroDaOrdemDeCompra = table.Column<long>(nullable: false),
+                    NumeroDaRequisicao = table.Column<long>(nullable: false),
                     Valor = table.Column<double>(nullable: false),
                     Descricao = table.Column<string>(maxLength: 250, nullable: true),
                     AtivoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Requisicoes", x => x.Id);
+                    table.PrimaryKey("PK_OrdensDeCompra", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Requisicoes_Ativos_AtivoId",
+                        name: "FK_OrdensDeCompra_Ativos_AtivoId",
                         column: x => x.AtivoId,
                         principalTable: "Ativos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NotasFiscais",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Numero = table.Column<string>(nullable: false),
+                    DataDeLancamento = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    FornecedorId = table.Column<int>(nullable: true),
+                    OrdemDeCompraId = table.Column<int>(nullable: true),
+                    Migo = table.Column<long>(nullable: false),
+                    Valor = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotasFiscais", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NotasFiscais_Fornecedores_FornecedorId",
+                        column: x => x.FornecedorId,
+                        principalTable: "Fornecedores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_NotasFiscais_OrdensDeCompra_OrdemDeCompraId",
+                        column: x => x.OrdemDeCompraId,
+                        principalTable: "OrdensDeCompra",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -134,23 +164,36 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 column: "OrdemDeInvestimentoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NotasFiscais_FornecedorId",
+                table: "NotasFiscais",
+                column: "FornecedorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotasFiscais_OrdemDeCompraId",
+                table: "NotasFiscais",
+                column: "OrdemDeCompraId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdensDeCompra_AtivoId",
+                table: "OrdensDeCompra",
+                column: "AtivoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrdensDeInvestimento_ProjetoId",
                 table: "OrdensDeInvestimento",
                 column: "ProjetoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Requisicoes_AtivoId",
-                table: "Requisicoes",
-                column: "AtivoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "NotasFiscais");
+
+            migrationBuilder.DropTable(
                 name: "Fornecedores");
 
             migrationBuilder.DropTable(
-                name: "Requisicoes");
+                name: "OrdensDeCompra");
 
             migrationBuilder.DropTable(
                 name: "Ativos");

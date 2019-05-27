@@ -11,63 +11,63 @@ using Ferrero.GestorDeProjetos.Web.Models;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-  public class RequisicoesController : Controller
+  public class OrdensDeCompraController : Controller
   {
     private readonly ProjetosDBContext _context;
 
-    public RequisicoesController(ProjetosDBContext context)
+    public OrdensDeCompraController(ProjetosDBContext context)
     {
         _context = context;
     }
 
-    // GET: Requisicoes
+    // GET: OrdensDeCompra
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Requisicoes.ToListAsync());
+        return View(await _context.OrdensDeCompra.ToListAsync());
     }
 
-    // GET: Requisicoes/Create
+    // GET: OrdensDeCompra/Create
     public IActionResult Create()
     {
       PopulateAtivosDropDownList();
       return View();
     }
 
-    // POST: Requisicoes/Create
+    // POST: OrdensDeCompra/Create
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-      [Bind("Numero,Data,NumeroDaOrdemDeCompra,Valor,Descricao,AtivoId")] RequisicaoViewModel requisicaoViewModel
+      [Bind("Numero, Data, NumeroDaRequisicao, Valor, Descricao, AtivoId")] OrdemDeCompraViewModel ordemDeCompraViewModel
     )
     {
-        if (ExisteRequisicao(requisicaoViewModel.Numero))
+        if (ExisteOrdemDeCompra(ordemDeCompraViewModel.Numero))
         {
-          ModelState.AddModelError("Numero", "Esta requisição já existe!");
+          ModelState.AddModelError("Numero", "Esta ordem de compra já existe!");
         }
 
         if (ModelState.IsValid)
         {
           try {
-            Requisicao requisicao = ConvertToModel(requisicaoViewModel);
-            _context.Add(requisicao);
+            OrdemDeCompra oc = ConvertToModel(ordemDeCompraViewModel);
+            _context.Add(oc);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
           }
           catch(DbException)
           {
-            ModelState.AddModelError("", "Não é possível incluir esta requisição. " + 
+            ModelState.AddModelError("", "Não é possível incluir esta ordem de compra. " + 
                 "Tente novamente, e se o problema persistir " + 
                 "entre em contato com o administrador do sistema.");  
           }
         }
         
-        PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);
-        return View(requisicaoViewModel);
+        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);
+        return View(ordemDeCompraViewModel);
     }
 
-    // GET: Requisicoes/Edit/5
+    // GET: OrdensDeCompra/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
       if (id == null)
@@ -77,22 +77,22 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
       try
       {
-        var requisicao = await _context.Requisicoes
+        var oc = await _context.OrdensDeCompra
           .Include(m => m.Ativo)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (requisicao == null)
+        if (oc == null)
         {
             return NotFound();
         }
 
-        RequisicaoViewModel requisicaoViewModel = ConvertToViewModel(requisicao);
-        PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
-        return View(requisicaoViewModel);
+        OrdemDeCompraViewModel ordemDeCompraViewModel = ConvertToViewModel(oc);
+        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);  
+        return View(ordemDeCompraViewModel);
       }
       catch(DbException)
       {
-        ModelState.AddModelError("", "Não é possível editar esta requisição. " + 
+        ModelState.AddModelError("", "Não é possível editar esta ordem de compra. " + 
               "Tente novamente, e se o problema persistir " + 
               "entre em contato com o administrador do sistema.");
       }
@@ -100,15 +100,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       return View();
     }
 
-    // POST: Requisicoes/Edit/5
+    // POST: OrdensDeCompra/Edit/5
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, 
-      [Bind("Id, Numero, Data, NumeroDaOrdemDeCompra, Valor, Descricao, AtivoId")] RequisicaoViewModel requisicaoViewModel)
+      [Bind("Id, Numero, Data, NumeroDaRequisicao, Valor, Descricao, AtivoId")] OrdemDeCompraViewModel ordemDeCompraViewModel)
     {
-        if (id != requisicaoViewModel.Id)
+        if (id != ordemDeCompraViewModel.Id)
         {
             return NotFound();
         }
@@ -117,13 +117,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
           try
           {
-              Requisicao requisicao = ConvertToModel(requisicaoViewModel);
-              _context.Update(requisicao);
+              OrdemDeCompra oc = ConvertToModel(ordemDeCompraViewModel);
+              _context.Update(oc);
               await _context.SaveChangesAsync();
           }
           catch (DbUpdateConcurrencyException)
           {
-              if (!ExisteRequisicao(requisicaoViewModel.Numero))
+              if (!ExisteOrdemDeCompra(ordemDeCompraViewModel.Numero))
               {
                   return NotFound();
               }
@@ -135,11 +135,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return RedirectToAction(nameof(Index));
         }
 
-        PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
-        return View(requisicaoViewModel);
+        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);  
+        return View(ordemDeCompraViewModel);
     }
 
-    // GET: Requisicoes/Delete/5
+    // GET: OrdensDeCompra/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
       if (id == null)
@@ -149,22 +149,22 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
       try
       {
-        var requisicao = await _context.Requisicoes
+        var oc = await _context.OrdensDeCompra
           .Include(m => m.Ativo)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (requisicao == null)
+        if (oc == null)
         {
             return NotFound();
         }
 
-        RequisicaoViewModel requisicaoViewModel = ConvertToViewModel(requisicao);
-        PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
-        return View(requisicaoViewModel);
+        OrdemDeCompraViewModel ordemDeCompraViewModel = ConvertToViewModel(oc);
+        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);  
+        return View(ordemDeCompraViewModel);
       }
       catch(DbException)
       {
-        ModelState.AddModelError("", "Não é possível remover esta requisição. " + 
+        ModelState.AddModelError("", "Não é possível remover esta ordem de compra. " + 
               "Tente novamente, e se o problema persistir " + 
               "entre em contato com o administrador do sistema.");
       }
@@ -172,13 +172,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       return View();
     }
 
-    // POST: Requisicoes/Delete/5
+    // POST: OrdensDeCompra/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var requisicao = await _context.Requisicoes.FindAsync(id);
-        _context.Requisicoes.Remove(requisicao);
+        var oc = await _context.OrdensDeCompra.FindAsync(id);
+        _context.OrdensDeCompra.Remove(oc);
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
@@ -189,32 +189,32 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                                 select aa;
         ViewBag.AtivoId = new SelectList(ativos.AsNoTracking(), "Id", "Descricao", ativoSelcionado);
     }
-    private bool ExisteRequisicao(long numero)
+    private bool ExisteOrdemDeCompra(long numero)
     {
-        return _context.Requisicoes.Any(e => e.Numero == numero);
+        return _context.OrdensDeCompra.Any(e => e.Numero == numero);
     }
-    private  Requisicao ConvertToModel(RequisicaoViewModel requisicaoViewModel)
+    private  OrdemDeCompra ConvertToModel(OrdemDeCompraViewModel ordemDeCompraViewModel)
     {
-      return new Requisicao {
-          Id = requisicaoViewModel.Id,
-          Numero = requisicaoViewModel.Numero,
-          Data = requisicaoViewModel.Data,
-          NumeroDaOrdemDeCompra = requisicaoViewModel.NumeroDaOrdemDeCompra,
-          Valor = requisicaoViewModel.Valor,
-          Descricao = requisicaoViewModel.Descricao,
-          Ativo = _context.Ativos.Find(requisicaoViewModel.AtivoId)
+      return new OrdemDeCompra {
+          Id = ordemDeCompraViewModel.Id,
+          Numero = ordemDeCompraViewModel.Numero,
+          Data = ordemDeCompraViewModel.Data,
+          NumeroDaRequisicao = ordemDeCompraViewModel.NumeroDaRequisicao,
+          Valor = ordemDeCompraViewModel.Valor,
+          Descricao = ordemDeCompraViewModel.Descricao,
+          Ativo = _context.Ativos.Find(ordemDeCompraViewModel.AtivoId)
         };
     }
-    private RequisicaoViewModel ConvertToViewModel(Requisicao requisicao)
+    private OrdemDeCompraViewModel ConvertToViewModel(OrdemDeCompra oc)
     {
-      return new RequisicaoViewModel {
-              Id = requisicao.Id,
-              Numero = requisicao.Numero,
-              Data = requisicao.Data,
-              NumeroDaOrdemDeCompra = requisicao.NumeroDaOrdemDeCompra,
-              Valor = requisicao.Valor, 
-              Descricao = requisicao.Descricao,
-              AtivoId = requisicao.Ativo.Id
+      return new OrdemDeCompraViewModel {
+              Id = oc.Id,
+              Numero = oc.Numero,
+              Data = oc.Data,
+              NumeroDaRequisicao = oc.NumeroDaRequisicao,
+              Valor = oc.Valor, 
+              Descricao = oc.Descricao,
+              AtivoId = oc.Ativo.Id
             };
     }
   }

@@ -15,7 +15,8 @@ namespace Ferrero.GestorDeProjetos.Web.Data
     public DbSet<Fornecedor> Fornecedores { get; set; }
     public DbSet<Projeto> Projetos { get; set; }
     public DbSet<OrdemDeInvestimento> OrdensDeInvestimento { get; set; }
-    public DbSet<Requisicao> Requisicoes { get; set; }
+    public DbSet<OrdemDeCompra> OrdensDeCompra { get; set; }
+    public DbSet<NotaFiscal> NotasFiscais { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
       // Model Ativo
@@ -86,8 +87,8 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .IsRequired();
       });
 
-      // Model Requisicao
-      builder.Entity<Requisicao>(entity =>
+      // Model OrdemDeCompra
+      builder.Entity<OrdemDeCompra>(entity =>
       {
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Id)
@@ -96,12 +97,28 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .IsRequired();
         entity.Property(e => e.Data)
           .HasColumnType("DATETIME");
-        entity.Property(e => e.NumeroDaOrdemDeCompra)
+        entity.Property(e => e.NumeroDaRequisicao)
           .IsRequired();
         entity.Property(e => e.Valor)
           .IsRequired();
         entity.Property(e => e.Descricao)
           .HasMaxLength(250);
+      });
+
+      // Model NotaFiscal
+      builder.Entity<NotaFiscal>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+          .IsRequired();
+        entity.Property(e => e.Numero)
+          .IsRequired();
+        entity.Property(e => e.DataDeLancamento)
+          .HasColumnType("DATETIME");
+        entity.Property(e => e.Migo)
+          .IsRequired();
+        entity.Property(e => e.Valor)
+          .IsRequired();
       });
     }  
   }
