@@ -107,9 +107,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Numero,DataDeLancamento,Migo,Valor")] NotaFiscal notaFiscal)
+        public async Task<IActionResult> Edit(int id, 
+          [Bind("Id, Numero, DataDeLancamento, Migo, Valor")] NotaFiscalViewModel notaFiscalViewModel)
         {
-            if (id != notaFiscal.Id)
+            if (id != notaFiscalViewModel.Id)
             {
                 return NotFound();
             }
@@ -118,12 +119,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 try
                 {
+                    NotaFiscal notaFiscal = ConvertToModel(notaFiscalViewModel);
                     _context.Update(notaFiscal);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExisteNotaFiscal(notaFiscal.Id, 0))
+                    if (!ExisteNotaFiscal(notaFiscalViewModel.Id, notaFiscalViewModel.FornecedorId))
                     {
                         return NotFound();
                     }
@@ -134,25 +136,43 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(notaFiscal);
+            PopulateFornecedoresDropDownList(notaFiscalViewModel.FornecedorId);
+            PopulateOrdensDeCompraDropDownList(notaFiscalViewModel.OrdemDeCompraId);
+            return View(notaFiscalViewModel);
         }
 
         // GET: NotasFiscais/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+          if (id == null)
+          {
+              return NotFound();
+          }
+          try
+          {  
             var notaFiscal = await _context.NotasFiscais
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(e => e.Fornecedor)
+                .Include(e => e.OrdemDeCompra)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
             if (notaFiscal == null)
             {
                 return NotFound();
             }
 
-            return View(notaFiscal);
+            NotaFiscalViewModel notaFiscalViewModel = ConvertToViewModel(notaFiscal);
+            PopulateFornecedoresDropDownList(notaFiscalViewModel.FornecedorId);
+            PopulateOrdensDeCompraDropDownList(notaFiscalViewModel.OrdemDeCompraId);
+            return View(notaFiscalViewModel);
+          }
+          catch(DbException)
+          {
+            ModelState.AddModelError("", "Não é possível excluir esta nota fiscal. " + 
+              "Tente novamente, e se o problema persistir " + 
+              "entre em contato com o administrador do sistema.");
+          }
+
+          return View();
         }
 
         // POST: NotasFiscais/Delete/5
