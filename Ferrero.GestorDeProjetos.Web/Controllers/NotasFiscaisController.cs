@@ -71,17 +71,35 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: NotasFiscais/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+          if (id == null)
+          {
+              return NotFound();
+          }
 
-            var notaFiscal = await _context.NotasFiscais.FindAsync(id);
+          try
+          {
+            var notaFiscal = await _context.NotasFiscais
+                .Include(e => e.Fornecedor)
+                .Include(e => e.OrdemDeCompra)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
             if (notaFiscal == null)
             {
                 return NotFound();
             }
-            return View(notaFiscal);
+            NotaFiscalViewModel notaFiscalViewModel = ConvertToViewModel(notaFiscal);
+            PopulateFornecedoresDropDownList(notaFiscalViewModel.FornecedorId);
+            PopulateOrdensDeCompraDropDownList(notaFiscalViewModel.OrdemDeCompraId);
+            return View(notaFiscalViewModel);
+          }
+          catch(DbException)
+          {
+            ModelState.AddModelError("", "Não é possível editar esta nota fiscal. " + 
+                  "Tente novamente, e se o problema persistir " + 
+                  "entre em contato com o administrador do sistema.");
+          }
+          
+          return View();
         }
 
         // POST: NotasFiscais/Edit/5
@@ -179,6 +197,19 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               OrdemDeCompra = _context.OrdensDeCompra.Find(notaFiscalViewModel.OrdemDeCompraId),
               Migo = notaFiscalViewModel.Migo,
               Valor = notaFiscalViewModel.Valor
+            };
+        }
+
+        private NotaFiscalViewModel ConvertToViewModel(NotaFiscal notaFiscal)
+        {
+          return new NotaFiscalViewModel {
+              Id = notaFiscal.Id,
+              Numero = notaFiscal.Numero,
+              DataDeLancamento = notaFiscal.DataDeLancamento,
+              FornecedorId = notaFiscal.Fornecedor.Id,
+              OrdemDeCompraId = notaFiscal.OrdemDeCompra.Id,
+              Migo = notaFiscal.Migo,
+              Valor = notaFiscal.Valor
             };
         }
     }

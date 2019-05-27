@@ -78,7 +78,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       try
       {
         var oc = await _context.OrdensDeCompra
-          .Include(m => m.Ativo)
+            .Include(m => m.Ativo)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
         if (oc == null)
@@ -151,8 +151,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       {
         var oc = await _context.OrdensDeCompra
           .Include(m => m.Ativo)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.Id == id);
+          .AsNoTracking()
+          .FirstOrDefaultAsync(m => m.Id == id);
         if (oc == null)
         {
             return NotFound();

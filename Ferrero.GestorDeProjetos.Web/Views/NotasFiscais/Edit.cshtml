@@ -1,47 +1,63 @@
-@model Ferrero.GestorDeProjetos.Web.Models.NotaFiscal
+@model Ferrero.GestorDeProjetos.Web.Models.NotaFiscalViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar nota fiscal";
 }
 
-<h2>Edit</h2>
-
-<h4>NotaFiscal</h4>
+<h2>Editar</h2>
+<h4>Nota Fiscal</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Numero" class="control-label"></label>
-                <input asp-for="Numero" class="form-control" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataDeLancamento" class="control-label"></label>
-                <input asp-for="DataDeLancamento" class="form-control" />
-                <span asp-validation-for="DataDeLancamento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Migo" class="control-label"></label>
-                <input asp-for="Migo" class="form-control" />
-                <span asp-validation-for="Migo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Valor" class="control-label"></label>
-                <input asp-for="Valor" class="form-control" />
-                <span asp-validation-for="Valor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+      <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Numero" class="control-label"></label>
+            <input asp-for="Numero" class="form-control" disabled/>
+            <span asp-validation-for="Numero" class="text-danger"></span>
+            <input type="hidden" asp-for="Numero" />
+        </div>
+        <div class="form-group">
+            <label asp-for="FornecedorId" class="control-label"></label>
+            <select asp-for="FornecedorId" class="form-control" asp-items="ViewBag.FornecedorId" disabled>
+                <option value="">-- Selecione o Fornecedor --</option>
+            </select>
+            <span asp-validation-for="FornecedorId" class="text-danger" />
+            <input type="hidden" asp-for="FornecedorId" />
+        </div>
+        <div class="form-group">
+            <label asp-for="DataDeLancamento" class="control-label"></label>
+            <input asp-for="DataDeLancamento" class="form-control" />
+            <span asp-validation-for="DataDeLancamento" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="OrdemDeCompraId" class="control-label"></label>
+            <select asp-for="OrdemDeCompraId" class="form-control" asp-items="ViewBag.OrdemDeCompraId">
+                <option value="">-- Selecione a Ordem de Compra --</option>
+            </select>
+            <span asp-validation-for="OrdemDeCompraId" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Migo" class="control-label"></label>
+            <input asp-for="Migo" class="form-control" />
+            <span asp-validation-for="Migo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Valor" class="control-label"></label>
+            <input asp-for="Valor" class="form-control" />
+            <span asp-validation-for="Valor" class="text-danger"></span>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-warning" type="submit">
+            <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar
+          </button>
+          <a asp-action="Index" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+          </a>
+        </div>
+      </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
