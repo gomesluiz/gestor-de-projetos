@@ -17,6 +17,10 @@ namespace Ferrero.GestorDeProjetos.Web.Data
     public DbSet<OrdemDeInvestimento> OrdensDeInvestimento { get; set; }
     public DbSet<OrdemDeCompra> OrdensDeCompra { get; set; }
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
+
+    // Queries ad-hocs.
+    public DbQuery<OrdemDeInvestimentoFollowUp> OrdensDeInvestimentoFollowUp {get; set;}
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
       // Model Ativo
@@ -83,7 +87,6 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .HasMaxLength(7)
           .IsRequired();
         entity.Property(e => e.Valor)
-          .HasColumnType("DECIMAL")
           .IsRequired();
       });
 

@@ -17,6 +17,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [Required(ErrorMessage = "Por favor, informe o número do projeto da ordem de investimento.")]
     public int ProjetoId { get; set; }
     
+    [Display(Name = "Bugdget")]
     [Required(ErrorMessage = "Por favor, informe o valor da ordem de investimento.")]
     public double Valor { get; set; }
   }

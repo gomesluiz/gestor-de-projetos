@@ -139,9 +139,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<int?>("ProjetoId");
 
-                    b.Property<decimal>("Valor")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
-                        .HasColumnType("DECIMAL");
+                    b.Property<double>("Valor");
 
                     b.HasKey("Id");
 

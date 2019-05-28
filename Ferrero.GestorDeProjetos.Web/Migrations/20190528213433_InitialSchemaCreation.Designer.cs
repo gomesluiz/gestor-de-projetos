@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190527180806_InitialSchemaCreation")]
+    [Migration("20190528213433_InitialSchemaCreation")]
     partial class InitialSchemaCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,9 +141,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<int?>("ProjetoId");
 
-                    b.Property<decimal>("Valor")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
-                        .HasColumnType("DECIMAL");
+                    b.Property<double>("Valor");
 
                     b.HasKey("Id");
 

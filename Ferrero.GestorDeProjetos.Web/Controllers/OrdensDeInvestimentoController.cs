@@ -13,7 +13,35 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class OrdensDeInvestimentoController : Controller
     {
-        private readonly ProjetosDBContext _context;
+    private const string Sql = 
+              @"SELECT  oiv.Id		  AS Id,
+                        oiv.Numero 	AS Numero,
+                        prj.Id		  AS ProjetoId,
+                        prj.Nome		AS NomeDoProjeto,
+                        oiv.Valor	  AS Bugdget,
+                        (ISNULL(com.Valor, 0.00) + ISNULL(ass.Valor, 0))	AS Actual,
+                          ISNULL(com.Valor, 0.00)	 AS Commitment,
+                          ISNULL(ass.Valor, 0.00)	 AS Assigned,
+                        (oiv.Valor - (ISNULL(com.Valor, 0.00) + ISNULL(ass.Valor, 0.00)))	AS Available
+                      FROM OrdensDeInvestimento  AS oiv 
+                     INNER JOIN Projetos  AS prj 
+                        ON prj.Id = oiv.ProjetoId
+                      LEFT JOIN (SELECT atv.OrdemDeInvestimentoId, SUM(oc.VALOR)  AS Valor
+                                   FROM OrdensDeCompra AS oc
+                                  INNER JOIN Ativos	   AS atv 
+                                     ON atv.Id = oc.AtivoId
+                               GROUP BY atv.OrdemDeInvestimentoId) AS com 
+                        ON com.OrdemDeInvestimentoId = oiv.Id
+                      LEFT JOIN (SELECT atv.OrdemDeInvestimentoId, 
+                                        SUM(nf.Valor)  	AS Valor 
+                                   FROM OrdensDeCompra 	AS oc
+                                  INNER JOIN NotasFiscais AS nf 
+                                     ON nf.OrdemDeCompraId = oc.Id
+                                  INNER JOIN Ativos	AS atv 
+                                    ON atv.Id = oc.AtivoId 			  
+                                  GROUP BY atv.OrdemDeInvestimentoId) AS ass
+                        ON ass.OrdemDeInvestimentoId = oiv.Id";
+    private readonly ProjetosDBContext _context;
 
         public OrdensDeInvestimentoController(ProjetosDBContext context)
         {
@@ -181,6 +209,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             _context.OrdensDeInvestimento.Remove(ordemDeInvestimento);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: FollowUp
+        public async Task<IActionResult> FollowUp()
+        {
+            var followUp = await _context.OrdensDeInvestimentoFollowUp.FromSql(Sql).ToListAsync(); 
+            return View(model: followUp);
         }
 
         private bool OrdemDeInvestimentoExists(int id)
