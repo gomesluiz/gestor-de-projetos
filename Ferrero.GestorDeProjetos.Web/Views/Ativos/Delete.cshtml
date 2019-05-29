@@ -1,7 +1,7 @@
 @model Ferrero.GestorDeProjetos.Web.Models.ViewModels.AtivoViewModel
 
 @{
-    ViewData["Title"] = "Excluir Ativo";
+    ViewData["Title"] = "Excluir ativo";
 }
 
 <h2>Excluir</h2>
@@ -11,14 +11,14 @@
     <div class="col-md-4">
         <form asp-action="Delete">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
-                <div>@Html.DisplayFor(model => model.Id)</div>
+                <input asp-for="Id" class="form-control" disabled/>
             </div>
             <div class="form-group">
                 <label asp-for="Descricao" class="control-label"></label>
-                <input maxlength="50" asp-for="Descricao" class="form-control"  disabled/>
+                <input maxlength="50" asp-for="Descricao" class="form-control" disabled/>
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,8 +28,10 @@
             </div>    
             <div class="form-group">
                 <label asp-for="OrdemDeInvestimentoId" class="control-label"></label>
-                <input maxlength="7" asp-for="OrdemDeInvestimentoId" class="form-control" disabled/>
-                <span asp-validation-for="OrdemDeInvestimentoId" class="text-danger"></span>
+                <select asp-for="OrdemDeInvestimentoId" class="form-control" asp-items="ViewBag.OrdemDeInvestimentoId" disabled>
+                    <option value="">-- Selecione a Ordem De Investimento --</option>
+                </select>
+                <span asp-validation-for="OrdemDeInvestimentoId" class="text-danger" />
             </div>
             <div class="form-group">
                 <label asp-for="CentroDeCustoId" class="control-label"></label>
@@ -48,7 +50,7 @@
             </div>
             <div class="text-right">
               <button class="btn btn-danger" type="submit">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Excluir
+                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Excluir
               </button>
               <a asp-action="Index" class="btn btn-default">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar

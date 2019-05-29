@@ -71,7 +71,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Ativos/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -110,7 +110,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, 
+        public async Task<IActionResult> Edit(int id, 
           [Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,CentroDeCustoId,Situacao")] AtivoViewModel ativoViewModel)
         {
             
@@ -142,12 +142,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
             PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
             return View(ativoViewModel);
         }
 
         // GET: Ativos/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(int? id)
         {
           if (id == null)
           {
@@ -157,14 +158,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           try
           {
             var ativo = await _context.Ativos
-                .Include(m => m.CentroDeCusto)
+                .Include(e => e.CentroDeCusto)
+                .Include(e => e.OrdemDeInvestimento)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == id);
             if (ativo == null)
             {
               return NotFound();
             }
             AtivoViewModel ativoViewModel = ConvertToViewModel(ativo);
+            PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
             PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
             return View(ativoViewModel);
           }
@@ -180,17 +183,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // POST: Ativos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ativo = await _context.Ativos.FindAsync(id);
-            _context.Ativos.Remove(ativo);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+          var ativo = await _context.Ativos.FindAsync(id);
+          _context.Ativos.Remove(ativo);
+          await _context.SaveChangesAsync();
+          return RedirectToAction(nameof(Index));
         }
 
-        private bool AtivoExists(long id)
+        private bool AtivoExists(int id)
         {
-            return _context.Ativos.Any(e => e.Id == id);
+          return _context.Ativos.Any(e => e.Id == id);
         }
 
         private  Ativo ConvertToModel(AtivoViewModel ativoViewModel)
