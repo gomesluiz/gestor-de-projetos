@@ -29,6 +29,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Ativos/Create
         public IActionResult Create()
         {
+            PopulateOrdensDeInvestimentoDropDownList();
             PopulateCentrosDeCustoDropDownList();
             return View();
         }
@@ -39,10 +40,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-          [Bind("Id,Descricao, Localizacao,OrdemDeInvestimento,CentroDeCustoId,Situacao")] AtivoViewModel ativoViewModel
+          [Bind("Id, Descricao, Localizacao, OrdemDeInvestimentoId, CentroDeCustoId, Situacao")] AtivoViewModel ativoViewModel
         )
         {
-            bool ExisteAtivo = _context.Ativos.Any(cc => cc.Id == ativoViewModel.Id);
+            bool ExisteAtivo = _context.Ativos.Any(e => e.Id == ativoViewModel.Id);
             if (ExisteAtivo == true)
             {
               ModelState.AddModelError("Id", "Este ativo já existe!");
@@ -64,6 +65,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
             }
 
+            PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
             PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
             return View(ativoViewModel);
         }
@@ -79,9 +81,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             try
             {
               var ativo = await _context.Ativos
-                .Include(m => m.CentroDeCusto)
+                .Include(e => e.CentroDeCusto)
+                .Include(e => e.OrdemDeInvestimento)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id)
+                .FirstOrDefaultAsync(e => e.Id == id)
                 ;
               if (ativo == null)
               {
@@ -89,6 +92,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               }
 
               AtivoViewModel ativoViewModel = ConvertToViewModel(ativo);
+              PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
               PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
               return View(ativoViewModel);
             }
@@ -213,12 +217,22 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             };
         }
         
+        private void PopulateOrdensDeInvestimentoDropDownList(object ordemDeInvestimentoSelecionado = null)
+        {
+            var ordensDeInvestimento = from e in _context.OrdensDeInvestimento
+                                   orderby e.Numero
+                                   select e;
+            ViewBag.OrdemDeInvestimentoId = new SelectList(ordensDeInvestimento.AsNoTracking()
+              , "Id", "Numero", ordemDeInvestimentoSelecionado);
+        }
+
         private void PopulateCentrosDeCustoDropDownList(object centroDeCustoSelecionado = null)
         {
             var centros = from cc in _context.CentrosDeCusto
                                    orderby cc.Id
                                    select cc;
-            ViewBag.CentroDeCustoId = new SelectList(centros.AsNoTracking(), "Id", "Nome", centroDeCustoSelecionado);
+            ViewBag.CentroDeCustoId = new SelectList(centros.AsNoTracking(), "Id", "Nome"
+              , centroDeCustoSelecionado);
         }
     }
 }

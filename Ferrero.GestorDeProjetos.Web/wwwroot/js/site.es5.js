@@ -1,0 +1,5 @@
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// for details on configuring this project to bundle and minify static web assets.
+// Write your JavaScript code.
+"use strict";
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImpzL3NpdGUuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7QUFDQTtBQUVBIiwic291cmNlc0NvbnRlbnQiOlsiLy8gUGxlYXNlIHNlZSBkb2N1bWVudGF0aW9uIGF0IGh0dHBzOi8vZG9jcy5taWNyb3NvZnQuY29tL2FzcG5ldC9jb3JlL2NsaWVudC1zaWRlL2J1bmRsaW5nLWFuZC1taW5pZmljYXRpb25cbi8vIGZvciBkZXRhaWxzIG9uIGNvbmZpZ3VyaW5nIHRoaXMgcHJvamVjdCB0byBidW5kbGUgYW5kIG1pbmlmeSBzdGF0aWMgd2ViIGFzc2V0cy5cblxuLy8gV3JpdGUgeW91ciBKYXZhU2NyaXB0IGNvZGUuXG4iXSwiZmlsZSI6ImpzL3NpdGUuZXM1LmpzIn0=
