@@ -3,6 +3,7 @@
     ViewData["Title"] = "Todos os projetos";
 }
 @section Styles {
+    <!-- Dependencies -->
     <link rel="stylesheet" href="~/vendor/libs/datatables/datatables.css">
 }
 @section Scripts {
@@ -15,7 +16,7 @@
 <h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
   <div><span class="text-muted font-weight-light">Projetos/</span>Todos</div>
   <a type="button" class="btn btn-primary rounded-pill d-block" asp-action="Create" asp-controller="Projetos">
-    <span class="ion ion-md-add"></span>&nbsp; Projeto
+    <span class="ion ion-md-add"></span>&nbsp;Projeto
   </a>
 </h4>
 
@@ -25,7 +26,6 @@
       <thead>
           <tr>
               <th>@Html.DisplayNameFor(model => model.Nome)           </th>
-              <th>@Html.DisplayNameFor(model => model.Descricao)      </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.DataDeInicio)   </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.DataDeTermino)  </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
@@ -35,22 +35,21 @@
       <tbody>
     @foreach (var item in Model) {
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
-            <td>@Html.DisplayFor(modelItem => item.Descricao)     </td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
-            <td class="text-center">
-                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
-                  <span class="ion ion-md-create">
-                </a>
-                <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
-                  <span class="ion ion-md-trash">
-                </a>
-            </td>
+          <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
+          <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
+          <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
+          <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
+          <td class="text-center">
+            <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
+              <span class="ion ion-md-create">
+            </a>
+            <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
+              <span class="ion ion-md-trash">
+            </a>
+          </td>
         </tr>
     }
-      </tbody>
+    </tbody>
     </table>
   </div>
 </div>

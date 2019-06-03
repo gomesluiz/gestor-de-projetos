@@ -1,0 +1,30 @@
+@model Ferrero.GestorDeProjetos.Web.Models.Projeto
+
+<div class="form-group">
+    <label asp-for="Nome" class="form-label"></label>
+    <input asp-for="Nome" class="form-control" />
+    <span asp-validation-for="Nome" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Descricao" class="form-label"></label>
+    <textarea asp-for="Descricao" class="form-control input"></textarea>
+    <span asp-validation-for="Descricao" class="text-danger"></span>
+</div>
+<div class="form-row">
+  <div class="form-group col-md-3">
+      <label asp-for="DataDeInicio" class="form-label"></label>
+      <input asp-for="DataDeInicio" class="form-control" style="text-align:right;" id="datepicker-base"/>
+      <span asp-validation-for="DataDeInicio" asp-format="{0:yyyy-MM-dd}" class="text-danger"></span>
+  </div>
+  <div class="form-group col-md-3">
+      <label asp-for="DataDeTermino" class="form-label"></label>
+      <input asp-for="DataDeTermino" class="form-control" style="text-align:right;" id="datepicker-base"/>
+      <span asp-validation-for="DataDeTermino" asp-format="{0:yyyy-MM-dd}" class="text-danger"></span>
+  </div>
+</div>
+<div class="form-group col-md-4">
+  </label asp-for="Concluido" class="form-check"">
+    <input type="checkbox"  asp-for="Concluido" class="form-check-input">
+    <div class="form-check-label">Projeto concluído</div>
+  </label>
+</div>
