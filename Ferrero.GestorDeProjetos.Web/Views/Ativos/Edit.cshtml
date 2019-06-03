@@ -4,62 +4,47 @@
     ViewData["Title"] = "Editar Ativo";
 }
 
-<h2>Editar</h2>
-<h4>Ativo</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" disabled/>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input maxlength="50" asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Localizacao" class="control-label"></label>
-                <input maxlength="50" asp-for="Localizacao" class="form-control" />
-                <span asp-validation-for="Localizacao" class="text-danger"></span>
-            </div>    
-            <div class="form-group">
-                <label asp-for="OrdemDeInvestimentoId" class="control-label"></label>
-                <select asp-for="OrdemDeInvestimentoId" class="form-control" asp-items="ViewBag.OrdemDeInvestimentoId">
-                    <option value="">-- Selecione a Ordem De Investimento --</option>
-                </select>
-                <span asp-validation-for="OrdemDeInvestimentoId" class="text-danger" />
-            </div>
-            <div class="form-group">
-                <label asp-for="CentroDeCustoId" class="control-label"></label>
-                <select asp-for="CentroDeCustoId" class="form-control" asp-items="ViewBag.CentroDeCustoId">
-                    <option value="">-- Selecione o Centro de Custo --</option>
-                </select>
-                <span asp-validation-for="CentroDeCustoId" class="text-danger" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Situacao" class="control-label"></label>
-                <select asp-for="Situacao" class="form-control">
-                  <option value="0">NÃO TRANSFERIDO</option>
-                  <option value="1">TRANSFERIDO</option>
-                </select>
-                <span asp-validation-for="Situacao" class="text-danger"></span>
-            </div>
-            <div class="text-right">
-              <button class="btn btn-warning" type="submit">
-                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar
-              </button>
-              <a asp-action="Index" class="btn btn-default">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
-              </a>
-            </div>
-        </form>
-    </div>
-</div>
+@section Styles {
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css">
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  <!-- Dependencies -->
+  <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
+  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+  <script src="~/js/forms_extras.js"></script>
+  <!--@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}-->
 }
+
+<!-- Layout content -->
+<div class="layout-content">
+  <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">Alterar/</span>Ativo
+    </h4>
+    <div class="card mb-4">
+      <h6 class="card-header">
+        Informações do ativo
+      </h6>
+      <div class="card-body">
+        <form asp-action="Edit">
+          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+          <input type="hidden" asp-for="Id" />
+
+          @{await Html.RenderPartialAsync("_FormFields.cshtml");}
+
+          <div class="text-right mt-3">
+            <a asp-action="Index" class="btn btn-default">
+              <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
+            </a>
+            <button class="btn btn-warning" type="submit">
+              <span class="ion ion-md-save" aria-hidden="true"></span>&nbsp;Alterar ativo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

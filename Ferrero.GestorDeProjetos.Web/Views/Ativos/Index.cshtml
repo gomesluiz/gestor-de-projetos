@@ -4,71 +4,56 @@
     ViewData["Title"] = "Todos os Ativos";
 }
 
-<h3></h3>
-<div class="row">
-  <hr />
-  <ul class="nav nav-pills">
-    <li role="presentation"><a asp-controller="Projetos" asp-action="Index">Projetos</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeInvestimento" asp-action="Index">Ordens de Investimento</a></li>
-    <li role="presentation"  class="active"><a  asp-controller="Ativos" asp-action="Index">Ativos</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeCompra" asp-action="Index">Ordens de Compra</a></li>
-    <li role="presentation"><a asp-controller="NotasFiscais" asp-action="Index">Notas Fiscais</a></li>
-    <li role="presentation"><a asp-controller="CentrosDeCusto" asp-action="Index">Centros de Custos</a></li>
-    <li role="presentation"><a asp-controller="Fornecedores" asp-action="Index">Fornecedores</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeInvestimento" asp-action="FollowUp">Acompanhamento</a></li>
-  </ul>
-  <hr />
-</div>
+@section Styles {
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="~/vendor/libs/datatables/datatables.css">
+}
+@section Scripts {
+    <!-- Dependencies -->
+    <script src="~/vendor/libs/datatables/datatables.js"></script>
+    <script src="~/js/tables_datatables.js"></script>
+}
 
-<div class="row">
-  <!--
-  <div class="text-left col-md-10">
-    <form class="form-inline">
-      <div class="form-group">         
-          <input type="text" class="form-control col-xs-10" placeholder="Nome do projeto" required />
-      </div>
-      <button type="submit" class="btn btn-default">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-      </button>
-      <button type="submit" class="btn btn-default">
-        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-      </button>
-    </form>
-  </div>
-  -->
-  <div class="text-left col-xs-2 col-md-2">
-    <p>
-    <a type="button" class="btn btn-success" asp-action="Create">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-    </a>
-    </p>
-  </div>
-</div>
+<!-- CONTENT -->
+<h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
+  <div><span class="text-muted font-weight-light">Todos/</span>Ativos</div>
+  <a type="button" class="btn btn-primary rounded-pill d-block" asp-action="Create" asp-controller="Ativos">
+    <span class="ion ion-md-add"></span>&nbsp;Ativo
+  </a>
+</h4>
 
-<table class="table table-bordered table-sm">
-    <thead>
+<div class="card">
+  <div class="card-datatable table-responsive">
+    <table id="todos-os-projetos" class="table table-striped table-bordered table-datatable">
+      <thead>
         <tr>
-            <th class="text-center">@Html.DisplayNameFor(model => model.Id)</th>
-            <th>@Html.DisplayNameFor(model => model.Descricao)</th>
-            <th>@Html.DisplayNameFor(model => model.Localizacao)</th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento)</th>
-            <th class="text-center">@Html.DisplayNameFor(model => model.Situacao)</th>
-            <th></th>
+          <th class="text-center">@Html.DisplayNameFor(model => model.Id)</th>
+          <th>@Html.DisplayNameFor(model => model.Descricao)</th>
+          <th>@Html.DisplayNameFor(model => model.Localizacao)</th>
+          <!--<th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento)</th>-->
+          <th class="text-center">@Html.DisplayNameFor(model => model.Situacao)</th>
+          <th></th>
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.Id)</td>
-            <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
-            <td>@Html.DisplayFor(modelItem => item.Localizacao)</td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento)</td>
-            <td class="text-center">@Html.DisplayFor(modelItem => item.Situacao)</td>
-            <td class="text-center">
-                <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></a>
-                <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
-            </td>
+          <td class="text-center">@Html.DisplayFor(modelItem => item.Id)</td>
+          <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
+          <td>@Html.DisplayFor(modelItem => item.Localizacao)</td>
+          <!-- <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento)</td> -->
+          <td class="text-center">@Html.DisplayFor(modelItem => item.Situacao)</td>
+          <td class="text-center">
+              <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
+                <span class="ion ion-md-create">
+              </a>
+              <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
+                <span class="ion ion-md-trash">
+              </a>
+          </td>
         </tr>
 }
-    </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+</div>

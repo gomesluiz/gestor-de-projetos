@@ -217,6 +217,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               OrdemDeInvestimentoId = ativo.OrdemDeInvestimento.Id, 
               Situacao = ativo.Situacao,
               CentroDeCustoId = ativo.CentroDeCusto.Id
+              
             };
         }
         

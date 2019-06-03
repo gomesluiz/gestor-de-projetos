@@ -9,7 +9,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels {
 
     [Required(ErrorMessage = "Por favor, digite o número do ativo.")]
     [Display(Name = "Número")]
-    public int Id { get; set; }
+    public int Id { get; set; } 
 
     [StringLength(50, ErrorMessage = "O descrição do ativo deve possuir no máximo 50 caracteres.")]
     [Required(ErrorMessage = "Por favor, digite a descrição do ativo.")]
