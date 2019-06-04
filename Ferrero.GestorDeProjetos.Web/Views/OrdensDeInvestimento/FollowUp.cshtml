@@ -4,67 +4,56 @@
     ViewData["Title"] = "Follow-up das Ordens de Investimento";
 }
 
-<h3></h3>
-<div class="row">
-  <hr />
-  <ul class="nav nav-pills">
-    <li role="presentation"><a asp-controller="Projetos" asp-action="Index">Projetos</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeInvestimento" asp-action="Index">Ordens de Investimento</a></li>
-    <li role="presentation"><a  asp-controller="Ativos" asp-action="Index">Ativos</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeCompra" asp-action="Index">Ordens de Compra</a></li>
-    <li role="presentation"><a asp-controller="NotasFiscais" asp-action="Index">Notas Fiscais</a></li>
-    <li role="presentation"><a asp-controller="CentrosDeCusto" asp-action="Index">Centros de Custos</a></li>
-    <li role="presentation"><a asp-controller="Fornecedores" asp-action="Index">Fornecedores</a></li>
-    <li role="presentation"  class="active"><a asp-controller="OrdensDeInvestimento" asp-action="FollowUp">Acompanhamento</a></li>
-  </ul>
-  <hr />
-</div>
+@section Styles {
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="~/vendor/libs/datatables/datatables.css">
+}
+@section Scripts {
+    <!-- Dependencies -->
+    <script src="~/vendor/libs/datatables/datatables.js"></script>
+    <script src="~/js/tables_datatables.js"></script>
+}
 
-<div class="row">
-  <!--
-  <div class="text-left col-md-10">
-    <form class="form-inline">
-      <div class="form-group">         
-          <input type="text" class="form-control col-xs-10" placeholder="Nome do projeto" required />
-      </div>
-      <button type="submit" class="btn btn-default">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-      </button>
-      <button type="submit" class="btn btn-default">
-        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-      </button>
-    </form>
-  </div>
-  -->
-</div>
+<!-- CONTENT -->
+<h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
+  <div><span class="text-muted font-weight-light">Follow-up/</span>Summário</div>
+</h4>
 
-<table class="table table-bordered table-sm">
-    <thead>
+<div class="card">
+  <div class="card-datatable table-responsive">
+    <table id="todos-as-notas-fiscais" class="table table-striped table-bordered table-datatable">
+      <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Numero) </th>
-            <th>@Html.DisplayNameFor(model => model.NomeDoProjeto) </th>            
-            <th>@Html.DisplayNameFor(model => model.Bugdget) </th>            
-            <th>@Html.DisplayNameFor(model => model.Actual) </th>            
-            <th>@Html.DisplayNameFor(model => model.Commitment) </th>            
-            <th>@Html.DisplayNameFor(model => model.Assigned) </th>    
-            <th>@Html.DisplayNameFor(model => model.Available) </th>            
-            <th></th>
+          <th>@Html.DisplayNameFor(model => model.Numero) </th>
+          <th>@Html.DisplayNameFor(model => model.NomeDoProjeto) </th>            
+          <th>@Html.DisplayNameFor(model => model.Bugdget) </th>            
+          <th>@Html.DisplayNameFor(model => model.Actual) </th>            
+          <th>@Html.DisplayNameFor(model => model.Commitment) </th>            
+          <th>@Html.DisplayNameFor(model => model.Assigned) </th>    
+          <th>@Html.DisplayNameFor(model => model.Available) </th>            
+          <!--
+          <th></th>
+          -->
         </tr>
-    </thead>
+    </thead>  
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.Numero)</td>
-            <td>@Html.DisplayFor(modelItem => item.NomeDoProjeto)</td>
-            <td>@Html.DisplayFor(modelItem => item.Bugdget)</td>
-            <td>@Html.DisplayFor(modelItem => item.Actual)</td>
-            <td>@Html.DisplayFor(modelItem => item.Commitment)</td>
-            <td>@Html.DisplayFor(modelItem => item.Assigned)</td>
-            <td>@Html.DisplayFor(modelItem => item.Available)</td>
-            <td class="text-center">
-                <a asp-action="FollowUp" class="btn btn-success btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-stats" aria-hidden="true"></a>
-            </td>
+          <td>@Html.DisplayFor(modelItem => item.Numero)</td>
+          <td>@Html.DisplayFor(modelItem => item.NomeDoProjeto)</td>
+          <td>@Html.DisplayFor(modelItem => item.Bugdget)</td>
+          <td>@Html.DisplayFor(modelItem => item.Actual)</td>
+          <td>@Html.DisplayFor(modelItem => item.Commitment)</td>
+          <td>@Html.DisplayFor(modelItem => item.Assigned)</td>
+          <td>@Html.DisplayFor(modelItem => item.Available)</td>
+          <!--
+          <td class="text-center">
+              <a asp-action="FollowUp" class="btn btn-success btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-stats" aria-hidden="true"></a>
+          </td>
+          -->
         </tr>
 }
-    </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -4,59 +4,46 @@
     ViewData["Title"] = "Nova nota fiscal";
 }
 
-<h2>Nova </h2>
-<h4>Nota Fiscal</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Numero" class="control-label"></label>
-                <input asp-for="Numero" class="form-control" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FornecedorId" class="control-label"></label>
-                <select asp-for="FornecedorId" class="form-control" asp-items="ViewBag.FornecedorId">
-                    <option value="">-- Selecione o Fornecedor --</option>
-                </select>
-                <span asp-validation-for="FornecedorId" class="text-danger" />
-            </div>
-            <div class="form-group">
-                <label asp-for="DataDeLancamento" class="control-label"></label>
-                <input asp-for="DataDeLancamento" class="form-control" />
-                <span asp-validation-for="DataDeLancamento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrdemDeCompraId" class="control-label"></label>
-                <select asp-for="OrdemDeCompraId" class="form-control" asp-items="ViewBag.OrdemDeCompraId">
-                    <option value="">-- Selecione a Ordem de Compra --</option>
-                </select>
-                <span asp-validation-for="OrdemDeCompraId" class="text-danger" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Migo" class="control-label"></label>
-                <input asp-for="Migo" class="form-control" />
-                <span asp-validation-for="Migo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Valor" class="control-label"></label>
-                <input asp-for="Valor" class="form-control" />
-                <span asp-validation-for="Valor" class="text-danger"></span>
-            </div>
-            <div class="text-right">
-              <button class="btn btn-success" type="submit">
-                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar
-              </button>
-              <a asp-action="Index" class="btn btn-default">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
-              </a>
-            </div>
-        </form>
-    </div>
-</div>
+@section Styles {
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css">
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  <!-- Dependencies -->
+  <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
+  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+  <script src="~/js/forms_extras.js"></script>
+  <!--@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}-->
 }
+
+<!-- Layout content -->
+<div class="layout-content">
+  <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">Nova/</span>Nota Fiscal
+    </h4>
+    <div class="card mb-4">
+      <h6 class="card-header">
+        Informações da nota fiscal
+      </h6>
+      <div class="card-body">
+        <form asp-action="Create">
+          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+          @{await Html.RenderPartialAsync("_FormFields.cshtml");}
+
+          <div class="text-right mt-3">
+            <a asp-action="Index" class="btn btn-default">
+              <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
+            </a>
+            <button class="btn btn-primary" type="submit">
+              <span class="ion ion-md-save" aria-hidden="true"></span>&nbsp;Incluir nota fiscal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

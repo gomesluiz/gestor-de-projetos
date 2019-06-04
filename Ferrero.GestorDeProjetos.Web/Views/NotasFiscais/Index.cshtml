@@ -4,69 +4,54 @@
     ViewData["Title"] = "Todas as notas fiscais";
 }
 
-<h3></h3>
-<div class="row">
-  <hr />
-  <ul class="nav nav-pills">
-    <li role="presentation"><a asp-controller="Projetos" asp-action="Index">Projetos</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeInvestimento" asp-action="Index">Ordens de Investimento</a></li>
-    <li role="presentation"><a  asp-controller="Ativos" asp-action="Index">Ativos</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeCompra" asp-action="Index">Ordens de Compra</a></li>
-    <li role="presentation"  class="active"><a asp-controller="NotasFiscais" asp-action="Index">Notas Fiscais</a></li>
-    <li role="presentation"><a asp-controller="CentrosDeCusto" asp-action="Index">Centros de Custos</a></li>
-    <li role="presentation"><a asp-controller="Fornecedores" asp-action="Index">Fornecedores</a></li>
-    <li role="presentation"><a asp-controller="OrdensDeInvestimento" asp-action="FollowUp">Acompanhamento</a></li>
-  </ul>
-  <hr />
-</div>
-
-<div class="row">
-  <!--
-  <div class="text-left col-md-10">
-    <form class="form-inline">
-      <div class="form-group">         
-          <input type="text" class="form-control col-xs-10" placeholder="Nome do projeto" required />
-      </div>
-      <button type="submit" class="btn btn-default">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-      </button>
-      <button type="submit" class="btn btn-default">
-        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-      </button>
-    </form>
-  </div>
-  -->
-  <div class="text-left col-md-2">
-    <p>
-    <a type="button" class="btn btn-success" asp-action="Create">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-    </a>
-    </p>
-  </div>
-</div>
-
-<table class="table table-bordered table-sm">
-  <thead>
-    <tr>
-        <th>@Html.DisplayNameFor(model => model.Numero)</th>
-        <th>@Html.DisplayNameFor(model => model.DataDeLancamento)</th>
-        <th>@Html.DisplayNameFor(model => model.Migo)</th>
-        <th>@Html.DisplayNameFor(model => model.Valor)</th>
-        <th></th>
-    </tr>
-  </thead>
-  <tbody>
-@foreach (var item in Model) {
-  <tr>
-      <td>@Html.DisplayFor(modelItem => item.Numero)</td>
-      <td>@Html.DisplayFor(modelItem => item.DataDeLancamento)</td>
-      <td>@Html.DisplayFor(modelItem => item.Migo)</td>
-      <td>@Html.DisplayFor(modelItem => item.Valor)</td>
-      <td class="text-center">
-        <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></a>
-        <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
-      </td>
-  </tr>
+@section Styles {
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="~/vendor/libs/datatables/datatables.css">
 }
-  </tbody>
-</table>
+@section Scripts {
+    <!-- Dependencies -->
+    <script src="~/vendor/libs/datatables/datatables.js"></script>
+    <script src="~/js/tables_datatables.js"></script>
+}
+
+<!-- CONTENT -->
+<h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
+  <div><span class="text-muted font-weight-light">Todas/</span>Notas Fiscais</div>
+  <a type="button" class="btn btn-primary rounded-pill d-block" asp-action="Create" asp-controller="NotasFiscais">
+    <span class="ion ion-md-add"></span>&nbsp;Notas Fiscais
+  </a>
+</h4>
+
+<div class="card">
+  <div class="card-datatable table-responsive">
+    <table id="todos-as-notas-fiscais" class="table table-striped table-bordered table-datatable">
+      <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Numero)</th>
+            <th>@Html.DisplayNameFor(model => model.DataDeLancamento)</th>
+            <th>@Html.DisplayNameFor(model => model.Migo)</th>
+            <th>@Html.DisplayNameFor(model => model.Valor)</th>
+            <th></th>
+        </tr>
+      </thead>
+      <tbody>
+@foreach (var item in Model) {
+        <tr>
+          <td>@Html.DisplayFor(modelItem => item.Numero)</td>
+          <td>@Html.DisplayFor(modelItem => item.DataDeLancamento)</td>
+          <td>@Html.DisplayFor(modelItem => item.Migo)</td>
+          <td>@Html.DisplayFor(modelItem => item.Valor)</td>
+          <td class="text-center">
+            <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
+              <span class="ion ion-md-create">
+            </a>
+            <a asp-action="Delete" class="btn btn-danger btn-sm" asp-route-id="@item.Id">
+              <span class="ion ion-md-trash">
+            </a>
+          </td>
+        </tr>
+}
+      </tbody>
+    </table>
+  </div>
+</div>
