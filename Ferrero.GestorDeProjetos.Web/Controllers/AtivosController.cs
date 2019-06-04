@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -148,13 +149,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Ativos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
           if (id == null)
           {
               return NotFound();
           }
-
+          if (saveChangesError.GetValueOrDefault())
+          {
+            ModelState.AddModelError("", "Não é possível remover este ativo. " + 
+                  "Tente novamente, e se o problema persistir " + 
+                  "entre em contato com o administrador do sistema.");
+          }
           try
           {
             var ativo = await _context.Ativos
@@ -185,9 +191,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-          var ativo = await _context.Ativos.FindAsync(id);
-          _context.Ativos.Remove(ativo);
-          await _context.SaveChangesAsync();
+          try{
+            var ativo = await _context.Ativos.FindAsync(id);
+            _context.Ativos.Remove(ativo);
+            await _context.SaveChangesAsync();
+          } 
+          catch(DbUpdateException)
+          {
+            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+          }
           return RedirectToAction(nameof(Index));
         }
 

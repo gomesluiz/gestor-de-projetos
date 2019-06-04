@@ -137,13 +137,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: CentrosDeCusto/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            if (saveChangesError.GetValueOrDefault())
+            {
+              ModelState.AddModelError("", "Não é possível remover este centro de custo. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
             try 
             {
               var centroDeCusto = await _context.CentrosDeCusto
@@ -168,10 +173,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+          try{
             var centroDeCusto = await _context.CentrosDeCusto.FindAsync(id);
             _context.CentrosDeCusto.Remove(centroDeCusto);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+          } 
+          catch(DbUpdateException)
+          {
+            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+          }
+          return RedirectToAction(nameof(Index));
         }
 
         private bool CentroDeCustoExists(int id)
