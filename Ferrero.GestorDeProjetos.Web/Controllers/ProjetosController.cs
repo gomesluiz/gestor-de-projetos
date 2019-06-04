@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -99,21 +100,36 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Projetos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var projeto = await _context.Projetos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
+            if (saveChangesError.GetValueOrDefault())
             {
-                return NotFound();
+              ModelState.AddModelError("", "Não é possível remover este projeto. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
+            try
+            { 
+              var projeto = await _context.Projetos
+                  .FirstOrDefaultAsync(m => m.Id == id);
+              if (projeto == null)
+              {
+                  return NotFound();
+              }
+              return View(projeto);
+            }
+            catch(DbException)
+            {
+              ModelState.AddModelError("", "Não é possível remover este projeto. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
             }
 
-            return View(projeto);
+            return View();
         }
 
         // POST: Projetos/Delete/5
@@ -121,10 +137,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+          try
+          {
             var projeto = await _context.Projetos.FindAsync(id);
             _context.Projetos.Remove(projeto);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+          }
+          catch(DbUpdateException)
+          {
+            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+          }
+          return RedirectToAction(nameof(Index));
         }
 
         private bool ProjetoExists(int id)

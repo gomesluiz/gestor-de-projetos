@@ -130,21 +130,36 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Fornecedores/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var fornecedor = await _context.Fornecedores
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (fornecedor == null)
+            if (saveChangesError.GetValueOrDefault())
             {
-                return NotFound();
+              ModelState.AddModelError("", "Não é possível remover este fornecedor. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
+            try
+            {
+              var fornecedor = await _context.Fornecedores
+                  .FirstOrDefaultAsync(m => m.Id == id);
+              if (fornecedor == null)
+              {
+                  return NotFound();
+              }
+              return View(fornecedor);
+            }
+            catch(DbException)
+            {
+              ModelState.AddModelError("", "Não é possível remover este fornecedor. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
             }
 
-            return View(fornecedor);
+            return View();
         }
 
         // POST: Fornecedores/Delete/5
@@ -152,10 +167,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+          try
+          {
             var fornecedor = await _context.Fornecedores.FindAsync(id);
             _context.Fornecedores.Remove(fornecedor);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+          }
+          catch(DbUpdateException)
+          {
+            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+          }
+          return RedirectToAction(nameof(Index));
         }
 
         private bool FornecedorExists(int id)

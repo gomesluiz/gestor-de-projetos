@@ -142,11 +142,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: NotasFiscais/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
           if (id == null)
           {
               return NotFound();
+          }
+          if (saveChangesError.GetValueOrDefault())
+          {
+            ModelState.AddModelError("", "Não é possível remover esta nota fiscal. " + 
+                  "Tente novamente, e se o problema persistir " + 
+                  "entre em contato com o administrador do sistema.");
           }
           try
           {  
@@ -180,10 +186,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+          try
+          {
             var notaFiscal = await _context.NotasFiscais.FindAsync(id);
             _context.NotasFiscais.Remove(notaFiscal);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+          }
+          catch(DbUpdateException)
+          {
+            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+          }
+          return RedirectToAction(nameof(Index));
         }
 
         private void PopulateFornecedoresDropDownList(object fornecedorSelecionado = null)
