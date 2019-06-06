@@ -26,7 +26,8 @@ $(function() {
   // Date
   //
   vanillaTextMask.maskInput({
-    inputElement: $('#text-mask-date')[0],
+    //inputElement: $('.text-mask-date')[0],
+    inputElement: document.querySelector('.text-mask-date'),
     mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],
     pipe: textMaskAddons.createAutoCorrectedDatePipe('dd/mm/yyyy')
   });

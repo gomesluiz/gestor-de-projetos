@@ -225,7 +225,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return new NotaFiscal {
               Id = notaFiscalViewModel.Id,
               Numero = notaFiscalViewModel.Numero,
-              DataDeLancamento = notaFiscalViewModel.DataDeLancamento,
+              DataDeLancamento = DateTime.ParseExact(notaFiscalViewModel.DataDeLancamento, "dd/MM/yyyy", null),
               Fornecedor = _context.Fornecedores.Find(notaFiscalViewModel.FornecedorId),
               OrdemDeCompra = _context.OrdensDeCompra.Find(notaFiscalViewModel.OrdemDeCompraId),
               Migo = notaFiscalViewModel.Migo,
@@ -238,7 +238,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return new NotaFiscalViewModel {
               Id = notaFiscal.Id,
               Numero = notaFiscal.Numero,
-              DataDeLancamento = notaFiscal.DataDeLancamento,
+              DataDeLancamento = notaFiscal.DataDeLancamento.ToString("dd/MM/yyyy"),
               FornecedorId = notaFiscal.Fornecedor.Id,
               OrdemDeCompraId = notaFiscal.OrdemDeCompra.Id,
               Migo = notaFiscal.Migo,

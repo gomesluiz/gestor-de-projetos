@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ferrero.GestorDeProjetos.Web.Models {
   /// <summary>
@@ -7,6 +8,10 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
   public class NotaFiscal {
     public int Id { get; set; }
     public int Numero { get; set; }
+
+    [DataType(DataType.Date)]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+    [Display(Name = "Data de Lançamento")]
     public DateTime DataDeLancamento { get; set; }
     public Fornecedor Fornecedor { get; set; }
     public OrdemDeCompra OrdemDeCompra { get; set; }

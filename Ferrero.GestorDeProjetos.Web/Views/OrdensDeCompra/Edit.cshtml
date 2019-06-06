@@ -4,18 +4,20 @@
     ViewData["Title"] = "Editar ordem de compra";
 }
  
-
 @section Styles {
   <link rel="stylesheet" href="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css">
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css">
 }
 
 @section Scripts {
   <!-- Dependencies -->
+  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+  <script src="~/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
   <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
   <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
-  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
   <script src="~/js/forms_extras.js"></script>
-  <!--@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}-->
+  <script src="~/js/forms_pickers.js"></script>
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
 <!-- Layout content -->
@@ -41,7 +43,7 @@
               <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
             </a>
             <button class="btn btn-warning" type="submit">
-              <span class="ion ion-md-save" aria-hidden="true"></span>&nbsp;Alterar ordem de compra
+              <span class="ion ion-md-create" aria-hidden="true"></span>&nbsp;Ordem de Compra
             </button>
           </div>
         </form>

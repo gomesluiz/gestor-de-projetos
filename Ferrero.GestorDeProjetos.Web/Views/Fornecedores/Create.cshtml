@@ -14,7 +14,7 @@
   <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
   <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
   <script src="~/js/forms_extras.js"></script>
-  <!--@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}-->
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
 <!-- Layout content -->
@@ -39,7 +39,7 @@
               <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
             </a>
             <button class="btn btn-primary" type="submit">
-              <span class="ion ion-md-save" aria-hidden="true"></span>&nbsp;Incluir fornecedor
+              <span class="ion ion-md-add" aria-hidden="true"></span>&nbsp;Fornecedor
             </button>
           </div>
         </form>

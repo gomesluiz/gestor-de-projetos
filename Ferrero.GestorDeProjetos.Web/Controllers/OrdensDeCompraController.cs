@@ -211,7 +211,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       return new OrdemDeCompra {
           Id = ordemDeCompraViewModel.Id,
           Numero = ordemDeCompraViewModel.Numero,
-          Data = ordemDeCompraViewModel.Data,
+          Data = DateTime.ParseExact(ordemDeCompraViewModel.Data, "dd/MM/yyyy", null),
           NumeroDaRequisicao = ordemDeCompraViewModel.NumeroDaRequisicao,
           Valor = ordemDeCompraViewModel.Valor,
           Descricao = ordemDeCompraViewModel.Descricao,
@@ -224,7 +224,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       return new OrdemDeCompraViewModel {
               Id = oc.Id,
               Numero = oc.Numero,
-              Data = oc.Data,
+              Data = oc.Data.ToString("dd/MM/yyyy"),
               NumeroDaRequisicao = oc.NumeroDaRequisicao,
               Valor = oc.Valor, 
               Descricao = oc.Descricao,

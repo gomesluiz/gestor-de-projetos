@@ -12,11 +12,10 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [Display(Name = "Número")]
     public int Numero { get; set; }
 
-    [DataType(DataType.Date)]
     [Display(Name = "Data de Lancamento")]
-    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
     [Required(ErrorMessage = "Por favor, informe a data de lançamento da nota fiscal.")]
-    public DateTime DataDeLancamento { get; set; }
+    public string DataDeLancamento { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o fornecedor da nota fiscal.")]
     [Display(Name = "Fornecedor")]

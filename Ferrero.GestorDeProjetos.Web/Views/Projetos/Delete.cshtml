@@ -1,6 +1,22 @@
-@model Ferrero.GestorDeProjetos.Web.Models.Projeto
+@model Ferrero.GestorDeProjetos.Web.Models.ProjetoViewModel
 @{
     ViewData["Title"] = "Excluir Projeto";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css">
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css">
+}
+
+@section Scripts {
+  <!-- Dependencies -->
+  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+  <script src="~/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
+  <script src="~/js/forms_extras.js"></script>
+  <script src="~/js/forms_pickers.js"></script>
+  <!--@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}-->
 }
 
 <<!-- Layout content -->
@@ -22,7 +38,7 @@
               <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
             </a>
             <button class="btn btn-danger" type="submit">
-              <span class="ion ion-md-trash" aria-hidden="true"></span>&nbsp;Excluir projeto 
+              <span class="ion ion-md-trash" aria-hidden="true"></span>&nbsp;Projeto 
             </button>
           </div>            
         </form>
@@ -30,6 +46,3 @@
     </div>
   </div>
 </div>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

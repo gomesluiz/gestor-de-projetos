@@ -12,11 +12,11 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [Display(Name = "Número")]
     public long Numero { get; set; }
 
-    [DataType(DataType.Date)]
+    
     [Display(Name = "Data")]
-    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
     [Required(ErrorMessage = "Por favor, informe a data da ordem de compra.")]
-    public DateTime Data { get; set; }
+    public string Data { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da requisicao.")]
     [Display(Name = "Número da Requisição")]

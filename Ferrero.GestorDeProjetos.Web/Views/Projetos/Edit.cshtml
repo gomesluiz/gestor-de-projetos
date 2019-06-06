@@ -1,11 +1,23 @@
-@model Ferrero.GestorDeProjetos.Web.Models.Projeto
+@model Ferrero.GestorDeProjetos.Web.Models.ProjetoViewModel
 
 @{
     ViewData["Title"] = "Modificar";
 }
 
+@section Styles {
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css">
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css">
+}
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  <!-- Dependencies -->
+  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+  <script src="~/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
+  <script src="~/js/forms_extras.js"></script>
+  <script src="~/js/forms_pickers.js"></script>
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
 <!-- Layout content -->
@@ -27,7 +39,7 @@
               <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
             </a>
             <button class="btn btn-warning" type="submit">
-              <span class="ion ion-md-save" aria-hidden="true"></span>&nbsp;Salvar alterações 
+              <span class="ion ion-md-create" aria-hidden="true"></span>&nbsp;Projeto 
             </button>
           </div>            
         </form>

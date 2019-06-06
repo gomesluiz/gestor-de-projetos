@@ -2,8 +2,10 @@
 $(function() {
   var isRtl = $('html').attr('dir') === 'rtl';
 
-  $('#datepicker-base').datepicker({
-    orientation: isRtl ? 'auto right' : 'auto left'
+  $('.datepicker-base').datepicker({
+    orientation: isRtl ? 'auto right' : 'auto left',
+    format: 'dd/mm/yyyy',                
+    language: 'pt-BR'
   });
   $('#datepicker-features').datepicker({
     calendarWeeks:         true,
@@ -14,6 +16,8 @@ $(function() {
     multidate:             true,
     daysOfWeekHighlighted: '1,2',
     orientation: isRtl ? 'auto left' : 'auto right',
+    format: 'dd/mm/yyyy',                
+    language: 'pt-BR',
 
     beforeShowMonth: function(date) {
       if (date.getMonth() === 8) {

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ferrero.GestorDeProjetos.Web.Models {
   /// <summary>
@@ -7,6 +8,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
   public class OrdemDeCompra {
     public int Id { get; set; }
     public long Numero { get; set; }
+    
+    [DataType(DataType.Date)]
+    [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime Data { get; set; }
     public long NumeroDaRequisicao { get; set; }
     public double Valor { get; set; }
