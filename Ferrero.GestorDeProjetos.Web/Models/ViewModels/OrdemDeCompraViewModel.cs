@@ -1,21 +1,21 @@
-using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace Ferrero.GestorDeProjetos.Web.Models {
-  /// <summary>
-  /// Esta classe contém os atributos e métodos de uma ordem de compra.
-  /// </summary>
-  public class OrdemDeCompraViewModel {
+namespace Ferrero.GestorDeProjetos.Web.Models
+{
+    /// <summary>
+    /// Esta classe contém os atributos e métodos de uma ordem de compra.
+    /// </summary>
+    public class OrdemDeCompraViewModel {
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da ordem de compra.")]
     [Display(Name = "Número")]
     public long Numero { get; set; }
 
-    
-    [Display(Name = "Data")]
+    [Required(ErrorMessage = "Por favor, digite a data da ordem de compra.")]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-    [Required(ErrorMessage = "Por favor, informe a data da ordem de compra.")]
+    [Display(Name = "Data")]
     public string Data { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da requisicao.")]
@@ -26,12 +26,13 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [Display(Name = "Valor")]
     public double Valor { get; set; }
 
-    [StringLength(250, ErrorMessage = "A descrição da ordem de compra deve possuir no máximo 250 caracteres.")]
     [Required(ErrorMessage = "Por favor, digite a descrição da ordem de compra.")]
+    [StringLength(250, ErrorMessage = "A descrição da ordem de compra deve possuir no máximo 250 caracteres.")]
     public string Descricao { get; set; }
     
-    [Required(ErrorMessage = "Por favor, digite o ativo.")]
+    [Required(ErrorMessage = "Por favor, digite o ativo imobilizado.")]
     [Display(Name = "Ativo")]
-    public int AtivoId { get; set; }
+    public int AtivoId { get; set; }    
+    public IFormFile Documento;
   }
 }

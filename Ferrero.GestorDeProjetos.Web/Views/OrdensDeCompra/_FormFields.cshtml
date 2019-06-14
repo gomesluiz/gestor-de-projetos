@@ -1,34 +1,52 @@
 @model Ferrero.GestorDeProjetos.Web.Models.OrdemDeCompraViewModel
 
 <div class="form-group">
-    <label asp-for="Numero" class="control-label"></label>
+    <label asp-for="Numero" class="form-label"></label>
     <input asp-for="Numero" class="form-control" />
     <span asp-validation-for="Numero" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Data" class="control-label"></label>
+    <label asp-for="Data" class="form-label"></label>
     <input asp-for="Data" class="form-control text-mask-date datepicker-base" placeholder="__/__/____" />
     <span asp-validation-for="Data" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="NumeroDaRequisicao" class="control-label"></label>
+    <label asp-for="NumeroDaRequisicao" class="form-label"></label>
     <input asp-for="NumeroDaRequisicao" class="form-control" />
     <span asp-validation-for="NumeroDaRequisicao" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Valor" class="control-label"></label>
+    <label asp-for="Valor" class="form-label"></label>
     <input asp-for="Valor" class="form-control" />
     <span asp-validation-for="Valor" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Descricao" class="control-label"></label>
+    <label asp-for="Descricao" class="form-label"></label>
     <input asp-for="Descricao" class="form-control bootstrap-maxlength-field" maxlength="250" />
     <span asp-validation-for="Descricao" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="AtivoId" class="control-label"></label>
+    <label asp-for="AtivoId" class="form-label"></label>
     <select asp-for="AtivoId" class="form-control" asp-items="ViewBag.AtivoId">
-        <option value="">-- Selecione o Ativo --</option>
+        <option value="">-- Selecione --</option>
     </select>
     <span asp-validation-for="AtivoId" class="text-danger" />
 </div>
+<div class="form-group">
+    <label asp-for="Documento" class="form-label"></label>
+    <div class="custom-file">
+        <input asp-for="Documento" class="form-control custom-file-input"/>
+        <label class="custom-file-label">Selecione o documento da ordem de compra...</label>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function() {
+            $('.custom-file-input').on("change", function()
+                    var filename = $(this).val().split("\\").pop();
+                    $(this).next('.custom-file-label').html(filename);
+                )
+            }
+        )
+    </script>
+}
