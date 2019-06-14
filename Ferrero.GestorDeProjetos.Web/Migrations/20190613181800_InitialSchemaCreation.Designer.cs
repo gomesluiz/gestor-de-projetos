@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190604195756_InitialSchemaCreation")]
+    [Migration("20190613181800_InitialSchemaCreation")]
     partial class InitialSchemaCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,15 +27,35 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<int?>("CentroDeCustoId");
 
-                    b.Property<string>("Descricao");
-
-                    b.Property<string>("Localizacao")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<int>("DestinoDeUso");
+
+                    b.Property<int>("Divisao");
+
+                    b.Property<int>("Natureza");
+
+                    b.Property<string>("Observacoes")
+                        .HasMaxLength(250);
+
                     b.Property<int?>("OrdemDeInvestimentoId");
 
-                    b.Property<int>("Situacao");
+                    b.Property<string>("Planta")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<int>("Propriedade");
+
+                    b.Property<int>("Quantidade");
+
+                    b.Property<string>("Requisitante")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("SituacaoDoAtivo");
+
+                    b.Property<int>("SituacaoParaUso");
 
                     b.HasKey("Id");
 

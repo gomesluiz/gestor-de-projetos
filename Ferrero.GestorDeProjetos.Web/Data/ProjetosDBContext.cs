@@ -30,10 +30,29 @@ namespace Ferrero.GestorDeProjetos.Web.Data
         entity.Property(e => e.Id)
           .ValueGeneratedNever()
           .IsRequired();
-        entity.Property(e => e.Localizacao)
+        entity.Property(e => e.Descricao)
+          .HasMaxLength(50)
+          .IsRequired();  
+        entity.Property(e => e.Planta)
           .HasMaxLength(50)
           .IsRequired();
-        entity.Property(e => e.Situacao)
+        entity.Property(e => e.Quantidade)
+          .IsRequired();
+        entity.Property(e => e.Divisao)
+          .IsRequired();  
+        entity.Property(e => e.Natureza)
+          .IsRequired();
+        entity.Property(e => e.Propriedade)
+          .IsRequired();
+        entity.Property(e => e.DestinoDeUso)
+          .IsRequired();
+        entity.Property(e => e.SituacaoParaUso)
+          .IsRequired();
+        entity.Property(e => e.Observacoes)
+          .HasMaxLength(250);
+        entity.Property(e => e.Requisitante)
+          .HasMaxLength(50);
+        entity.Property(e => e.SituacaoDoAtivo)
           .IsRequired();
       });
 

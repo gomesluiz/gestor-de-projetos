@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Ferrero.GestorDeProjetos.Web.Data;
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
+using System.Collections.Generic;
+
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class AtivosController : Controller
@@ -23,8 +22,20 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         // GET: Ativos
         public async Task<IActionResult> Index()
-        {
-            return View(await _context.Ativos.ToListAsync());
+        {   
+            
+            var ativos = await _context.Ativos
+                .Include(e => e.CentroDeCusto)
+                .Include(e => e.OrdemDeInvestimento)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var ativosViewModel = new List<AtivoViewModel>();
+            foreach(Ativo ativo in  ativos){
+                ativosViewModel.Add(ConvertToViewModel(ativo));
+            }
+            
+            return View(await Task.FromResult(ativosViewModel.ToAsyncEnumerable()));
         }
 
         // GET: Ativos/Create
@@ -41,7 +52,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-          [Bind("Id, Descricao, Localizacao, OrdemDeInvestimentoId, CentroDeCustoId, Situacao")] AtivoViewModel ativoViewModel
+          [Bind("Id, Descricao, OrdemDeInvestimentoId," + 
+                "CentroDeCustoId, Planta, Quantidade,"  + 
+                "Divisao, Natureza, Propriedade," + 
+                "DestinoDeUso, SituacaoParaUso, Observacoes," +
+                "Requisitante, SituacaoDoAtivo")] AtivoViewModel ativoViewModel
         )
         {
             bool ExisteAtivo = _context.Ativos.Any(e => e.Id == ativoViewModel.Id);
@@ -112,7 +127,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, 
-          [Bind("Id,Descricao,Localizacao,OrdemDeInvestimento,CentroDeCustoId,Situacao")] AtivoViewModel ativoViewModel)
+          [Bind("Id, Descricao, OrdemDeInvestimentoId," + 
+                "CentroDeCustoId, Planta, Quantidade,"  + 
+                "Divisao, Natureza, Propriedade," + 
+                "DestinoDeUso, SituacaoParaUso, Observacoes," +
+                "Requisitante, SituacaoDoAtivo")] AtivoViewModel ativoViewModel
+        )
         {
             
             if (id != ativoViewModel.Id)
@@ -213,10 +233,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return new Ativo {
               Id = ativoViewModel.Id,
               Descricao = ativoViewModel.Descricao,
-              Localizacao = ativoViewModel.Localizacao,
               OrdemDeInvestimento = _context.OrdensDeInvestimento.Find(ativoViewModel.OrdemDeInvestimentoId), 
-              Situacao = ativoViewModel.Situacao,
-              CentroDeCusto = _context.CentrosDeCusto.Find(ativoViewModel.CentroDeCustoId)
+              CentroDeCusto = _context.CentrosDeCusto.Find(ativoViewModel.CentroDeCustoId),
+              Planta = ativoViewModel.Planta,
+              Quantidade = ativoViewModel.Quantidade,
+              Divisao = ativoViewModel.Divisao,
+              Natureza = ativoViewModel.Natureza,
+              Propriedade = ativoViewModel.Propriedade,
+              DestinoDeUso = ativoViewModel.DestinoDeUso,
+              SituacaoParaUso = ativoViewModel.SituacaoParaUso,
+              Observacoes = ativoViewModel.Observacoes,
+              Requisitante = ativoViewModel.Requisitante,
+              SituacaoDoAtivo = ativoViewModel.SituacaoDoAtivo,
             };
         }
 
@@ -225,11 +253,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return new AtivoViewModel {
               Id = ativo.Id,
               Descricao = ativo.Descricao,
-              Localizacao = ativo.Localizacao,
-              OrdemDeInvestimentoId = ativo.OrdemDeInvestimento.Id, 
-              Situacao = ativo.Situacao,
-              CentroDeCustoId = ativo.CentroDeCusto.Id
-              
+              OrdemDeInvestimentoId = ativo.OrdemDeInvestimento.Id,
+              CentroDeCustoId = ativo.CentroDeCusto.Id ,
+              Planta = ativo.Planta,
+              Quantidade = ativo.Quantidade,
+              Divisao = ativo.Divisao,
+              Natureza = ativo.Natureza,
+              Propriedade = ativo.Propriedade,
+              DestinoDeUso = ativo.DestinoDeUso,
+              SituacaoParaUso = ativo.SituacaoParaUso,
+              Observacoes = ativo.Observacoes,
+              Requisitante = ativo.Requisitante,
+              SituacaoDoAtivo = ativo.SituacaoDoAtivo
             };
         }
         

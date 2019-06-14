@@ -76,11 +76,19 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
-                    Descricao = table.Column<string>(nullable: true),
-                    Localizacao = table.Column<string>(maxLength: 50, nullable: false),
+                    Descricao = table.Column<string>(maxLength: 50, nullable: false),
                     OrdemDeInvestimentoId = table.Column<int>(nullable: true),
-                    Situacao = table.Column<int>(nullable: false),
-                    CentroDeCustoId = table.Column<int>(nullable: true)
+                    CentroDeCustoId = table.Column<int>(nullable: true),
+                    Planta = table.Column<string>(maxLength: 50, nullable: false),
+                    Quantidade = table.Column<int>(nullable: false),
+                    Divisao = table.Column<int>(nullable: false),
+                    Natureza = table.Column<int>(nullable: false),
+                    Propriedade = table.Column<int>(nullable: false),
+                    DestinoDeUso = table.Column<int>(nullable: false),
+                    SituacaoParaUso = table.Column<int>(nullable: false),
+                    Observacoes = table.Column<string>(maxLength: 250, nullable: true),
+                    Requisitante = table.Column<string>(maxLength: 50, nullable: true),
+                    SituacaoDoAtivo = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
