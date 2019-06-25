@@ -35,6 +35,7 @@
         <form asp-action="Edit">
           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
           <input type="hidden" asp-for="Numero" />
+          <input type="hidden" asp-for="Documento" />
 
           @{await Html.RenderPartialAsync("_FormFields.cshtml");}
 

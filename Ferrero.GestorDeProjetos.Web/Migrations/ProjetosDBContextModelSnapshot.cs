@@ -134,7 +134,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<string>("Descricao")
                         .HasMaxLength(250);
 
-                    b.Property<string>("DocumentoPath")
+                    b.Property<string>("Documento")
+                        .IsRequired()
                         .HasMaxLength(250);
 
                     b.Property<long>("Numero");

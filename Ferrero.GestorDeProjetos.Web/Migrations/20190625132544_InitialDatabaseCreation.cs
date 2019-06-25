@@ -119,7 +119,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     Valor = table.Column<double>(nullable: false),
                     Descricao = table.Column<string>(maxLength: 250, nullable: true),
                     AtivoId = table.Column<int>(nullable: true),
-                    DocumentoPath = table.Column<string>(maxLength: 250, nullable: true)
+                    Documento = table.Column<string>(maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {

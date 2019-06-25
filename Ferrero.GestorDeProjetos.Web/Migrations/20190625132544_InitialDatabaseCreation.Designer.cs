@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190624125926_InitialDatabaseCreation")]
+    [Migration("20190625132544_InitialDatabaseCreation")]
     partial class InitialDatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,7 +136,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<string>("Descricao")
                         .HasMaxLength(250);
 
-                    b.Property<string>("DocumentoPath")
+                    b.Property<string>("Documento")
+                        .IsRequired()
                         .HasMaxLength(250);
 
                     b.Property<long>("Numero");

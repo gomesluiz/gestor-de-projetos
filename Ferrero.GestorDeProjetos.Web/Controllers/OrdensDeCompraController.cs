@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -11,10 +10,11 @@ using Ferrero.GestorDeProjetos.Web.Data;
 using Ferrero.GestorDeProjetos.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Ferrero.GestorDeProjetos.Web.Models.Helpers;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-  public class OrdensDeCompraController : Controller
+    public class OrdensDeCompraController : Controller
   {
     private readonly ProjetosDBContext _context;
     private readonly IHostingEnvironment _hostingEnvironment;
@@ -44,44 +44,44 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(
-        [Bind("Id, Numero, Data, NumeroDaRequisicao, Valor, Descricao, AtivoId", "Documento")] OrdemDeCompraViewModel viewModel
-        , IFormFile Arquivo)
+    public async Task<IActionResult> Create(OrdemDeCompraViewModel vm, IFormFile Arquivo)
     {
-        if (ExisteOrdemDeCompra(viewModel.Numero))
+        if (ExisteOrdemDeCompra(vm.Numero))
         {
           ModelState.AddModelError("Numero", "Esta ordem de compra já existe!");
         }
-        if (Arquivo == null || Arquivo.Length == 0)
+        
+        try
         {
-            ModelState.AddModelError("", "Documento da ordem de compra não foi selecionado!");
+            await UploadDocumento(vm, Arquivo);
+        } 
+        catch(IOException)
+        {
+            ModelState.AddModelError("", "Não é possível gravar o documento da ordem de compra. " + 
+                "Tente novamente, e se o problema persistir " + 
+                "entre em contato com o administrador do sistema.");
         }
+
         if (ModelState.IsValid)
         {
-          try {
-            viewModel.Documento = Arquivo;
-            string nomeUnicoDocumento = null;
-            string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "docs/oc");
-            nomeUnicoDocumento = "oc_" + viewModel.Numero.ToString();
-            string filePath = Path.Combine(uploadsFolder, nomeUnicoDocumento); 
-            await viewModel.Documento.CopyToAsync(new FileStream(filePath, FileMode.Create));
-            viewModel.DocumentoPath = filePath;
+            try
+            {
+                _context.Add(ConvertToModel(vm));
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbException)
+            {
+                ModelState.AddModelError("", "Não é possível incluir esta ordem de compra. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");  
+            }
             
-            OrdemDeCompra oc = ConvertToModel(viewModel);
-            _context.Add(oc);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-          }
-          catch(DbException)
-          {
-            ModelState.AddModelError("", "Não é possível incluir esta ordem de compra. " + 
-                "Tente novamente, e se o problema persistir " + 
-                "entre em contato com o administrador do sistema.");  
-          }
         }
         
-        PopulateAtivosDropDownList(viewModel.AtivoId);
-        return View(viewModel);
+        PopulateAtivosDropDownList(vm.AtivoId);
+        return View(vm);
     }
 
     // GET: OrdensDeCompra/Edit/5
@@ -94,18 +94,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
       try
       {
-        var oc = await _context.OrdensDeCompra
+        var model = await _context.OrdensDeCompra
             .Include(m => m.Ativo)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (oc == null)
+        if (model == null)
         {
             return NotFound();
         }
 
-        OrdemDeCompraViewModel ordemDeCompraViewModel = ConvertToViewModel(oc);
-        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);  
-        return View(ordemDeCompraViewModel);
+        OrdemDeCompraViewModel vm = ConvertToViewModel(model);
+        PopulateAtivosDropDownList(vm.AtivoId);  
+        return View(vm);
       }
       catch(DbException)
       {
@@ -123,24 +123,35 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, 
-      [Bind("Id, Numero, Data, NumeroDaRequisicao, Valor, Descricao, AtivoId")] OrdemDeCompraViewModel ordemDeCompraViewModel)
+      OrdemDeCompraViewModel vm, IFormFile Arquivo)
     {
-        if (id != ordemDeCompraViewModel.Id)
+        if (id != vm.Id)
         {
             return NotFound();
+        }
+
+        try
+        {
+            await UploadDocumento(vm, Arquivo);
+        } 
+        catch(IOException)
+        {
+            ModelState.AddModelError("", "Não é possível gravar o documento da ordem de compra. " + 
+                "Tente novamente, e se o problema persistir " + 
+                "entre em contato com o administrador do sistema.");
         }
 
         if (ModelState.IsValid)
         {
           try
           {
-              OrdemDeCompra oc = ConvertToModel(ordemDeCompraViewModel);
-              _context.Update(oc);
+              OrdemDeCompra model = ConvertToModel(vm);
+              _context.Update(model);
               await _context.SaveChangesAsync();
           }
           catch (DbUpdateConcurrencyException)
           {
-              if (!ExisteOrdemDeCompra(ordemDeCompraViewModel.Numero))
+              if (!ExisteOrdemDeCompra(vm.Numero))
               {
                   return NotFound();
               }
@@ -152,8 +163,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return RedirectToAction(nameof(Index));
         }
 
-        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);  
-        return View(ordemDeCompraViewModel);
+        PopulateAtivosDropDownList(vm.AtivoId);  
+        return View(vm);
     }
 
     // GET: OrdensDeCompra/Delete/5
@@ -223,6 +234,31 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         return _context.OrdensDeCompra.Any(e => e.Numero == numero);
     }
 
+
+    private async Task UploadDocumento(OrdemDeCompraViewModel vm, IFormFile Arquivo)
+    { 
+        string fileName = string.Empty;
+
+        if (Arquivo == null || Arquivo.Length == 0)
+        {
+            ModelState.AddModelError("", "Documento da ordem de compra não foi selecionado!");
+        }
+        
+        string extensao = Path.GetExtension(Arquivo.FileName);
+        if (extensao != ".pdf"){
+            ModelState.AddModelError("", "Documento da ordem deve ser um  do tipo PDF!");
+        }
+        
+        var pathToUpload = Path.Combine(_hostingEnvironment.WebRootPath, "docs", "ocs");
+        FileUploadHelper uploader = new FileUploadHelper();
+        fileName = await uploader.SaveFileAsync(
+            Arquivo
+            , pathToUpload
+            , "oc_" + vm.Numero + ".pdf"
+        );
+        vm.Documento = fileName;
+    }
+
     private  OrdemDeCompra ConvertToModel(OrdemDeCompraViewModel viewModel)
     {
       return new OrdemDeCompra {
@@ -233,7 +269,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           Valor = viewModel.Valor,
           Descricao = viewModel.Descricao,
           Ativo = _context.Ativos.Find(viewModel.AtivoId),
-          DocumentoPath = viewModel.DocumentoPath
+          Documento = viewModel.Documento
         };
     }
     
@@ -247,7 +283,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Valor = model.Valor, 
               Descricao = model.Descricao,
               AtivoId = model.Ativo.Id,
-              DocumentoPath = model.DocumentoPath
+              Documento = model.Documento
             };
     }
   }

@@ -16,6 +16,6 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     public double Valor { get; set; }
     public string Descricao { get; set; }
     public Ativo Ativo { get; set; }
-    public string DocumentoPath {get; set;}
+    public string Documento {get; set;}
   }
 }

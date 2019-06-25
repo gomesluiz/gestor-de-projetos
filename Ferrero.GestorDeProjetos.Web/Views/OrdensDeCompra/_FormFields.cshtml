@@ -33,9 +33,14 @@
     <span asp-validation-for="AtivoId" class="text-danger" />
 </div>
 <div class="form-group">
-    <label for="Arquivo" class="form-label">Documento</label>
+    <label for="Arquivo" class="form-label">
+        Documento:&nbsp;
+        <span class="badge badge-outline-primary">
+            @((Model == null || String.IsNullOrEmpty(Model.Documento)) ? "" : Model.Documento)
+        </span>
+    </label>
     <div class="custom-file">
         <input type="file" id="Arquivo" name="Arquivo" class="form-control custom-file-input" />
-        <label class="custom-file-label" id="ArquivoLabel"></label>
+        <label class="custom-file-label"></label>
     </div>
 </div>

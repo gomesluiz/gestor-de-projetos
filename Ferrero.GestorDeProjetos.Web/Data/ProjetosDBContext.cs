@@ -124,7 +124,8 @@ namespace Ferrero.GestorDeProjetos.Web.Data
           .IsRequired();
         entity.Property(e => e.Descricao)
           .HasMaxLength(250);
-        entity.Property(e => e.DocumentoPath)
+        entity.Property(e => e.Documento)
+          .IsRequired()
           .HasMaxLength(250);
       });
 

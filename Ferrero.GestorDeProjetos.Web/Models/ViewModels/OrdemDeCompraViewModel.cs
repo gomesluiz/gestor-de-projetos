@@ -34,10 +34,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models
     [Display(Name = "Ativo")]
     public int AtivoId { get; set; } 
 
-    [Required(ErrorMessage = "Por favor, selecione o arquivo da ordem de compra.")]
-    [Display(Name = "Documento::")]   
-    public IFormFile Documento;
-
-    public string DocumentoPath;
+   // [Required(ErrorMessage = "Por favor, selecione o nome do documento da ordem de compra.")]
+    [Display(Name = "Documento")]
+    public string Documento { get; set; } = string.Empty;
   }
 }
