@@ -4,14 +4,16 @@ using Ferrero.GestorDeProjetos.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ProjetosDBContext))]
-    partial class ProjetosDBContextModelSnapshot : ModelSnapshot
+    [Migration("20190624125926_InitialDatabaseCreation")]
+    partial class InitialDatabaseCreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -32,7 +32,12 @@ namespace Ferrero.GestorDeProjetos.Web.Models
     
     [Required(ErrorMessage = "Por favor, digite o ativo imobilizado.")]
     [Display(Name = "Ativo")]
-    public int AtivoId { get; set; }    
+    public int AtivoId { get; set; } 
+
+    [Required(ErrorMessage = "Por favor, selecione o arquivo da ordem de compra.")]
+    [Display(Name = "Documento::")]   
     public IFormFile Documento;
+
+    public string DocumentoPath;
   }
 }

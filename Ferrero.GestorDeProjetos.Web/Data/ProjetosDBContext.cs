@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 using Ferrero.GestorDeProjetos.Web.Models;
 
 namespace Ferrero.GestorDeProjetos.Web.Data
 {
-  public class ProjetosDBContext : DbContext
+    public class ProjetosDBContext : DbContext
   {
     public ProjetosDBContext(DbContextOptions<ProjetosDBContext> options)
     : base(options) { }
@@ -124,6 +123,8 @@ namespace Ferrero.GestorDeProjetos.Web.Data
         entity.Property(e => e.Valor)
           .IsRequired();
         entity.Property(e => e.Descricao)
+          .HasMaxLength(250);
+        entity.Property(e => e.DocumentoPath)
           .HasMaxLength(250);
       });
 

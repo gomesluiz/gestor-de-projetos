@@ -1,9 +1,0 @@
-"use strict";
-
-$(function () {
-  // Tooltips
-  $('body').tooltip({
-    selector: '.vacancy-tooltip'
-  });
-});
-//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImpzL3BhZ2VzX3ZhY2FuY2llcy5qcyJdLCJuYW1lcyI6WyIkIiwidG9vbHRpcCIsInNlbGVjdG9yIl0sIm1hcHBpbmdzIjoiOztBQUFBQSxDQUFDLENBQUMsWUFBVztBQUVYO0FBRUFBLEVBQUFBLENBQUMsQ0FBQyxNQUFELENBQUQsQ0FBVUMsT0FBVixDQUFrQjtBQUNoQkMsSUFBQUEsUUFBUSxFQUFFO0FBRE0sR0FBbEI7QUFJRCxDQVJBLENBQUQiLCJzb3VyY2VzQ29udGVudCI6WyIkKGZ1bmN0aW9uKCkge1xuXG4gIC8vIFRvb2x0aXBzXG5cbiAgJCgnYm9keScpLnRvb2x0aXAoe1xuICAgIHNlbGVjdG9yOiAnLnZhY2FuY3ktdG9vbHRpcCdcbiAgfSk7XG5cbn0pO1xuIl0sImZpbGUiOiJqcy9wYWdlc192YWNhbmNpZXMuZXM1LmpzIn0=

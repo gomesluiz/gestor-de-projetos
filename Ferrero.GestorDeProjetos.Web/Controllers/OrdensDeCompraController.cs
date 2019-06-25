@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +9,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ferrero.GestorDeProjetos.Web.Data;
 using Ferrero.GestorDeProjetos.Web.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
   public class OrdensDeCompraController : Controller
   {
     private readonly ProjetosDBContext _context;
+    private readonly IHostingEnvironment _hostingEnvironment;
 
-    public OrdensDeCompraController(ProjetosDBContext context)
+    public OrdensDeCompraController(ProjetosDBContext context, 
+                                    IHostingEnvironment hostingEnvironment)
     {
         _context = context;
+        _hostingEnvironment = hostingEnvironment;
     }
 
     // GET: OrdensDeCompra
@@ -39,18 +45,29 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-      [Bind("Numero, Data, NumeroDaRequisicao, Valor, Descricao, AtivoId")] OrdemDeCompraViewModel ordemDeCompraViewModel
-    )
+        [Bind("Id, Numero, Data, NumeroDaRequisicao, Valor, Descricao, AtivoId", "Documento")] OrdemDeCompraViewModel viewModel
+        , IFormFile Arquivo)
     {
-        if (ExisteOrdemDeCompra(ordemDeCompraViewModel.Numero))
+        if (ExisteOrdemDeCompra(viewModel.Numero))
         {
           ModelState.AddModelError("Numero", "Esta ordem de compra já existe!");
         }
-
+        if (Arquivo == null || Arquivo.Length == 0)
+        {
+            ModelState.AddModelError("", "Documento da ordem de compra não foi selecionado!");
+        }
         if (ModelState.IsValid)
         {
           try {
-            OrdemDeCompra oc = ConvertToModel(ordemDeCompraViewModel);
+            viewModel.Documento = Arquivo;
+            string nomeUnicoDocumento = null;
+            string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "docs/oc");
+            nomeUnicoDocumento = "oc_" + viewModel.Numero.ToString();
+            string filePath = Path.Combine(uploadsFolder, nomeUnicoDocumento); 
+            await viewModel.Documento.CopyToAsync(new FileStream(filePath, FileMode.Create));
+            viewModel.DocumentoPath = filePath;
+            
+            OrdemDeCompra oc = ConvertToModel(viewModel);
             _context.Add(oc);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -63,8 +80,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           }
         }
         
-        PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);
-        return View(ordemDeCompraViewModel);
+        PopulateAtivosDropDownList(viewModel.AtivoId);
+        return View(viewModel);
     }
 
     // GET: OrdensDeCompra/Edit/5
@@ -206,29 +223,31 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         return _context.OrdensDeCompra.Any(e => e.Numero == numero);
     }
 
-    private  OrdemDeCompra ConvertToModel(OrdemDeCompraViewModel ordemDeCompraViewModel)
+    private  OrdemDeCompra ConvertToModel(OrdemDeCompraViewModel viewModel)
     {
       return new OrdemDeCompra {
-          Id = ordemDeCompraViewModel.Id,
-          Numero = ordemDeCompraViewModel.Numero,
-          Data = DateTime.ParseExact(ordemDeCompraViewModel.Data, "dd/MM/yyyy", null),
-          NumeroDaRequisicao = ordemDeCompraViewModel.NumeroDaRequisicao,
-          Valor = ordemDeCompraViewModel.Valor,
-          Descricao = ordemDeCompraViewModel.Descricao,
-          Ativo = _context.Ativos.Find(ordemDeCompraViewModel.AtivoId)
+          Id = viewModel.Id,
+          Numero = viewModel.Numero,
+          Data = DateTime.ParseExact(viewModel.Data, "dd/MM/yyyy", null),
+          NumeroDaRequisicao = viewModel.NumeroDaRequisicao,
+          Valor = viewModel.Valor,
+          Descricao = viewModel.Descricao,
+          Ativo = _context.Ativos.Find(viewModel.AtivoId),
+          DocumentoPath = viewModel.DocumentoPath
         };
     }
     
-    private OrdemDeCompraViewModel ConvertToViewModel(OrdemDeCompra oc)
+    private OrdemDeCompraViewModel ConvertToViewModel(OrdemDeCompra model)
     {
       return new OrdemDeCompraViewModel {
-              Id = oc.Id,
-              Numero = oc.Numero,
-              Data = oc.Data.ToString("dd/MM/yyyy"),
-              NumeroDaRequisicao = oc.NumeroDaRequisicao,
-              Valor = oc.Valor, 
-              Descricao = oc.Descricao,
-              AtivoId = oc.Ativo.Id
+              Id = model.Id,
+              Numero = model.Numero,
+              Data = model.Data.ToString("dd/MM/yyyy"),
+              NumeroDaRequisicao = model.NumeroDaRequisicao,
+              Valor = model.Valor, 
+              Descricao = model.Descricao,
+              AtivoId = model.Ativo.Id,
+              DocumentoPath = model.DocumentoPath
             };
     }
   }
