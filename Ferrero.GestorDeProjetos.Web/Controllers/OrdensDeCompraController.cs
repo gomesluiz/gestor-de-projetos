@@ -122,8 +122,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, 
-      OrdemDeCompraViewModel vm, IFormFile Arquivo)
+    public async Task<IActionResult> Edit(int id, OrdemDeCompraViewModel vm, IFormFile Arquivo)
     {
         if (id != vm.Id)
         {
@@ -234,19 +233,23 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         return _context.OrdensDeCompra.Any(e => e.Numero == numero);
     }
 
-
     private async Task UploadDocumento(OrdemDeCompraViewModel vm, IFormFile Arquivo)
     { 
         string fileName = string.Empty;
 
+        if (vm.Documento != null && Arquivo == null)
+            return;
+
         if (Arquivo == null || Arquivo.Length == 0)
         {
             ModelState.AddModelError("", "Documento da ordem de compra não foi selecionado!");
+            return;
         }
         
         string extensao = Path.GetExtension(Arquivo.FileName);
         if (extensao != ".pdf"){
             ModelState.AddModelError("", "Documento da ordem deve ser um  do tipo PDF!");
+            return;
         }
         
         var pathToUpload = Path.Combine(_hostingEnvironment.WebRootPath, "docs", "ocs");

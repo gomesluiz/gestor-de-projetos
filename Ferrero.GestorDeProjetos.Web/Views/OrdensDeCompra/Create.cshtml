@@ -33,7 +33,7 @@
         Informações da ordem de compra
       </h6>
       <div class="card-body">
-        <form enctype="multipart/form-data" asp-action="Create">
+        <form asp-action="Create"  enctype="multipart/form-data">
           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
           @{await Html.RenderPartialAsync("_FormFields.cshtml");}
