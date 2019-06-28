@@ -11,6 +11,7 @@ using Ferrero.GestorDeProjetos.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Ferrero.GestorDeProjetos.Web.Models.Helpers;
+using System.Collections.Generic;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
@@ -53,7 +54,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         
         try
         {
-            await UploadDocumento(vm, Arquivo);
+            await Upload(vm, Arquivo);
         } 
         catch(IOException)
         {
@@ -131,7 +132,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         try
         {
-            await UploadDocumento(vm, Arquivo);
+            await Upload(vm, Arquivo);
         } 
         catch(IOException)
         {
@@ -221,6 +222,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       }
       return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> Download(string filename)
+    {
+        var downloader = new FileDownloadHelper();
+        var pathToDownload = Path.Combine(_hostingEnvironment.WebRootPath, "docs", "ocs");
+        var stream = await downloader.Download(pathToDownload, filename);
+        return File(stream, downloader.GetContentType(filename), filename);
+    }
+
     private void PopulateAtivosDropDownList(object ativoSelcionado = null)
     {
         var ativos = from aa in _context.Ativos
@@ -233,7 +243,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         return _context.OrdensDeCompra.Any(e => e.Numero == numero);
     }
 
-    private async Task UploadDocumento(OrdemDeCompraViewModel vm, IFormFile Arquivo)
+    private async Task Upload(OrdemDeCompraViewModel vm, IFormFile Arquivo)
     { 
         string fileName = string.Empty;
 
@@ -289,5 +299,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Documento = model.Documento
             };
     }
-  }
+
+   
+    }
 }

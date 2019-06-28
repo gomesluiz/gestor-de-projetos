@@ -35,9 +35,14 @@
 <div class="form-group">
     <label for="Arquivo" class="form-label">
         Documento:&nbsp;
-        <span class="badge badge-outline-primary">
-            @((Model == null || String.IsNullOrEmpty(Model.Documento)) ? "" : Model.Documento)
-        </span>
+        @if (!(Model == null || String.IsNullOrEmpty(Model.Documento)))
+        {
+            <a  asp-action="Download" 
+                asp-route-filename="@Model.Documento" 
+                class="btn btn-success btn-sm"> 
+                <span class="ion ion-md-download">
+            </a>
+        }
     </label>
     <div class="custom-file">
         <input type="file" id="Arquivo" name="Arquivo" class="form-control custom-file-input" />
