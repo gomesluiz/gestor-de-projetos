@@ -223,13 +223,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return RedirectToAction(nameof(Index));
         }
 
-        // GET: FollowUp
-        public async Task<IActionResult> FollowUp()
-        {
-            var followUp = await _context.OrdensDeInvestimentoFollowUp.FromSql(Sql).ToListAsync(); 
-            return View(model: followUp);
-        }
-
         private bool OrdemDeInvestimentoExists(int id)
         {
             return _context.OrdensDeInvestimento.Any(e => e.Id == id);

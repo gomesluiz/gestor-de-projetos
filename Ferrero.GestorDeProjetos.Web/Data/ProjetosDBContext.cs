@@ -18,7 +18,7 @@ namespace Ferrero.GestorDeProjetos.Web.Data
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
 
     // Queries ad-hocs.
-    public DbQuery<OrdemDeInvestimentoFollowUp> OrdensDeInvestimentoFollowUp {get; set;}
+    public DbQuery<ResumoFinanceiro> ResumosFinanceiros {get; set;}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
