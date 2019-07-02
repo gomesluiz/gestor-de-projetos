@@ -7,7 +7,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ChartJs
         public string[] borderColor { get; set; }
 
         public string borderWidth { get; set; }
-        public int[] data { get; set; }
+        public double[] data { get; set; }
         public string fill { get; set; }
     }
 }

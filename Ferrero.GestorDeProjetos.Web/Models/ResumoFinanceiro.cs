@@ -21,15 +21,15 @@ namespace Ferrero.GestorDeProjetos.Web.Models
         public double? Bugdget { get; set; }
 
         [Display(Name = "Actual")]
-        public double? Actual { get; set; }
+        public double Actual { get; set; }
 
         [Display(Name = "Commitment")]
-        public double? Commitment { get; set; }
+        public double Commitment { get; set; }
 
         [Display(Name = "Assigned")]
-        public double? Assigned { get; set; }
+        public double Assigned { get; set; }
 
         [Display(Name = "Available")]
-        public double? Available { get; set; }
+        public double Available { get; set; }
   }
 }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.EntityFrameworkCore;
-using Ferrero.GestorDeProjetos.Web.Data;
+using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 
 namespace Ferrero.GestorDeProjetos.UI.Web
 {

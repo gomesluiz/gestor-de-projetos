@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Ferrero.GestorDeProjetos.Web.Data;
+using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Ferrero.GestorDeProjetos.Web.Models.Helpers;
-using System.Collections.Generic;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {

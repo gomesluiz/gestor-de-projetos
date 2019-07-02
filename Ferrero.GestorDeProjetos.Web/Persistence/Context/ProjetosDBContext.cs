@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Ferrero.GestorDeProjetos.Web.Models;
 
-namespace Ferrero.GestorDeProjetos.Web.Data
+namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
 {
     public class ProjetosDBContext : DbContext
   {

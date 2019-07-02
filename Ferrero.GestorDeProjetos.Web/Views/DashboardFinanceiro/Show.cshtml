@@ -48,7 +48,7 @@
             ctx.textAlign = 'center';
             $.ajax({
                 type: 'GET',
-                url: '/FollowUps/DonutChartData',
+                url: '/dashboard/donut/1',
                 success: function(result) {
                     var chart = new Chart(ctx, {
                             type: 'doughnut',
@@ -63,7 +63,7 @@
             var ctx   = document.getElementById('LineChart').getContext("2d");
             $.ajax({
                 type: 'GET',
-                url: '/FollowUps/LineChartData',
+                url: '/dashboard/line/1',
                 success: function(result) {
                     var chart = new Chart(ctx, {
                             type: 'line',
