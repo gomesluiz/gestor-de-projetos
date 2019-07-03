@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Ferrero.GestorDeProjetos.Web.Models
@@ -31,5 +32,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models
 
         [Display(Name = "Available")]
         public double Available { get; set; }
+
+        public DateTime DateOfWeek { get; set; }
   }
 }

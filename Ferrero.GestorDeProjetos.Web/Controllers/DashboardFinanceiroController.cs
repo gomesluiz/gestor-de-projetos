@@ -55,16 +55,33 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         // Get: LineChartData
         [Route("line/{id}")]
-        public JsonResult LineChartData(int id)
+        public async Task<JsonResult> LineChartData(int id)
         {
             Chart chart = new Chart(); 
-            chart.labels = new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December" }; 
+            chart.labels = new string[]{}; 
             chart.datasets = new List<Datasets>(); 
             List<Datasets> dataSet = new List<Datasets>(); 
+            double[] actualData = new double[]{};
+            double[] commitmentData = new double[]{};
+            double[] assignedData = new double[]{};
+            double[] availableData = new double[]{};
+            
+            List<ResumoFinanceiro> resumos = await Task.FromResult(_resumos.GetResumoFinanceiroByWeek(id));
+            
+            for (int i = 0; i < resumos.Count; i++)
+            {
+                ResumoFinanceiro resumo = resumos[i];
+                actualData[i] = resumo.Actual;
+                commitmentData[i] = resumo.Commitment;
+                assignedData[i]   = resumo.Assigned;
+                availableData[i]  = resumo.Available;
+                chart.labels[i] = resumo.DateOfWeek.ToString("dd-MM-yyyy");
+            } 
+
             dataSet.Add(new Datasets() 
             { 
                 label = "Actual", 
-                data = new double[] { 28, 48, 40, 19, 86, 27, 90, 20, 45, 65, 34, 22 }, 
+                data = actualData, 
                 borderColor = new string[] { "#FF0000" }, 
                 backgroundColor = new string[] { "#FF0000" }, 
                 borderWidth = "2" ,
@@ -73,7 +90,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             dataSet.Add(new Datasets() 
             { 
                 label = "Commitment", 
-                data = new double[] { 60, 50, 75, 80, 50, 45, 35, 50, 60, 70, 80, 30 }, 
+                data =commitmentData, 
                 borderColor = new string[] { "#800000" }, 
                 backgroundColor = new string[] { "#800000" }, 
                 borderWidth = "2", 
@@ -82,7 +99,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             dataSet.Add(new Datasets() 
             { 
                 label = "Assigned", 
-                data = new double[] { 30, 50, 45, 25, 90, 30, 95, 25, 50, 70, 40, 30 }, 
+                data = assignedData, 
                 borderColor = new string[] { "#808000" }, 
                 backgroundColor = new string[] { "#808000" }, 
                 borderWidth = "2",
@@ -91,12 +108,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             dataSet.Add(new Datasets() 
             { 
                 label = "Available", 
-                data = new double[] { 20, 40, 35, 10, 80, 20, 85, 15, 40, 60, 30, 16 }, 
+                data = availableData, 
                 borderColor = new string[] { "#008080" }, 
                 backgroundColor = new string[] { "#008080" }, 
                 borderWidth = "2",
                 fill = "false"
             });
+            
             chart.datasets = dataSet; 
             return Json(chart);
         }

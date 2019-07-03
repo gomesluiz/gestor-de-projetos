@@ -19,6 +19,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
 
     // Queries ad-hocs.
     public DbQuery<ResumoFinanceiro> ResumosFinanceiros {get; set;}
+    public DbQuery<Intervalo> IntervaloDeData {get; set;}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
