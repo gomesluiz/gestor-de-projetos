@@ -21,9 +21,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         // Get: Dashboard
         [Route("show/{id}")]
-        public IActionResult Show(int ordemDeInvestimentoId)
+        public IActionResult Show(int id)
         {
-            ViewData["OrdemDeInvestimento"] = ordemDeInvestimentoId;
+            ViewBag.oiId = id;
             return View();
         }
 
@@ -58,30 +58,34 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         public async Task<JsonResult> LineChartData(int id)
         {
             Chart chart = new Chart(); 
-            chart.labels = new string[]{}; 
+            
             chart.datasets = new List<Datasets>(); 
             List<Datasets> dataSet = new List<Datasets>(); 
-            double[] actualData = new double[]{};
-            double[] commitmentData = new double[]{};
-            double[] assignedData = new double[]{};
-            double[] availableData = new double[]{};
+            
             
             List<ResumoFinanceiro> resumos = await Task.FromResult(_resumos.GetResumoFinanceiroByWeek(id));
             
-            for (int i = 0; i < resumos.Count; i++)
+            int n = resumos.Count;
+            double[] actuals     = new double[n];
+            double[] commitments = new double[n];
+            double[] assigneds   = new double[n];
+            double[] availables  = new double[n];
+            chart.labels = new string[n]; 
+
+            for (int i = 0; i < n; i++)
             {
                 ResumoFinanceiro resumo = resumos[i];
-                actualData[i] = resumo.Actual;
-                commitmentData[i] = resumo.Commitment;
-                assignedData[i]   = resumo.Assigned;
-                availableData[i]  = resumo.Available;
+                actuals[i]      = resumo.Actual;
+                commitments[i]  = resumo.Commitment;
+                assigneds[i]    = resumo.Assigned;
+                availables[i]   = resumo.Available;
                 chart.labels[i] = resumo.DateOfWeek.ToString("dd-MM-yyyy");
             } 
 
             dataSet.Add(new Datasets() 
             { 
                 label = "Actual", 
-                data = actualData, 
+                data = actuals, 
                 borderColor = new string[] { "#FF0000" }, 
                 backgroundColor = new string[] { "#FF0000" }, 
                 borderWidth = "2" ,
@@ -90,7 +94,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             dataSet.Add(new Datasets() 
             { 
                 label = "Commitment", 
-                data =commitmentData, 
+                data =commitments, 
                 borderColor = new string[] { "#800000" }, 
                 backgroundColor = new string[] { "#800000" }, 
                 borderWidth = "2", 
@@ -99,7 +103,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             dataSet.Add(new Datasets() 
             { 
                 label = "Assigned", 
-                data = assignedData, 
+                data = assigneds, 
                 borderColor = new string[] { "#808000" }, 
                 backgroundColor = new string[] { "#808000" }, 
                 borderWidth = "2",
@@ -108,7 +112,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             dataSet.Add(new Datasets() 
             { 
                 label = "Available", 
-                data = availableData, 
+                data = availables, 
                 borderColor = new string[] { "#008080" }, 
                 backgroundColor = new string[] { "#008080" }, 
                 borderWidth = "2",

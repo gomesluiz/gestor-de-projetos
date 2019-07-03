@@ -31,9 +31,7 @@
           <th>@Html.DisplayNameFor(model => model.Commitment) </th>            
           <th>@Html.DisplayNameFor(model => model.Assigned) </th>    
           <th>@Html.DisplayNameFor(model => model.Available) </th>            
-          <!--
           <th></th>
-          -->
         </tr>
     </thead>  
     <tbody>
@@ -46,11 +44,12 @@
           <td>@Html.DisplayFor(modelItem => item.Commitment)</td>
           <td>@Html.DisplayFor(modelItem => item.Assigned)</td>
           <td>@Html.DisplayFor(modelItem => item.Available)</td>
-          <!--
           <td class="text-center">
-              <a asp-action="FollowUp" class="btn btn-success btn-sm" asp-route-id="@item.Id"><span class="glyphicon glyphicon-stats" aria-hidden="true"></a>
+                <a href="@Url.RouteUrl("Default", new { action = "show", controller = "dashboard" , id = item.Id})" 
+                    class="btn btn-success btn-sm"> 
+                    <span class="ion ion-md-stats"></span>
+                </a>
           </td>
-          -->
         </tr>
 }
       </tbody>

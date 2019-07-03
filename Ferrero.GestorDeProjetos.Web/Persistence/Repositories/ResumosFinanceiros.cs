@@ -75,7 +75,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                         ELSE MAX(nf.DataDeLancamento)
                      END AS DataDeTermino
                 FROM  OrdensDeCompra AS oc
-                INNER JOIN Ativos     AS av
+                INNER JOIN Ativos  AS av
                     ON av.Id = oc.AtivoId
                 LEFT JOIN NotasFiscais AS nf 
                     ON nf.OrdemDeCompraId = oc.Id
@@ -115,12 +115,14 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             
             List<ResumoFinanceiro> resultado = new List<ResumoFinanceiro>();
             
+            intervalo.Arredonda(7);
             for (var dt = intervalo.DataDeInicio; dt <= intervalo.DataDeTermino; dt = dt.AddDays(7)){     
                 var resumo = _context
                     .ResumosFinanceiros
                     .FromSql(query, id, dt)
                     .FirstOrDefault();
                 resumo.DateOfWeek = dt;
+                resultado.Add(resumo);
             }
 
             return resultado;
