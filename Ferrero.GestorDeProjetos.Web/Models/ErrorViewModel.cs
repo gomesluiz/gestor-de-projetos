@@ -1,6 +1,6 @@
 using System;
 
-namespace Ferrero.GestorDeProjetos.UI.Web.Models
+namespace Ferrero.GestorDeProjetos.Web.Models
 {
     public class ErrorViewModel
     {
