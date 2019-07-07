@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Ferrero.GestorDeProjetos.Web.Models;
 
-namespace Ferrero.GestorDeProjetos.UI.Web.Controllers
+namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class HomeController : Controller
     {

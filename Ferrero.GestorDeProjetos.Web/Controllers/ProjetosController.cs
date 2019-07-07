@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Projetos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projetos.ToListAsync());
+            var models = await _context
+                .Projetos
+                .Include(e => e.OrdemDeInvestimento)
+                .ToListAsync();
+
+            var viewModels = new List<ProjetoViewModel>();
+            foreach(Projeto model in  models){
+                viewModels.Add(ConvertToViewModel(model));
+            }
+            
+            return View(await Task.FromResult(viewModels.ToAsyncEnumerable()));
         }
 
         // GET: Projetos/Create
@@ -35,17 +46,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-          [Bind("ID,Nome,Descricao,DataDeInicio,DataDeTermino,Concluido")] ProjetoViewModel projetoViewModel
-        )
+        public async Task<IActionResult> Create(ProjetoViewModel viewModel)
         {
           if (ModelState.IsValid)
           {
             try
             {   
-              Projeto projeto = ConvertToModel(projetoViewModel);
-              _context.Add(projeto);
+              var model = ConvertToModel(viewModel);
+
+              _context.Add(model);
               await _context.SaveChangesAsync();
+
               return RedirectToAction(nameof(Index));
             }
             catch(DbUpdateException)
@@ -55,35 +66,35 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 "entre em contato com o administrador do sistema.");
             }
           }
-          return View(projetoViewModel);
+          return View(viewModel);
         }
 
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-          if (id == null)
-          {
-              return NotFound();
-          }
-
-          try
-          {
-            var projeto = await _context.Projetos.FindAsync(id);
-            if (projeto == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            ProjetoViewModel projetoViewModel = ConvertToViewModel(projeto);
-            return View(projetoViewModel);
-          }
-          catch(DbException)
-          {
-            ModelState.AddModelError("", "Não é possível editar este projeto. " + 
-                  "Tente novamente, e se o problema persistir " + 
-                  "entre em contato com o administrador do sistema.");
-          }
-          return View();
+            try
+            {
+                var model = await FindProjetoBy(id);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                var viewModel = ConvertToViewModel(model);
+                return View(viewModel);
+            }
+            catch (DbException)
+            {
+                ModelState.AddModelError("", "Não é possível editar este projeto. " + 
+                        "Tente novamente, e se o problema persistir " + 
+                        "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
 
         // POST: Projetos/Edit/5
@@ -91,10 +102,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, 
-          [Bind("Id, Nome, Descricao, DataDeInicio, DataDeTermino, Concluido")] ProjetoViewModel projetoViewModel)
+        public async Task<IActionResult> Edit(int id, ProjetoViewModel viewModel)
         {
-            if (id != projetoViewModel.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
@@ -103,13 +113,14 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 try
                 {
-                    Projeto projeto = ConvertToModel(projetoViewModel);
-                    _context.Update(projeto);
+                    Projeto model = ConvertToModel(viewModel);
+
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjetoExists(projetoViewModel.Id))
+                    if (!ProjetoExists(viewModel.Id))
                     {
                         return NotFound();
                     }
@@ -122,7 +133,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(projetoViewModel);
+            return View(viewModel);
         }
 
         // GET: Projetos/Delete/5
@@ -134,24 +145,24 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             if (saveChangesError.GetValueOrDefault())
             {
-              ModelState.AddModelError("", "Não é possível remover este projeto. " + 
+                ModelState.AddModelError("", "Não é possível remover este projeto. " + 
                     "Tente novamente, e se o problema persistir " + 
                     "entre em contato com o administrador do sistema.");
             }
             try
             { 
-              var projeto = await _context.Projetos
-                  .FirstOrDefaultAsync(m => m.Id == id);
-              if (projeto == null)
-              {
-                  return NotFound();
-              }
-              ProjetoViewModel projetoViewModel = ConvertToViewModel(projeto);
-              return View(projetoViewModel);
+                var model = await FindProjetoBy(id);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                var viewModel = ConvertToViewModel(model);
+                return View(viewModel);
             }
             catch(DbException)
             {
-              ModelState.AddModelError("", "Não é possível remover este projeto. " + 
+                ModelState.AddModelError("", "Não é possível remover este projeto. " + 
                     "Tente novamente, e se o problema persistir " + 
                     "entre em contato com o administrador do sistema.");
             }
@@ -163,22 +174,39 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-          try
-          {
-            var projeto = await _context.Projetos.FindAsync(id);
-            _context.Projetos.Remove(projeto);
-            await _context.SaveChangesAsync();
-          }
-          catch(DbUpdateException)
-          {
-            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
-          }
-          return RedirectToAction(nameof(Index));
+            try
+            {
+                var model = await FindProjetoBy(id);
+
+                _context.Projetos.Remove(model);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException)
+            {
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+            }
+            return RedirectToAction(nameof(Index));
         }
 
+        ///<summary>
+        /// Returns TRUE if an Projeto class object exists, otherwise
+        /// returns FALSE.     
+        ///</summary>
         private bool ProjetoExists(int id)
         {
             return _context.Projetos.Any(e => e.Id == id);
+        }
+
+        ///<summary>
+        /// Finds Project class object by Id.
+        ///</summary>
+        private async Task<Projeto> FindProjetoBy(int? id)
+        {
+            return await _context
+                .Projetos
+                .Include(e => e.OrdemDeInvestimento)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         ///<summary>
@@ -187,13 +215,19 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         ///</summary>
         private  Projeto ConvertToModel(ProjetoViewModel projetoViewModel)
         {
-          return new Projeto {
-              Id = projetoViewModel.Id,
-              Nome = projetoViewModel.Nome,
-              Descricao = projetoViewModel.Descricao,
-              DataDeInicio = DateTime.ParseExact(projetoViewModel.DataDeInicio, "dd/MM/yyyy", null),
-              DataDeTermino = DateTime.ParseExact(projetoViewModel.DataDeTermino, "dd/MM/yyyy", null),
-              Concluido = projetoViewModel.Concluido
+            return new Projeto {
+                Id = projetoViewModel.Id,
+                Nome = projetoViewModel.Nome,
+                Descricao = projetoViewModel.Descricao,
+                DataDeInicio = DateTime.ParseExact(projetoViewModel.DataDeInicio, "dd/MM/yyyy", null),
+                DataDeTermino = DateTime.ParseExact(projetoViewModel.DataDeTermino, "dd/MM/yyyy", null),
+                OrdemDeInvestimento = new OrdemDeInvestimento 
+                {
+                        Id = projetoViewModel.OrdemDeInvestimento.Id,
+                        Numero = projetoViewModel.OrdemDeInvestimento.Numero,
+                        Budget = projetoViewModel.OrdemDeInvestimento.Budget
+                },
+                Concluido = projetoViewModel.Concluido
             };
         }
 
@@ -204,12 +238,18 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         private  ProjetoViewModel ConvertToViewModel(Projeto projeto)
         {
           return new ProjetoViewModel {
-              Id = projeto.Id,
-              Nome = projeto.Nome,
-              Descricao = projeto.Descricao,
-              DataDeInicio = projeto.DataDeInicio.ToString("dd/MM/yyyy"),
-              DataDeTermino = projeto.DataDeTermino.ToString("dd/MM/yyyy"),
-              Concluido = projeto.Concluido
+                Id = projeto.Id,
+                Nome = projeto.Nome,
+                Descricao = projeto.Descricao,
+                DataDeInicio = projeto.DataDeInicio.ToString("dd/MM/yyyy"),
+                DataDeTermino = projeto.DataDeTermino.ToString("dd/MM/yyyy"),
+                OrdemDeInvestimento = new OrdemDeInvestimentoViewModel 
+                {
+                    Id = projeto.OrdemDeInvestimento.Id,
+                    Numero = projeto.OrdemDeInvestimento.Numero,
+                    Budget = projeto.OrdemDeInvestimento.Budget
+                },
+                Concluido = projeto.Concluido
             };
         }
     }

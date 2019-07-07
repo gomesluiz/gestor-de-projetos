@@ -1,5 +1,3 @@
-using System;
-
 namespace Ferrero.GestorDeProjetos.Web.Models
 {
     public class ErrorViewModel

@@ -1,4 +1,4 @@
-@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.Projeto>
+@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.ProjetoViewModel>
 @{
     ViewData["Title"] = "Todos os projetos";
 }
@@ -29,6 +29,7 @@
               <th>@Html.DisplayNameFor(model => model.Nome)           </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.DataDeInicio)   </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.DataDeTermino)  </th>
+              <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento.Numero)  </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
               <th></th>
           </tr>
@@ -39,6 +40,7 @@
           <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
+          <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento.Numero) </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
           <td class="text-center">
             <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">

@@ -20,7 +20,8 @@
       <div class="card-body">
         <form asp-action="Delete">
           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-          <input type="hidden" asp-for="Id" />      
+          <input type="hidden" asp-for="Id" />   
+          <input type="hidden" asp-for="OrdemDeInvestimento.Id" />    
           @{await Html.RenderPartialAsync("_FormFields.cshtml");}
           <div class="text-right mt-3">
             <a asp-action="Index" class="btn btn-default">

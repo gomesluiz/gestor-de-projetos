@@ -14,15 +14,17 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
     public DbSet<Fornecedor> Fornecedores { get; set; }
     public DbSet<Projeto> Projetos { get; set; }
     public DbSet<OrdemDeInvestimento> OrdensDeInvestimento { get; set; }
+    public DbSet<ResumoFinanceiro> ResumosFinanceiros { get; set; }
     public DbSet<OrdemDeCompra> OrdensDeCompra { get; set; }
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
 
     // Queries ad-hocs.
-    public DbQuery<ResumoFinanceiro> ResumosFinanceiros {get; set;}
-    public DbQuery<Intervalo> IntervaloDeData {get; set;}
+    //public DbQuery<LancamentoFinanceiro> ResumosFinanceiros {get; set;}
+    //public DbQuery<Intervalo> IntervaloDeData {get; set;}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+       
       // Model Ativo
       builder.Entity<Ativo>(entity =>
       {
@@ -101,12 +103,35 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
       // Model OrdemDeInvestimento
       builder.Entity<OrdemDeInvestimento>(entity =>
       {
-        entity.HasKey(e => e.Id);
-        entity.Property(e => e.Numero)
-          .HasMaxLength(7)
-          .IsRequired();
-        entity.Property(e => e.Valor)
-          .IsRequired();
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Numero)
+                .HasMaxLength(7)
+                .IsRequired();
+            entity.Property(e => e.Budget)
+                .HasColumnType("DECIMAL(10,2)")
+                .IsRequired();
+      });
+
+
+      // Model LancamentoFinanceiro
+      builder.Entity<ResumoFinanceiro>(entity =>
+      {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Data)
+                .HasColumnType("DATETIME")
+                .IsRequired();
+            entity.Property(e => e.Commitment)
+                .HasColumnType("DECIMAL(10,2)")
+                .IsRequired();
+            entity.Property(e => e.Assigned)
+                .HasColumnType("DECIMAL(10,2)")
+                .IsRequired();
+             entity.Property(e => e.Actual)
+                .HasColumnType("DECIMAL(10,2)")
+                .IsRequired();
+             entity.Property(e => e.Available)
+                .HasColumnType("DECIMAL(10,2)")
+                .IsRequired();
       });
 
       // Model OrdemDeCompra

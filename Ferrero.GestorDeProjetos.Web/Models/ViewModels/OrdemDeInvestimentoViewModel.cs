@@ -12,13 +12,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [Required(ErrorMessage = "Por favor, digite o número da ordem de investimento.")]
     [StringLength(7, ErrorMessage = "O número da ordem de investimento deve possuir no máximo 7 caracteres.")]
     public string Numero { get; set; }
-
-    [Display(Name = "Projeto")]
-    [Required(ErrorMessage = "Por favor, informe o número do projeto da ordem de investimento.")]
-    public int ProjetoId { get; set; }
     
-    [Display(Name = "Bugdget")]
-    [Required(ErrorMessage = "Por favor, informe o valor da ordem de investimento.")]
-    public double Valor { get; set; }
+    [Display(Name = "Budget")]
+    [Required(ErrorMessage = "Por favor, informe o budget da ordem de investimento.")]
+    public decimal Budget { get; set; }
   }
 }

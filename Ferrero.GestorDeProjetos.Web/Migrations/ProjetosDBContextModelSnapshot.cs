@@ -157,17 +157,14 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("Budget")
+                        .HasColumnType("DECIMAL(10,2)");
+
                     b.Property<string>("Numero")
                         .IsRequired()
                         .HasMaxLength(7);
 
-                    b.Property<int?>("ProjetoId");
-
-                    b.Property<double>("Valor");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("OrdensDeInvestimento");
                 });
@@ -193,9 +190,43 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<int?>("OrdemDeInvestimentoId");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("OrdemDeInvestimentoId");
+
                     b.ToTable("Projetos");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.ResumoFinanceiro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<decimal>("Assigned")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<decimal>("Available")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<decimal>("Commitment")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<int?>("OrdemDeInvestimentoId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrdemDeInvestimentoId");
+
+                    b.ToTable("ResumosFinanceiros");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
@@ -227,11 +258,18 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .HasForeignKey("AtivoId");
                 });
 
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", b =>
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>
                 {
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
                         .WithMany()
-                        .HasForeignKey("ProjetoId");
+                        .HasForeignKey("OrdemDeInvestimentoId");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.ResumoFinanceiro", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
+                        .WithMany()
+                        .HasForeignKey("OrdemDeInvestimentoId");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,30 +1,49 @@
 @model Ferrero.GestorDeProjetos.Web.Models.ProjetoViewModel
 
 <div class="form-group">
-    <label asp-for="Nome" class="form-label"></label>
+    <label asp-for="Nome" class="form-label"></label><span class="text-danger">&nbsp;*</span>
     <input asp-for="Nome" class="form-control" />
     <span asp-validation-for="Nome" class="text-danger"></span>
 </div>
 <div class="form-group">
     <label asp-for="Descricao" class="form-label"></label>
-    <textarea asp-for="Descricao" class="form-control bootstrap-maxlength-field" maxlength="250"></textarea>
+    <textarea asp-for="Descricao" class="form-control bootstrap-maxlength-field" maxlength="250" rows="3"></textarea>
     <span asp-validation-for="Descricao" class="text-danger"></span>
 </div>
 <div class="form-row">
   <div class="form-group col-md-3">
-      <label asp-for="DataDeInicio" class="form-label"></label>
+      <label asp-for="DataDeInicio" class="form-label"></label><span class="text-danger">&nbsp;*</span>
       <input asp-for="DataDeInicio"  class="form-control text-mask-date datepicker-base" placeholder="__/__/____" />
       <!--<span asp-validation-for="DataDeInicio" asp-format="{0:dd/MM/yyyy}" class="text-danger"></span>-->
   </div>
   <div class="form-group col-md-3">
-      <label asp-for="DataDeTermino" class="form-label"></label>
+      <label asp-for="DataDeTermino" class="form-label"></label><span class="text-danger">&nbsp;*</span>
       <input asp-for="DataDeTermino" class="form-control text-mask-date datepicker-base" placeholder="__/__/____" />
       <!--<span asp-validation-for="DataDeTermino" asp-format="{0:dd/MM/yyyy}" class="text-danger"></span>-->
   </div>
 </div>
+
+<!-- Ordem de Investimento -->
+<h6 class="py-2">Ordem de Investimento</h6>
+<hr class="mb-4">
+<div class="form-group">
+  <label asp-for="OrdemDeInvestimento.Numero" class="control-label"></label><span class="text-danger">&nbsp;*</span>
+  <input asp-for="OrdemDeInvestimento.Numero" class="form-control bootstrap-maxlength-field" maxlength="7"/>
+  <span asp-validation-for="OrdemDeInvestimento.Numero" class="text-danger"></span>
+</div>
+<div class="form-group">
+  <label asp-for="OrdemDeInvestimento.Budget" class="control-label"></label><span class="text-danger">&nbsp;*</span>
+  <input asp-for="OrdemDeInvestimento.Budget" id="text-mask-number" class="form-control" placeholder="R$"/>
+  <span asp-validation-for="OrdemDeInvestimento.Budget" class="text-danger"></span>
+</div>
+
 <div class="form-group col-md-4">
   </label asp-for="Concluido" class="form-check">
     <input type="checkbox"  asp-for="Concluido" class="form-check-input">
     <div class="form-check-label">Projeto concluído</div>
   </label>
 </div>
+
+<p>
+    <span class="text-danger">*</span>&nbsp;Campos obrigatórios
+</p>
