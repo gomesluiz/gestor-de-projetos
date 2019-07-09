@@ -132,24 +132,23 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrdensDeCompra",
+                name: "RequisicoesDeCompra",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Numero = table.Column<long>(nullable: false),
                     Data = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    NumeroDaRequisicao = table.Column<long>(nullable: false),
-                    Valor = table.Column<double>(nullable: false),
+                    NumeroDaOrdemDeCompra = table.Column<long>(nullable: false),
                     Descricao = table.Column<string>(maxLength: 250, nullable: true),
                     AtivoId = table.Column<int>(nullable: true),
-                    Documento = table.Column<string>(maxLength: 250, nullable: false)
+                    Proposta = table.Column<string>(maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrdensDeCompra", x => x.Id);
+                    table.PrimaryKey("PK_RequisicoesDeCompra", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrdensDeCompra_Ativos_AtivoId",
+                        name: "FK_RequisicoesDeCompra_Ativos_AtivoId",
                         column: x => x.AtivoId,
                         principalTable: "Ativos",
                         principalColumn: "Id",
@@ -165,7 +164,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     Numero = table.Column<int>(nullable: false),
                     DataDeLancamento = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     FornecedorId = table.Column<int>(nullable: true),
-                    OrdemDeCompraId = table.Column<int>(nullable: true),
+                    RequisicaoDeCompraId = table.Column<int>(nullable: true),
                     Migo = table.Column<long>(nullable: false),
                     Valor = table.Column<double>(nullable: false)
                 },
@@ -179,9 +178,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_NotasFiscais_OrdensDeCompra_OrdemDeCompraId",
-                        column: x => x.OrdemDeCompraId,
-                        principalTable: "OrdensDeCompra",
+                        name: "FK_NotasFiscais_RequisicoesDeCompra_RequisicaoDeCompraId",
+                        column: x => x.RequisicaoDeCompraId,
+                        principalTable: "RequisicoesDeCompra",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -202,19 +201,19 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 column: "FornecedorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NotasFiscais_OrdemDeCompraId",
+                name: "IX_NotasFiscais_RequisicaoDeCompraId",
                 table: "NotasFiscais",
-                column: "OrdemDeCompraId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrdensDeCompra_AtivoId",
-                table: "OrdensDeCompra",
-                column: "AtivoId");
+                column: "RequisicaoDeCompraId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projetos_OrdemDeInvestimentoId",
                 table: "Projetos",
                 column: "OrdemDeInvestimentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RequisicoesDeCompra_AtivoId",
+                table: "RequisicoesDeCompra",
+                column: "AtivoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResumosFinanceiros_OrdemDeInvestimentoId",
@@ -237,7 +236,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "Fornecedores");
 
             migrationBuilder.DropTable(
-                name: "OrdensDeCompra");
+                name: "RequisicoesDeCompra");
 
             migrationBuilder.DropTable(
                 name: "Ativos");

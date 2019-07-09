@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
@@ -20,25 +22,58 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         {
            _entities.Add(entity);
         }
-
-        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        public void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            _entities.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
-
-        public TEntity Get(int id)
+        public void Remove(int id)
         {
-            throw new NotImplementedException();
+            TEntity entity = _entities.Find(id);
+            this.Remove(entity);
         }
-
-        public IEnumerable<TEntity> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
         public void Remove(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                _entities.Attach(entity);
+            }
+            _entities.Remove(entity);
+        }
+        public TEntity Get(int id)
+        {
+            return _entities.Find(id);
+        }
+        public IEnumerable<TEntity> GetAll()
+        {
+            return _entities.ToList();
+        }
+
+        public async Task<IEnumerable<TEntity>> FindAsync(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, 
+            IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "")
+        {
+            IQueryable<TEntity> query = _entities;
+
+            if (filter != null)
+            {
+                query = _entities.Where(filter);
+            }
+
+            foreach(var includeProperty in includeProperties.Split
+                (new char[]{ ','}, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperties);
+            }
+            
+            if (orderBy != null)
+            {
+                return await orderBy(query).ToListAsync();
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

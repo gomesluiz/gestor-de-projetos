@@ -1,4 +1,4 @@
-@model Ferrero.GestorDeProjetos.Web.Models.OrdemDeCompraViewModel
+@model Ferrero.GestorDeProjetos.Web.Models.RequisicaoDeCompraViewModel
 
 <div class="form-group">
     <label asp-for="Numero" class="form-label"></label>
@@ -11,14 +11,9 @@
     <span asp-validation-for="Data" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="NumeroDaRequisicao" class="form-label"></label>
-    <input asp-for="NumeroDaRequisicao" class="form-control" />
-    <span asp-validation-for="NumeroDaRequisicao" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="Valor" class="form-label"></label>
-    <input asp-for="Valor" class="form-control" />
-    <span asp-validation-for="Valor" class="text-danger"></span>
+    <label asp-for="NumeroDaOrdemDeCompra" class="form-label"></label>
+    <input asp-for="NumeroDaOrdemDeCompra" class="form-control" />
+    <span asp-validation-for="NumeroDaOrdemDeCompra" class="text-danger"></span>
 </div>
 <div class="form-group">
     <label asp-for="Descricao" class="form-label"></label>
@@ -35,10 +30,10 @@
 <div class="form-group">
     <label for="Arquivo" class="form-label">
         Documento:&nbsp;
-        @if (!(Model == null || String.IsNullOrEmpty(Model.Documento)))
+        @if (!(Model == null || String.IsNullOrEmpty(Model.Proposta)))
         {
             <a  asp-action="Download" 
-                asp-route-filename="@Model.Documento" 
+                asp-route-filename="@Model.Proposta" 
                 class="btn btn-success btn-sm"> 
                 <span class="ion ion-md-download">
             </a>

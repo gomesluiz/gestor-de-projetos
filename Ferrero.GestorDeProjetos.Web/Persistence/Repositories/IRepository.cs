@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
 {
@@ -10,9 +12,15 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
     public interface IRepository<TEntity> where TEntity : class
     {
         void Add(TEntity entity);
+        void Update (TEntity entity);
+        void Remove(int id);
         void Remove (TEntity entity);
         TEntity Get(int id);
         IEnumerable<TEntity> GetAll();
-        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> FindAsync(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, 
+            IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "");
     }
 }

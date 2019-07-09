@@ -29,7 +29,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     // GET: OrdensDeCompra
     public async Task<IActionResult> Index()
     {
-        return View(await _context.OrdensDeCompra.ToListAsync());
+        return View(await _context.RequisicoesDeCompra.ToListAsync());
     }
 
     // GET: OrdensDeCompra/Create
@@ -44,7 +44,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(OrdemDeCompraViewModel vm, IFormFile Arquivo)
+    public async Task<IActionResult> Create(RequisicaoDeCompraViewModel vm, IFormFile Arquivo)
     {
         if (ExisteOrdemDeCompra(vm.Numero))
         {
@@ -94,7 +94,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
       try
       {
-        var model = await _context.OrdensDeCompra
+        var model = await _context.RequisicoesDeCompra
             .Include(m => m.Ativo)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
@@ -103,7 +103,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return NotFound();
         }
 
-        OrdemDeCompraViewModel vm = ConvertToViewModel(model);
+        RequisicaoDeCompraViewModel vm = ConvertToViewModel(model);
         PopulateAtivosDropDownList(vm.AtivoId);  
         return View(vm);
       }
@@ -122,7 +122,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, OrdemDeCompraViewModel vm, IFormFile Arquivo)
+    public async Task<IActionResult> Edit(int id, RequisicaoDeCompraViewModel vm, IFormFile Arquivo)
     {
         if (id != vm.Id)
         {
@@ -144,7 +144,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
           try
           {
-              OrdemDeCompra model = ConvertToModel(vm);
+              RequisicaoDeCompra model = ConvertToModel(vm);
               _context.Update(model);
               await _context.SaveChangesAsync();
           }
@@ -181,7 +181,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       }
       try
       {
-        var oc = await _context.OrdensDeCompra
+        var oc = await _context.RequisicoesDeCompra
           .Include(m => m.Ativo)
           .AsNoTracking()
           .FirstOrDefaultAsync(m => m.Id == id);
@@ -190,7 +190,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return NotFound();
         }
 
-        OrdemDeCompraViewModel ordemDeCompraViewModel = ConvertToViewModel(oc);
+        RequisicaoDeCompraViewModel ordemDeCompraViewModel = ConvertToViewModel(oc);
         PopulateAtivosDropDownList(ordemDeCompraViewModel.AtivoId);  
         return View(ordemDeCompraViewModel);
       }
@@ -211,8 +211,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     {
       try
       {
-        var oc = await _context.OrdensDeCompra.FindAsync(id);
-        _context.OrdensDeCompra.Remove(oc);
+        var oc = await _context.RequisicoesDeCompra.FindAsync(id);
+        _context.RequisicoesDeCompra.Remove(oc);
         await _context.SaveChangesAsync();
       }
       catch(DbUpdateException)
@@ -239,14 +239,14 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     }
     private bool ExisteOrdemDeCompra(long numero)
     {
-        return _context.OrdensDeCompra.Any(e => e.Numero == numero);
+        return _context.RequisicoesDeCompra.Any(e => e.Numero == numero);
     }
 
-    private async Task Upload(OrdemDeCompraViewModel vm, IFormFile Arquivo)
+    private async Task Upload(RequisicaoDeCompraViewModel vm, IFormFile Arquivo)
     { 
         string fileName = string.Empty;
 
-        if (vm.Documento != null && Arquivo == null)
+        if (vm.Proposta != null && Arquivo == null)
             return;
 
         if (Arquivo == null || Arquivo.Length == 0)
@@ -268,34 +268,34 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             , pathToUpload
             , "oc_" + vm.Numero + ".pdf"
         );
-        vm.Documento = fileName;
+        //vm.Documento = fileName;
     }
 
-    private  OrdemDeCompra ConvertToModel(OrdemDeCompraViewModel viewModel)
+    private  RequisicaoDeCompra ConvertToModel(RequisicaoDeCompraViewModel viewModel)
     {
-      return new OrdemDeCompra {
+      return new RequisicaoDeCompra {
           Id = viewModel.Id,
           Numero = viewModel.Numero,
           Data = DateTime.ParseExact(viewModel.Data, "dd/MM/yyyy", null),
-          NumeroDaRequisicao = viewModel.NumeroDaRequisicao,
-          Valor = viewModel.Valor,
+          //NumeroDaRequisicao = viewModel.NumeroDaRequisicao,
+          //Valor = viewModel.Valor,
           Descricao = viewModel.Descricao,
           Ativo = _context.Ativos.Find(viewModel.AtivoId),
-          Documento = viewModel.Documento
+          //Documento = viewModel.Documento
         };
     }
     
-    private OrdemDeCompraViewModel ConvertToViewModel(OrdemDeCompra model)
+    private RequisicaoDeCompraViewModel ConvertToViewModel(RequisicaoDeCompra model)
     {
-      return new OrdemDeCompraViewModel {
+      return new RequisicaoDeCompraViewModel {
               Id = model.Id,
               Numero = model.Numero,
               Data = model.Data.ToString("dd/MM/yyyy"),
-              NumeroDaRequisicao = model.NumeroDaRequisicao,
-              Valor = model.Valor, 
+              //NumeroDaRequisicao = model.NumeroDaRequisicao,
+              //Valor = model.Valor, 
               Descricao = model.Descricao,
               AtivoId = model.Ativo.Id,
-              Documento = model.Documento
+              //Documento = model.Documento
             };
     }
 

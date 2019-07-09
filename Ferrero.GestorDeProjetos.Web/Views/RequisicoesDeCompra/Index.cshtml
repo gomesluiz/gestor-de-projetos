@@ -1,4 +1,4 @@
-@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.OrdemDeCompra>
+@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.RequisicaoDeCompra>
 
 @{
     ViewData["Title"] = "Todas as ordens de compra";
@@ -29,9 +29,8 @@
         <tr>
           <th>@Html.DisplayNameFor(model => model.Numero)</th>
           <th>@Html.DisplayNameFor(model => model.Data)</th>
-          <th>@Html.DisplayNameFor(model => model.NumeroDaRequisicao)</th>
-          <th>@Html.DisplayNameFor(model => model.Valor)</th>
-          <th>@Html.DisplayNameFor(model => model.Documento)</th>
+          <th>@Html.DisplayNameFor(model => model.NumeroDaOrdemDeCompra)</th>
+          <th>@Html.DisplayNameFor(model => model.Proposta)</th>
           <th></th>
         </tr>
       </thead>
@@ -40,11 +39,10 @@
         <tr>
             <td>@Html.DisplayFor(modelItem => item.Numero)</td>
             <td>@Html.DisplayFor(modelItem => item.Data)</td>
-            <td>@Html.DisplayFor(modelItem => item.NumeroDaRequisicao)</td>
-            <td>@Html.DisplayFor(modelItem => item.Valor)</td>
+            <td>@Html.DisplayFor(modelItem => item.NumeroDaOrdemDeCompra)</td>
             <td class="text-center">
                 <a  asp-action="Download" 
-                    asp-route-filename="@item.Documento" 
+                    asp-route-filename="@item.Proposta" 
                     class="btn btn-success btn-sm"> 
                     <span class="ion ion-md-download"></span>
                 </a>

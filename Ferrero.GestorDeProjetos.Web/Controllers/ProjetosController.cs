@@ -7,40 +7,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
+using System.Data;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class ProjetosController : Controller
     {
         private readonly AppDatabaseContext _context;
+        private readonly UnitOfWork _unitOfWork;
 
         public ProjetosController(AppDatabaseContext context)
         {
-            _context = context;
+            _context    = context;
+            _unitOfWork = new UnitOfWork(context);
         }
 
         // GET: Projetos
         public async Task<IActionResult> Index()
         {
-            var models = await _context
-                .Projetos
-                .Include(e => e.OrdemDeInvestimento)
-                .ToListAsync();
-
-            var viewModels = new List<ProjetoViewModel>();
-            foreach(Projeto model in  models){
-                viewModels.Add(ConvertToViewModel(model));
+            var projetos = await _unitOfWork.Portifolio.FindAsync(includeProperties:"OrdemDeInvestimento");
+            
+            var projetosViewModels = new List<ProjetoViewModel>();
+            foreach(Projeto projeto in  projetos){
+                projetosViewModels.Add(ConvertToViewModel(projeto));
             }
-            ;
-            return View(await Task.FromResult(viewModels.ToAsyncEnumerable()));
-        }
 
+            return View(projetosViewModels);
+        }
         // GET: Projetos/Create
         public IActionResult Create()
         {
             return View();
         }
-
         // POST: Projetos/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -52,14 +51,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           {
             try
             {   
-              var model = ConvertToModel(viewModel);
-
-              _context.Add(model);
-              await _context.SaveChangesAsync();
-
+              _unitOfWork.Portifolio.Add(ConvertToModel(viewModel));
+              await _unitOfWork.SaveAsync();
               return RedirectToAction(nameof(Index));
             }
-            catch(DbUpdateException)
+            catch(DataException)
             {
               ModelState.AddModelError("", "Não é possível incluir este projeto. " + 
                 "Tente novamente, e se o problema persistir " + 
@@ -72,21 +68,14 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             try
             {
-                var model = await FindProjetoBy(id);
-                if (model == null)
-                {
-                    return NotFound();
-                }
+                var projeto = await FindProjetoBy(id);
+                if (projeto == null) return NotFound();
 
-                var viewModel = ConvertToViewModel(model);
-                return View(viewModel);
+                return View(ConvertToViewModel(projeto));
             }
             catch (DbException)
             {
@@ -104,19 +93,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProjetoViewModel viewModel)
         {
-            if (id != viewModel.Id)
-            {
-                return NotFound();
-            }
+            if (id != viewModel.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Projeto model = ConvertToModel(viewModel);
-
-                    _context.Update(model);
-                    await _context.SaveChangesAsync();
+                    var projeto = ConvertToModel(viewModel);
+                    _unitOfWork.Portifolio.Update(projeto);
+                    _unitOfWork.Investimentos.Update(projeto.OrdemDeInvestimento);
+                    await _unitOfWork.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,10 +125,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
             if (saveChangesError.GetValueOrDefault())
             {
                 ModelState.AddModelError("", "Não é possível remover este projeto. " + 
@@ -151,14 +134,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             try
             { 
-                var model = await FindProjetoBy(id);
-                if (model == null)
-                {
-                    return NotFound();
-                }
-
-                var viewModel = ConvertToViewModel(model);
-                return View(viewModel);
+                var projeto = await FindProjetoBy(id);
+                if (projeto == null) return NotFound();
+                
+                return View(ConvertToViewModel(projeto));
             }
             catch(DbException)
             {
@@ -176,9 +155,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             try
             {
-                var model = await FindProjetoBy(id);
+                var projeto = await FindProjetoBy(id);
 
-                _context.Projetos.Remove(model);
+                _unitOfWork.Portifolio.Remove(projeto);
+                _unitOfWork.Investimentos.Remove(projeto.OrdemDeInvestimento);
                 await _context.SaveChangesAsync();
             }
             catch(DbUpdateException)
@@ -202,11 +182,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         ///</summary>
         private async Task<Projeto> FindProjetoBy(int? id)
         {
-            return await _context
-                .Projetos
-                .Include(e => e.OrdemDeInvestimento)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == id);
+            var projetos = await _unitOfWork.Portifolio.FindAsync(
+                projeto => projeto.Id == id
+                , includeProperties:"OrdemDeInvestimento");
+
+            return projetos.FirstOrDefault();
         }
 
         ///<summary>

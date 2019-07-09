@@ -15,7 +15,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
     public DbSet<Projeto> Projetos { get; set; }
     public DbSet<OrdemDeInvestimento> OrdensDeInvestimento { get; set; }
     public DbSet<ResumoFinanceiro> ResumosFinanceiros { get; set; }
-    public DbSet<OrdemDeCompra> OrdensDeCompra { get; set; }
+    public DbSet<RequisicaoDeCompra> RequisicoesDeCompra { get; set; }
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
 
     // Queries ad-hocs.
@@ -134,8 +134,8 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
                 .IsRequired();
       });
 
-      // Model OrdemDeCompra
-      builder.Entity<OrdemDeCompra>(entity =>
+      // Model RequisicaoDeCompra
+      builder.Entity<RequisicaoDeCompra>(entity =>
       {
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Id)
@@ -144,13 +144,9 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
           .IsRequired();
         entity.Property(e => e.Data)
           .HasColumnType("DATETIME");
-        entity.Property(e => e.NumeroDaRequisicao)
-          .IsRequired();
-        entity.Property(e => e.Valor)
-          .IsRequired();
         entity.Property(e => e.Descricao)
           .HasMaxLength(250);
-        entity.Property(e => e.Documento)
+        entity.Property(e => e.Proposta)
           .IsRequired()
           .HasMaxLength(250);
       });

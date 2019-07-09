@@ -79,7 +79,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           {
             var notaFiscal = await _context.NotasFiscais
                 .Include(e => e.Fornecedor)
-                .Include(e => e.OrdemDeCompra)
+                .Include(e => e.RequisicaoDeCompra)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (notaFiscal == null)
@@ -157,7 +157,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           {  
             var notaFiscal = await _context.NotasFiscais
                 .Include(e => e.Fornecedor)
-                .Include(e => e.OrdemDeCompra)
+                .Include(e => e.RequisicaoDeCompra)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (notaFiscal == null)
@@ -208,7 +208,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         private void PopulateOrdensDeCompraDropDownList(object ordemDeCompraSelecionada = null)
         {
-          var ocs = from e in _context.OrdensDeCompra
+          var ocs = from e in _context.RequisicoesDeCompra
                                   orderby e.Numero
                                   select e;
           ViewBag.OrdemDeCompraId = new SelectList(ocs.AsNoTracking(), "Id", "Numero", ordemDeCompraSelecionada);
@@ -226,7 +226,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Numero = notaFiscalViewModel.Numero,
               DataDeLancamento = DateTime.ParseExact(notaFiscalViewModel.DataDeLancamento, "dd/MM/yyyy", null),
               Fornecedor = _context.Fornecedores.Find(notaFiscalViewModel.FornecedorId),
-              OrdemDeCompra = _context.OrdensDeCompra.Find(notaFiscalViewModel.OrdemDeCompraId),
+              RequisicaoDeCompra = _context.RequisicoesDeCompra.Find(notaFiscalViewModel.OrdemDeCompraId),
               Migo = notaFiscalViewModel.Migo,
               Valor = notaFiscalViewModel.Valor
             };
@@ -239,7 +239,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               Numero = notaFiscal.Numero,
               DataDeLancamento = notaFiscal.DataDeLancamento.ToString("dd/MM/yyyy"),
               FornecedorId = notaFiscal.Fornecedor.Id,
-              OrdemDeCompraId = notaFiscal.OrdemDeCompra.Id,
+              OrdemDeCompraId = notaFiscal.RequisicaoDeCompra.Id,
               Migo = notaFiscal.Migo,
               Valor = notaFiscal.Valor
             };
