@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    [DbContext(typeof(ProjetosDBContext))]
-    partial class ProjetosDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppDatabaseContext))]
+    partial class AppDatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

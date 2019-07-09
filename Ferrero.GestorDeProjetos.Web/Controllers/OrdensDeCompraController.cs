@@ -16,10 +16,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class OrdensDeCompraController : Controller
   {
-    private readonly ProjetosDBContext _context;
+    private readonly AppDatabaseContext _context;
     private readonly IHostingEnvironment _hostingEnvironment;
 
-    public OrdensDeCompraController(ProjetosDBContext context, 
+    public OrdensDeCompraController(AppDatabaseContext context, 
                                     IHostingEnvironment hostingEnvironment)
     {
         _context = context;

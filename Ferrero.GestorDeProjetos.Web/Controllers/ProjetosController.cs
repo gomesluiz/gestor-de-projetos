@@ -12,9 +12,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class ProjetosController : Controller
     {
-        private readonly ProjetosDBContext _context;
+        private readonly AppDatabaseContext _context;
 
-        public ProjetosController(ProjetosDBContext context)
+        public ProjetosController(AppDatabaseContext context)
         {
             _context = context;
         }
@@ -31,7 +31,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             foreach(Projeto model in  models){
                 viewModels.Add(ConvertToViewModel(model));
             }
-            
+            ;
             return View(await Task.FromResult(viewModels.ToAsyncEnumerable()));
         }
 

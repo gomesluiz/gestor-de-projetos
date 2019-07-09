@@ -4,9 +4,9 @@ using Ferrero.GestorDeProjetos.Web.Models;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
 {
-    public class ProjetosDBContext : DbContext
+    public class AppDatabaseContext : DbContext
   {
-    public ProjetosDBContext(DbContextOptions<ProjetosDBContext> options)
+    public AppDatabaseContext(DbContextOptions<AppDatabaseContext> options)
     : base(options) { }
 
     public DbSet<Ativo> Ativos { get; set; }

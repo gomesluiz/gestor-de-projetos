@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    [DbContext(typeof(ProjetosDBContext))]
-    [Migration("20190707001419_CreateDatabase")]
-    partial class CreateDatabase
+    [DbContext(typeof(AppDatabaseContext))]
+    [Migration("20190708224821_AppDatabaseCreation")]
+    partial class AppDatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

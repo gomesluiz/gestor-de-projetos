@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    public partial class CreateDatabase : Migration
+    public partial class AppDatabaseCreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

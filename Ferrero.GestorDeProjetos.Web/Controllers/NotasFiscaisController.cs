@@ -12,9 +12,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class NotasFiscaisController : Controller
     {
-        private readonly ProjetosDBContext _context;
+        private readonly AppDatabaseContext _context;
 
-        public NotasFiscaisController(ProjetosDBContext context)
+        public NotasFiscaisController(AppDatabaseContext context)
         {
             _context = context;
         }
