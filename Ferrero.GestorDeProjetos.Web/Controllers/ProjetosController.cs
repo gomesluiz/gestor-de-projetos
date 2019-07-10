@@ -1,39 +1,47 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
-using System.Data;
+using System.Data.Common;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-    public class ProjetosController : Controller
+  public class ProjetosController : Controller
     {
-        private readonly AppDatabaseContext _context;
+        //private readonly AppDatabaseContext _context;
         private readonly UnitOfWork _unitOfWork;
 
         public ProjetosController(AppDatabaseContext context)
         {
-            _context    = context;
+            //_context    = context;
             _unitOfWork = new UnitOfWork(context);
         }
 
         // GET: Projetos
         public async Task<IActionResult> Index()
         {
-            var projetos = await _unitOfWork.Portifolio.FindAsync(includeProperties:"OrdemDeInvestimento");
-            
-            var projetosViewModels = new List<ProjetoViewModel>();
-            foreach(Projeto projeto in  projetos){
-                projetosViewModels.Add(ConvertToViewModel(projeto));
-            }
+            try
+            {   
+                var projetos = await _unitOfWork.Portifolio.FindAsync(includeProperties:"OrdemDeInvestimento");
+                
+                var projetosViewModels = new List<ProjetoViewModel>();
+                foreach(Projeto projeto in  projetos){
+                    projetosViewModels.Add(ConvertToViewModel(projeto));
+                }
 
-            return View(projetosViewModels);
+                return View(projetosViewModels);
+            }
+            catch (DbException)
+            {
+                ModelState.AddModelError("", "Não é possível exibit os projetos. " + 
+                        "Tente novamente, e se o problema persistir " + 
+                        "entre em contato com o administrador do sistema.");
+            }
+            return View();
         }
         // GET: Projetos/Create
         public IActionResult Create()
@@ -41,8 +49,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
         // POST: Projetos/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProjetoViewModel viewModel)
@@ -55,11 +61,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               await _unitOfWork.SaveAsync();
               return RedirectToAction(nameof(Index));
             }
-            catch(DataException)
+            catch(DbException)
             {
-              ModelState.AddModelError("", "Não é possível incluir este projeto. " + 
-                "Tente novamente, e se o problema persistir " + 
-                "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", "Não é possível incluir este projeto. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
             }
           }
           return View(viewModel);
@@ -87,8 +93,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // POST: Projetos/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProjetoViewModel viewModel)
@@ -104,18 +108,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     _unitOfWork.Investimentos.Update(projeto.OrdemDeInvestimento);
                     await _unitOfWork.SaveAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbException)
                 {
-                    if (!ProjetoExists(viewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Não é possível editar este projeto. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
-                    }
+                    ModelState.AddModelError("", "Não é possível editar este projeto. " + 
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");   
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -159,9 +156,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
                 _unitOfWork.Portifolio.Remove(projeto);
                 _unitOfWork.Investimentos.Remove(projeto.OrdemDeInvestimento);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.SaveAsync();
             }
-            catch(DbUpdateException)
+            catch(DbException)
             {
                 return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
             }
@@ -169,16 +166,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         ///<summary>
-        /// Returns TRUE if an Projeto class object exists, otherwise
-        /// returns FALSE.     
-        ///</summary>
-        private bool ProjetoExists(int id)
-        {
-            return _context.Projetos.Any(e => e.Id == id);
-        }
-
-        ///<summary>
-        /// Finds Project class object by Id.
+        /// Finds Projeto class object by Id.
         ///</summary>
         private async Task<Projeto> FindProjetoBy(int? id)
         {

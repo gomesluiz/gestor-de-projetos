@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
 {
     /// <summary>
+    /// Generic repository.
     /// </summary>
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
@@ -44,11 +45,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         {
             return _entities.Find(id);
         }
-        public IEnumerable<TEntity> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return _entities.ToList();
+            return await _entities.ToListAsync();
         }
-
         public async Task<IEnumerable<TEntity>> FindAsync(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, 

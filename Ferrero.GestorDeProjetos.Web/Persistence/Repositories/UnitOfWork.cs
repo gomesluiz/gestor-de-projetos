@@ -13,11 +13,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         private AppDatabaseContext _context;
         private Repository<Projeto> _portifolio;
         private Repository<OrdemDeInvestimento> _investimentos;
-
+        private Repository<RequisicaoDeCompra> _requisicoes;
         public UnitOfWork(AppDatabaseContext context)
         {
             _context = context;
-
         }
         public Repository<Projeto> Portifolio
         {
@@ -31,7 +30,6 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                 return _portifolio;
             }
         }
-
         public Repository<OrdemDeInvestimento> Investimentos
         {
             get
@@ -44,17 +42,23 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                 return _investimentos;
             }
         }
-        public void Save()
+        public Repository<RequisicaoDeCompra> Requisicoes
         {
-            _context.SaveChanges();
+            get
+            {
+
+                if (this._requisicoes == null)
+                {
+                    this._requisicoes = new Repository<RequisicaoDeCompra>(_context);
+                }
+                return _requisicoes;
+            }
         }
         public async Task<int> SaveAsync()
         {
             return await _context.SaveChangesAsync();
         }
-
         private bool disposed = false;
-
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -66,7 +70,6 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             }
             this.disposed = true;
         }
-
         public void Dispose()
         {
             Dispose(true);

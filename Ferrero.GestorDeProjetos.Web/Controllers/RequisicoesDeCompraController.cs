@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -11,25 +12,44 @@ using Ferrero.GestorDeProjetos.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Ferrero.GestorDeProjetos.Web.Models.Helpers;
+using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-    public class OrdensDeCompraController : Controller
+    public class RequisicoesDeCompraController : Controller
   {
     private readonly AppDatabaseContext _context;
+    private readonly UnitOfWork _unitOfWork;
     private readonly IHostingEnvironment _hostingEnvironment;
 
-    public OrdensDeCompraController(AppDatabaseContext context, 
+    public RequisicoesDeCompraController(AppDatabaseContext context, 
                                     IHostingEnvironment hostingEnvironment)
     {
-        _context = context;
+        _unitOfWork = new UnitOfWork(context);
         _hostingEnvironment = hostingEnvironment;
     }
 
     // GET: OrdensDeCompra
     public async Task<IActionResult> Index()
     {
-        return View(await _context.RequisicoesDeCompra.ToListAsync());
+      try
+          {   
+              var requisicoes = await _unitOfWork.Requisicoes.GetAllAsync();
+              
+              var requisicoesViewModels = new List<RequisicaoDeCompraViewModel>();
+              foreach(RequisicaoDeCompra requisicao in  requisicoes){
+                  requisicoesViewModels.Add(ConvertToViewModel(requisicao));
+              }
+
+              return View(requisicoesViewModels);
+          }
+          catch (DbException)
+          {
+              ModelState.AddModelError("", "Não é possível exibit as requisições de compra. " + 
+                      "Tente novamente, e se o problema persistir " + 
+                      "entre em contato com o administrador do sistema.");
+          }
+          return View();
     }
 
     // GET: OrdensDeCompra/Create
@@ -40,76 +60,67 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
     }
 
     // POST: OrdensDeCompra/Create
-    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-    // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(RequisicaoDeCompraViewModel vm, IFormFile Arquivo)
+    public async Task<IActionResult> Create(RequisicaoDeCompraViewModel viewModel, IFormFile Arquivo)
     {
-        if (ExisteOrdemDeCompra(vm.Numero))
+        if (RequisicaoDeCompraExists(viewModel.Numero))
         {
-          ModelState.AddModelError("Numero", "Esta ordem de compra já existe!");
-        }
-        
-        try
-        {
-            await Upload(vm, Arquivo);
-        } 
-        catch(IOException)
-        {
-            ModelState.AddModelError("", "Não é possível gravar o documento da ordem de compra. " + 
-                "Tente novamente, e se o problema persistir " + 
-                "entre em contato com o administrador do sistema.");
+            ModelState.AddModelError("Numero", "Esta requisição de compra já existe!");
         }
 
         if (ModelState.IsValid)
         {
             try
             {
-                _context.Add(ConvertToModel(vm));
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbException)
+                await Upload(viewModel, Arquivo);
+            } 
+            catch(IOException)
             {
-                ModelState.AddModelError("", "Não é possível incluir esta ordem de compra. " + 
+                ModelState.AddModelError("", "Não é possível gravar o documento de proposta. " + 
                     "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");  
+                    "entre em contato com o administrador do sistema.");
             }
-            
+
+            if (ModelState.IsValid) 
+            {
+                try
+                {
+                    _unitOfWork.Requisicoes.Add(ConvertToModel(viewModel));
+                    await _unitOfWork.SaveAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbException)
+                {
+                    ModelState.AddModelError("", "Não é possível incluir esta ordem de compra. " + 
+                        "Tente novamente, e se o problema persistir " + 
+                        "entre em contato com o administrador do sistema.");  
+                }
+            }
         }
         
-        PopulateAtivosDropDownList(vm.AtivoId);
-        return View(vm);
+        PopulateAtivosDropDownList(viewModel.AtivoId);
+        return View(viewModel);
     }
 
     // GET: OrdensDeCompra/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-      if (id == null)
-      {
-          return NotFound();
-      }
+      if (id == null) return NotFound();
 
       try
       {
-        var model = await _context.RequisicoesDeCompra
-            .Include(m => m.Ativo)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (model == null)
-        {
-            return NotFound();
-        }
-
-        RequisicaoDeCompraViewModel vm = ConvertToViewModel(model);
-        PopulateAtivosDropDownList(vm.AtivoId);  
-        return View(vm);
+        var requisicao = await FindRequisicaoBy(id);
+        if (requisicao == null) return NotFound();
+    
+        RequisicaoDeCompraViewModel viewModel = ConvertToViewModel(requisicao);
+        PopulateAtivosDropDownList(viewModel.AtivoId);  
+        return View(viewModel);
       }
       catch(DbException)
       {
-        ModelState.AddModelError("", "Não é possível editar esta ordem de compra. " + 
+        ModelState.AddModelError("", "Não é possível editar esta requisição de compra. " + 
               "Tente novamente, e se o problema persistir " + 
               "entre em contato com o administrador do sistema.");
       }
@@ -150,7 +161,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           }
           catch (DbUpdateConcurrencyException)
           {
-              if (!ExisteOrdemDeCompra(vm.Numero))
+              if (!RequisicaoDeCompraExists(vm.Numero))
               {
                   return NotFound();
               }
@@ -222,6 +233,19 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
       return RedirectToAction(nameof(Index));
     }
 
+    ///<summary>
+    /// Finds a RequisicaoDeCompra class object by Id.
+    ///</summary>
+    private async Task<RequisicaoDeCompra> FindRequisicaoBy(int? id)
+    {
+        var requisicoes = await _unitOfWork.Requisicoes
+            .FindAsync(
+                requisicao => requisicao.Id == id
+                , includeProperties:"Ativo"
+            );
+
+        return requisicoes.FirstOrDefault();
+    }
     public async Task<IActionResult> Download(string filename)
     {
         var downloader = new FileDownloadHelper();
@@ -230,6 +254,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         return File(stream, downloader.GetContentType(filename), filename);
     }
 
+
     private void PopulateAtivosDropDownList(object ativoSelcionado = null)
     {
         var ativos = from aa in _context.Ativos
@@ -237,7 +262,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                                 select aa;
         ViewBag.AtivoId = new SelectList(ativos.AsNoTracking(), "Id", "Descricao", ativoSelcionado);
     }
-    private bool ExisteOrdemDeCompra(long numero)
+    private bool RequisicaoDeCompraExists(long numero)
     {
         return _context.RequisicoesDeCompra.Any(e => e.Numero == numero);
     }
