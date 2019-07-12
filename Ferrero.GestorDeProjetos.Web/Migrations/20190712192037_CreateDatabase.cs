@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    public partial class AppDatabaseCreation : Migration
+    public partial class CreateDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -139,7 +139,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Numero = table.Column<long>(nullable: false),
                     Data = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    NumeroDaOrdemDeCompra = table.Column<long>(nullable: false),
+                    NumeroDaOrdemDeCompra = table.Column<long>(nullable: true),
                     Descricao = table.Column<string>(maxLength: 250, nullable: true),
                     AtivoId = table.Column<int>(nullable: true),
                     Proposta = table.Column<string>(maxLength: 250, nullable: false)

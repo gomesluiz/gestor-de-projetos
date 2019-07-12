@@ -49,10 +49,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         {
             return await _entities.ToListAsync();
         }
-        public async Task<IEnumerable<TEntity>> FindAsync(
+
+        public IEnumerable<TEntity> Find(
             Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, 
-            IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "")
         {
             IQueryable<TEntity> query = _entities;
@@ -70,10 +70,18 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             
             if (orderBy != null)
             {
-                return await orderBy(query).ToListAsync();
+                return orderBy(query).ToList();
             }
 
-            return await query.ToListAsync();
+            return query.ToList();
+        }
+        public async Task<IEnumerable<TEntity>> FindAsync(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "")
+        {
+            
+            return await Task.FromResult(Find(filter, orderBy, includeProperties));
         }
     }
 }

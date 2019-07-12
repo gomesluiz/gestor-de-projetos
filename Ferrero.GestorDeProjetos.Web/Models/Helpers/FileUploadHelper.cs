@@ -35,7 +35,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Helpers
             string fileExtension = Path.GetExtension(file.FileName);
             if (buildUniqueName)
             {
-                string strUniqueName = GetUniqueName("oc_");
+                string strUniqueName = GetUniqueName("doc_");
                 fileName = strUniqueName + fileExtension;
             } 
             else 

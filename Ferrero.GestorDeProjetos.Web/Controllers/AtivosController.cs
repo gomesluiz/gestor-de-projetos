@@ -13,9 +13,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class AtivosController : Controller
     {
-        private readonly AppDatabaseContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public AtivosController(AppDatabaseContext context)
+        public AtivosController(ApplicationDbContext context)
         {
             _context = context;
         }

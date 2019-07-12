@@ -10,9 +10,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class FornecedoresController : Controller
     {
-        private readonly AppDatabaseContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public FornecedoresController(AppDatabaseContext context)
+        public FornecedoresController(ApplicationDbContext context)
         {
             _context = context;
         }

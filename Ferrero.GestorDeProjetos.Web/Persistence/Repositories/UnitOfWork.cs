@@ -10,26 +10,30 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
     /// </summary>
     public class UnitOfWork : IDisposable
     {
-        private AppDatabaseContext _context;
-        private Repository<Projeto> _portifolio;
+        private ApplicationDbContext _context;
+        private Repository<Ativo> _ativos;
         private Repository<OrdemDeInvestimento> _investimentos;
+        private Repository<Projeto> _portifolio;
         private Repository<RequisicaoDeCompra> _requisicoes;
-        public UnitOfWork(AppDatabaseContext context)
+        
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
         }
-        public Repository<Projeto> Portifolio
+
+        public Repository<Ativo> Ativos
         {
             get
             {
 
-                if (this._portifolio == null)
+                if (this._ativos == null)
                 {
-                    this._portifolio = new Repository<Projeto>(_context);
+                    this._ativos = new Repository<Ativo>(_context);
                 }
-                return _portifolio;
+                return _ativos;
             }
         }
+
         public Repository<OrdemDeInvestimento> Investimentos
         {
             get
@@ -40,6 +44,19 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                     this._investimentos = new Repository<OrdemDeInvestimento>(_context);
                 }
                 return _investimentos;
+            }
+        }
+
+        public Repository<Projeto> Portifolio
+        {
+            get
+            {
+
+                if (this._portifolio == null)
+                {
+                    this._portifolio = new Repository<Projeto>(_context);
+                }
+                return _portifolio;
             }
         }
         public Repository<RequisicaoDeCompra> Requisicoes

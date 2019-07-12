@@ -17,6 +17,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         void Remove (TEntity entity);
         TEntity Get(int id);
         Task<IEnumerable<TEntity>> GetAllAsync();
+        IEnumerable<TEntity> Find(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "");
         Task<IEnumerable<TEntity>> FindAsync(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, 

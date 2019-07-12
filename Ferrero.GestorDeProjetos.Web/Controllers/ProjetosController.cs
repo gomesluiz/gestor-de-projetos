@@ -12,12 +12,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
   public class ProjetosController : Controller
     {
-        //private readonly AppDatabaseContext _context;
         private readonly UnitOfWork _unitOfWork;
 
-        public ProjetosController(AppDatabaseContext context)
+        public ProjetosController(ApplicationDbContext context)
         {
-            //_context    = context;
             _unitOfWork = new UnitOfWork(context);
         }
 

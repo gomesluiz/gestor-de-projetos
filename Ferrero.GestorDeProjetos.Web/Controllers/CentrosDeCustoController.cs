@@ -10,9 +10,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class CentrosDeCustoController : Controller
     {
-        private readonly AppDatabaseContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CentrosDeCustoController(AppDatabaseContext context)
+        public CentrosDeCustoController(ApplicationDbContext context)
         {
             _context = context;
         }
