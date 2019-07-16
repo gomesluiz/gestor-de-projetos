@@ -17,7 +17,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         private Repository<OrdemDeInvestimento> _investimentos;
         private Repository<Projeto> _portifolio;
         private Repository<RequisicaoDeCompra> _requisicoes;
-        
+        private Repository<ResumoFinanceiro> _resumos;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -97,6 +97,17 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                     this._requisicoes = new Repository<RequisicaoDeCompra>(_context);
                 }
                 return _requisicoes;
+            }
+        }
+        public Repository<ResumoFinanceiro> Resumos
+        {
+            get
+            {
+                if (this._resumos == null)
+                {
+                    this._resumos = new Repository<ResumoFinanceiro>(_context);
+                }
+                return _resumos;
             }
         }
         public async Task<int> SaveAsync()

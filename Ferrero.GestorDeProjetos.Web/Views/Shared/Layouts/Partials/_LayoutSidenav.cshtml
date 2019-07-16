@@ -58,6 +58,9 @@
                 <li class="sidenav-item@(currentPage.EndsWith("/NotasFiscais") ? " active" : "")">
                     <a href="@Url.RouteUrl("Default", new { action = "Index", controller = "NotasFiscais" })" class="sidenav-link"><div>Notas fiscais</div></a>
                 </li>
+                <li class="sidenav-item@(currentPage.EndsWith("/ResumosFinanceiros") ? " active" : "")">
+                    <a href="@Url.RouteUrl("Default", new { action = "Index", controller = "ResumosFinanceiros" })" class="sidenav-link"><div>Resumos Financeiros</div></a>
+                </li>
             </ul>
         </li>
 

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels {
+namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels 
+{
   /// <summary>
   /// Esta classe contém os atributos e métodos de um Ativo.
   /// </summary>

@@ -1,11 +1,11 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ferrero.GestorDeProjetos.Web.Models {
-  /// <summary>
-  /// Esta classe contém os atributos e métodos de uma nota fiscal.
-  /// </summary>
-  public class NotaFiscalViewModel {
+namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
+{
+    /// <summary>
+    /// Esta classe contém os atributos e métodos de uma nota fiscal.
+    /// </summary>
+    public class NotaFiscalViewModel {
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da nota fiscal.")]

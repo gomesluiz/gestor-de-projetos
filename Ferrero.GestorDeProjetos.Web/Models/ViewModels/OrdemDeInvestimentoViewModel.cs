@@ -1,7 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ferrero.GestorDeProjetos.Web.Models {
+namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels 
+{
   /// <summary>
   /// Esta classe contém os atributos e métodos de uma ordem de investimento.
   /// </summary>

@@ -6,13 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Ferrero.GestorDeProjetos.Web.Persistence.Context;
-using Ferrero.GestorDeProjetos.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Ferrero.GestorDeProjetos.Web.Models.Helpers;
-using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
+using Ferrero.GestorDeProjetos.Web.Models.Helpers;
+using Ferrero.GestorDeProjetos.Web.Persistence.Context;
+using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
