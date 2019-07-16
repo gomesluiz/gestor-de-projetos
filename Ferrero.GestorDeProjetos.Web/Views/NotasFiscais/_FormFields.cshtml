@@ -1,36 +1,35 @@
 @model Ferrero.GestorDeProjetos.Web.Models.NotaFiscalViewModel
 
 <div class="form-group">
-  <label asp-for="Numero" class="control-label"></label>
+  <label asp-for="Numero" class="form-label"></label>
   <input asp-for="Numero" class="form-control" />
   <span asp-validation-for="Numero" class="text-danger"></span>
 </div>
 <div class="form-group">
-  <label asp-for="FornecedorId" class="control-label"></label>
-  <select asp-for="FornecedorId" class="form-control" asp-items="ViewBag.FornecedorId">
-      <option value="">-- Selecione o Fornecedor --</option>
-  </select>
-  <span asp-validation-for="FornecedorId" class="text-danger" />
+  <input type="hidden" asp-for="FornecedorId" value="0"/>
+  <label asp-for="NomeDoFornecedor" class="form-label"></label>
+  <input asp-for="NomeDoFornecedor" class="form-control" />
+  <span asp-validation-for="NomeDoFornecedor" class="text-danger" />
 </div>
 <div class="form-group">
-  <label asp-for="DataDeLancamento" class="control-label"></label>
+  <label asp-for="DataDeLancamento" class="form-label"></label>
   <input asp-for="DataDeLancamento" class="form-control text-mask-date datepicker-base" placeholder="__/__/____" />
   <span asp-validation-for="DataDeLancamento" class="text-danger"></span>
 </div>
 <div class="form-group">
-  <label asp-for="OrdemDeCompraId" class="control-label"></label>
-  <select asp-for="OrdemDeCompraId" class="form-control" asp-items="ViewBag.OrdemDeCompraId">
-      <option value="">-- Selecione a Ordem de Compra --</option>
+  <label asp-for="RequisicaoDeCompraId" class="form-label">Ordem de Compra</label>
+  <select asp-for="RequisicaoDeCompraId" class="form-control" asp-items="ViewBag.RequisicaoDeCompraId">
+      <option value="">-- Selecione --</option>
   </select>
-  <span asp-validation-for="OrdemDeCompraId" class="text-danger" />
+  <span asp-validation-for="RequisicaoDeCompraId" class="text-danger" />
 </div>
 <div class="form-group">
-  <label asp-for="Migo" class="control-label"></label>
+  <label asp-for="Migo" class="form-label"></label>
   <input asp-for="Migo" class="form-control" />
   <span asp-validation-for="Migo" class="text-danger"></span>
 </div>
 <div class="form-group">
-  <label asp-for="Valor" class="control-label"></label>
+  <label asp-for="Valor" class="form-label"></label>
   <input asp-for="Valor" class="form-control" />
   <span asp-validation-for="Valor" class="text-danger"></span>
 </div>

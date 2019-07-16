@@ -80,6 +80,9 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
           .HasMaxLength(50)
           .IsRequired();
       });
+
+      //builder.Entity<Fornecedor>()
+       // .HasIndex(e => e.Nome);
     
       // Model Projeto
       builder.Entity<Projeto>(entity =>

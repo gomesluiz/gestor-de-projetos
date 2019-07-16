@@ -237,7 +237,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         private bool RequisicaoDeCompraExists(long numero)
         {
             var requisicoes = _unitOfWork.Requisicoes
-                .Find(requisicao => requisicao.Numero== numero, includeProperties:"Ativo");
+                .Find(requisicao => requisicao.Numero == numero, includeProperties:"Ativo");
 
             return requisicoes.Count() > 0;
         }
@@ -333,10 +333,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         /// <summary>
         /// TODO:
         /// </summary>
-        public async Task<IActionResult> Download(string filename, string pathToDownload)
+        public async Task<IActionResult> Download(string filename)
         {
             var downloader = new FileDownloadHelper();
-            var stream = await downloader.Download(pathToDownload, filename);
+            var stream = await downloader.Download(_pathToStore, filename);
             return File(stream, downloader.GetContentType(filename), filename);
         }
     }

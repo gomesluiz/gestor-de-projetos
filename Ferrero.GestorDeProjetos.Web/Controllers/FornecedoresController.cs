@@ -176,7 +176,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           }
           return RedirectToAction(nameof(Index));
         }
-
+        public ActionResult GetFornecedoresPorNome(string term)
+        {
+            var fornecedores = _context
+                .Fornecedores
+                .Where(c => c.Nome.StartsWith(term))
+                .Select(m => new {label = m.Nome, id = m.Id});
+            
+            return Json(fornecedores);
+        }
         private bool FornecedorExists(int id)
         {
             return _context.Fornecedores.Any(e => e.Id == id);

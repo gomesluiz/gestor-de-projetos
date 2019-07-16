@@ -17,13 +17,16 @@ namespace Ferrero.GestorDeProjetos.Web.Models {
     [Required(ErrorMessage = "Por favor, informe a data de lançamento da nota fiscal.")]
     public string DataDeLancamento { get; set; }
 
-    [Required(ErrorMessage = "Por favor, digite o fornecedor da nota fiscal.")]
     [Display(Name = "Fornecedor")]
     public int FornecedorId { get; set; }
 
+    [Required(ErrorMessage = "Por favor, digite o fornecedor da nota fiscal.")]
+    [Display(Name = "Fornecedor")]
+    public string NomeDoFornecedor {get; set;}
+
     [Required(ErrorMessage = "Por favor, digite o número da ordem de compra.")]
-    [Display(Name = "Ordem de Compra")]
-    public int OrdemDeCompraId { get; set; }
+    [Display(Name = "Requisicao de Compra")]
+    public int RequisicaoDeCompraId { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o número da migo.")]
     [Display(Name = "Número da Migo")]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
 {
     /// <summary>
-    /// Interface para os repositórios.
+    /// Interface for generic repositories.
     /// </summary>
     public interface IRepository<TEntity> where TEntity : class
     {
@@ -23,8 +23,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             string includeProperties = "");
         Task<IEnumerable<TEntity>> FindAsync(
             Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, 
-            IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
     }
 }

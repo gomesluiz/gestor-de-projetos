@@ -12,6 +12,8 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
     {
         private ApplicationDbContext _context;
         private Repository<Ativo> _ativos;
+        private Repository<Fornecedor> _fornecedores;
+        private Repository<NotaFiscal> _notas;
         private Repository<OrdemDeInvestimento> _investimentos;
         private Repository<Projeto> _portifolio;
         private Repository<RequisicaoDeCompra> _requisicoes;
@@ -31,6 +33,32 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                     this._ativos = new Repository<Ativo>(_context);
                 }
                 return _ativos;
+            }
+        }
+
+        public Repository<Fornecedor> Fornecedores
+        {
+            get
+            {
+
+                if (this._fornecedores == null)
+                {
+                    this._fornecedores = new Repository<Fornecedor>(_context);
+                }
+                return _fornecedores;
+            }
+        }
+
+        public Repository<NotaFiscal> NotasFiscais
+        {
+            get
+            {
+
+                if (this._notas == null)
+                {
+                    this._notas = new Repository<NotaFiscal>(_context);
+                }
+                return _notas;
             }
         }
 

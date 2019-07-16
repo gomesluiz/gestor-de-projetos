@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
 {
     /// <summary>
-    /// Generic repository.
+    /// Concrete implementation of a generic repository.
     /// </summary>
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
@@ -49,7 +49,6 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         {
             return await _entities.ToListAsync();
         }
-
         public IEnumerable<TEntity> Find(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -62,10 +61,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                 query = _entities.Where(filter);
             }
 
-            foreach(var includeProperty in includeProperties.Split
+            foreach(var property in includeProperties.Split
                 (new char[]{ ','}, StringSplitOptions.RemoveEmptyEntries))
             {
-                query = query.Include(includeProperties);
+                query = query.Include(property);
             }
             
             if (orderBy != null)

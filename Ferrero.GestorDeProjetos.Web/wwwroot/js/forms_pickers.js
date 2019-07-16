@@ -37,49 +37,6 @@ $(function() {
   $('#datepicker-inline').datepicker();
 });
 
-// Flatpickr
-$(function () {
-  // Date
-  $('#flatpickr-date').flatpickr({
-    altInput: true
-  });
-
-  // Time
-  $('#flatpickr-time').flatpickr({
-    enableTime: true,
-    noCalendar: true,
-    altInput: true
-  });
-
-  // Datetime
-  $('#flatpickr-datetime').flatpickr({
-    enableTime: true,
-    altInput: true
-  });
-
-  // Full
-  $('#flatpickr-full').flatpickr({
-    weekNumbers: true,
-    enableTime: true,
-    mode: 'multiple',
-    minDate: 'today',
-    altInput: true
-  });
-
-  // Range
-  $('#flatpickr-range').flatpickr({
-    mode: 'range',
-    altInput: true
-  });
-
-  // Inline
-  $('#flatpickr-inline').flatpickr({
-    inline: true,
-    altInput: true,
-    allowInput: false
-  });
-});
-
 // Bootstrap Daterangepicker
 $(function() {
   var isRtl = $('body').attr('dir') === 'rtl' || $('html').attr('dir') === 'rtl';
@@ -194,40 +151,5 @@ $(function() {
   $('#timepicker-example-6').timepicker({
     'step': 15,
     orientation: (isRtl ? 'r' : 'l')
-  });
-});
-
-// Minicolors
-$(function() {
-  var isRtl = $('body').attr('dir') === 'rtl' || $('html').attr('dir') === 'rtl';
-
-  $('#minicolors-hue').minicolors({
-    control:  'hue',
-    position: 'bottom ' + (isRtl ? 'right' : 'left'),
-  });
-
-  $('#minicolors-saturation').minicolors({
-    control:  'saturation',
-    position: 'bottom ' + (isRtl ? 'left' : 'right'),
-  });
-
-  $('#minicolors-wheel').minicolors({
-    control:  'wheel',
-    position: 'top ' + (isRtl ? 'left' : 'right'),
-  });
-
-  $('#minicolors-opacity').minicolors({
-    control: 'wheel',
-    opacity: true,
-    position: 'bottom ' + (isRtl ? 'right' : 'left'),
-  });
-
-  $('#minicolors-brightness').minicolors({
-    control:  'brightness',
-    position: 'top ' + (isRtl ? 'right' : 'left'),
-  });
-
-  $('#minicolors-hidden').minicolors({
-    position: 'top ' + (isRtl ? 'right' : 'left'),
   });
 });
