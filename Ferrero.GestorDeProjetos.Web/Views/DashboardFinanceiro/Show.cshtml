@@ -13,13 +13,15 @@
 
 <h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
   <div><span class="text-muted font-weight-light">Follow-up/</span>Dashboard Financeiro</div>
-  <input type="hidden" id="oiId" name="oiId" value="@ViewBag.oiId"/>
+  <input type="hidden"  id="NumeroDaOrdemDeInvestimento" 
+                        name="NumeroDaOrdemDeInvestimento" 
+                        value="@ViewBag.NumeroDaOrdemDeInvestimento"/>
 </h4>
 
 <div class="row">
     <div class="card col-md-12">
         <div class="card-body">
-            <h5 class="card-title">@ViewBag.Id</h5>
+            <h5 class="card-title">@ViewBag.NumeroDaOrdemDeInvestimento - @ViewBag.NomeDoProjeto</h5>
             <canvas id="DonuChart"></canvas>
         </div>
     </div>
@@ -32,7 +34,7 @@
 <div class="row">
     <div class="card col-md-12">
         <div class="card-body">
-            <h5 class="card-title">Line Chart</h5>
+            <h5 class="card-title">@ViewBag.NumeroDaOrdemDeInvestimento - @ViewBag.NomeDoProjeto</h5>
             <canvas id="LineChart"></canvas>
         </div>
     </div>
@@ -46,7 +48,7 @@
     <script>
         //--- Doughnut Chart ---
         $(document).ready(function() {
-            var id    = $('#oiId').val();  
+            var id    = $('#NumeroDaOrdemDeInvestimento').val();  
             var ctx   = document.getElementById('DonuChart').getContext("2d");
             ctx.textAlign = 'center';
             $.ajax({
@@ -63,7 +65,7 @@
 
         //--- Line Chart ---
         $(document).ready(function() {
-            var id    = $('#oiId').val();
+            var id    = $('#NumeroDaOrdemDeInvestimento').val();
             var ctx   = document.getElementById('LineChart').getContext("2d");
             $.ajax({
                 type: 'GET',

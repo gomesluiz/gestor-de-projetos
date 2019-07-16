@@ -43,6 +43,10 @@
           <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento.Numero) </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
           <td class="text-center">
+            <a href="@Url.RouteUrl("Default", new { action = "show", controller = "dashboard" , id = item.Id})" 
+                    class="btn btn-success btn-sm"> 
+                    <span class="ion ion-md-stats"></span>
+            </a>
             <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
               <span class="ion ion-md-create">
             </a>
