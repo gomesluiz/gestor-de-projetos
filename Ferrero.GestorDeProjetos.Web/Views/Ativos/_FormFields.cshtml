@@ -1,67 +1,68 @@
 @model Ferrero.GestorDeProjetos.Web.Models.ViewModels.AtivoViewModel
 
 <div class="form-group">
-  <label asp-for="Id" class="form-label"></label>
-  <input asp-for="Id" class="form-control"/>
-  <span asp-validation-for="Id" class="text-danger"></span>
+  <label asp-for="Numero" class="control-label"></label>
+  <input asp-for="Numero" class="form-control bootstrap-maxlength-field" maxlength="10"/>
+  <span asp-validation-for="Numero" class="text-danger"></span>
 </div>
+
 <div class="form-group">
-  <label asp-for="Descricao" class="form-label"></label>
+  <label asp-for="Descricao" class="control-label"></label>
   <input asp-for="Descricao" class="form-control bootstrap-maxlength-field" maxlength="50" />
   <span asp-validation-for="Descricao" class="text-danger"></span>
 </div>
 
 <div class="form-row">
     <div class="form-group col-md-6">
-        <label asp-for="OrdemDeInvestimentoId" class="form-label"></label>
+        <label asp-for="OrdemDeInvestimentoId" class="control-label"></label><span class="text-danger">&nbsp;*</span>
         <select asp-for="OrdemDeInvestimentoId" class="form-control" asp-items="ViewBag.OrdemDeInvestimentoId">
             <option value="">-- Selecione --</option>
         </select>
         <span asp-validation-for="OrdemDeInvestimentoId" class="text-danger" />
     </div>
     <div class="form-group col-md-6">
-        <label asp-for="CentroDeCustoId" class="form-label"></label>
+        <label asp-for="CentroDeCustoId" class="control-label"></label><span class="text-danger">&nbsp;*</span>
         <select asp-for="CentroDeCustoId" class="form-control" asp-items="ViewBag.CentroDeCustoId">
-            <option value="">-- Selecione --</option>
+            <option value="0">-- Selecione --</option>
         </select>
         <span asp-validation-for="CentroDeCustoId" class="text-danger" />
     </div>
 </div>
 
 <div class="form-group">
-    <label asp-for="Planta" class="form-label"></label>
+    <label asp-for="Planta" class="control-label"></label>
     <input asp-for="Planta" class="form-control bootstrap-maxlength-field" maxlength="50" />
     <span asp-validation-for="Planta" class="text-danger"></span>
 </div>
+
 <div class="form-group">
-    <label asp-for="Quantidade" class="form-label"></label>
+    <label asp-for="Quantidade" class="control-label"></label>
     <input asp-for="Quantidade" class="form-control"/>
     <span asp-validation-for="Quantidade" class="text-danger"></span>
 </div>
 
 <div class="form-row">
     <div class="form-group col-md-4">
-        <label asp-for="Divisao" class="form-label"></label>
+        <label asp-for="Divisao" class="control-label"></label>
         <select asp-for="Divisao" class="form-control">
-            <option value="">-- Selecione --</option>
             <option value="1">INDUSTRIAL</option>
             <option value="2">COMERCIAL</option>
         </select>
         <span asp-validation-for="Divisao" class="text-danger"></span>
     </div>
     <div class="form-group col-md-4">
-        <label asp-for="Natureza" class="form-label"></label>
+        <label asp-for="Natureza" class="control-label"></label>
         <select asp-for="Natureza" class="form-control">
             <option value="">-- Selecione --</option>
             <option value="1">SERVIÇO</option>
             <option value="2">ITENS, MATERIAIS E OU MÁQUINAS</option>
+            <option value="3">SERVIÇOS, ITENS, MATERIAIS E OU MÁQUINAS</option>
         </select>
         <span asp-validation-for="Natureza" class="text-danger"></span>
     </div>
     <div class="form-group col-md-4">
-        <label asp-for="Propriedade" class="form-label"></label>
+        <label asp-for="Propriedade" class="control-label"></label>
         <select asp-for="Propriedade" class="form-control">
-            <option value="">-- Selecione --</option>
             <option value="1">BEM PRÓPRIO</option>
             <option value="2">BENFEITORIAS EM PROP. DE TERCEIROS</option>
         </select>
@@ -69,43 +70,63 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="form-group col-md-6">
-        <label class="form-label">Imobilizado será utlizado no</label>
-        <select asp-for="DestinoDeUso" class="form-control">
-            <option value="">-- Selecione --</option>
-            <option value="1">ADMINISTRATIVO</option>
-            <option value="2">PROCESSO FABRIL</option>
-        </select>
-        <span asp-validation-for="DestinoDeUso" class="text-danger"></span>
-    </div>
-    <div class="form-group col-md-6">
-        <label class="form-label">Imobilizado está</label>
-        <select asp-for="SituacaoParaUso" class="form-control">
-            <option value="">-- Selecione --</option>
-            <option value="1">PRONTO PARA USO</option>
-            <option value="2">PROCESSO DE MONTAGEM (MÁQUINA)</option>
-            <option value="3">EM ANDAMENTO (EDIFICAÇÕES)</option>
-        </select>
-        <span asp-validation-for="SituacaoParaUso" class="text-danger"></span>
-    </div>
+<div class="form-group">
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox"  asp-for="UsoNoAdministrativo" class="custom-control-input" />
+        <label asp-for="UsoNoAdministrativo" class="custom-control-label"></label>
+    </label>
 </div>
 
 <div class="form-group">
-  <label asp-for="Observacoes" class="form-label"></label>
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox"  asp-for="UsoNoProcessoFabril" class="custom-control-input" />
+        <label asp-for="UsoNoProcessoFabril" class="custom-control-label"></label>
+    </label>
+</div>
+
+<div class="form-group">
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox"  asp-for="ProntoParaUso" class="custom-control-input" />
+        <label asp-for="ProntoParaUso" class="custom-control-label"></label>
+    </label>
+</div>
+
+<div class="form-group">
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox"  asp-for="MaquinaEmMontagemInstalacao" class="custom-control-input" />
+        <label asp-for="MaquinaEmMontagemInstalacao" class="custom-control-label"></label>
+    </label>
+</div>
+
+<div class="form-group">
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox"  asp-for="EdificacaoEmAndamento" class="custom-control-input" />
+        <label asp-for="EdificacaoEmAndamento" class="custom-control-label"></label>
+    </label>
+</div>
+
+<div class="form-group">
+  <label asp-for="Observacoes" class="control-label"></label>
   <textarea asp-for="Observacoes" class="form-control bootstrap-maxlength-field" maxlength="250"></textarea>
   <span asp-validation-for="Observacoes" class="text-danger"></span>
 </div>
+
 <div class="form-group">
-  <label asp-for="Requisitante" class="form-label"></label>
+  <label asp-for="Requisitante" class="control-label"></label>
   <input asp-for="Requisitante" class="form-control bootstrap-maxlength-field" maxlength="50" />
   <span asp-validation-for="Requisitante" class="text-danger"></span>
 </div>
+
 <div class="form-group">
-  <label asp-for="SituacaoDoAtivo" class="form-label"></label>
+  <label asp-for="SituacaoDoAtivo" class="control-label"></label>
   <select asp-for="SituacaoDoAtivo" class="form-control">
-    <option value="1">NÃO TRANSFERIDO</option>
-    <option value="2">TRANSFERIDO</option>
+    <option value="1">SOLICITADO</option>
+    <option value="2">NÃO TRANSFERIDO</option>
+    <option value="3">TRANSFERIDO</option>
   </select>
   <span asp-validation-for="SituacaoDoAtivo" class="text-danger"></span>
 </div>
+
+<p>
+    <span class="text-danger">*</span>&nbsp;Campos obrigatórios
+</p>

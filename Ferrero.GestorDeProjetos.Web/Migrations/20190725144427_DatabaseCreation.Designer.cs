@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190712192037_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20190725144427_DatabaseCreation")]
+    partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,19 +23,31 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CentroDeCustoId");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("DestinoDeUso");
+                    b.Property<int>("Divisao")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(1);
 
-                    b.Property<int>("Divisao");
+                    b.Property<bool>("EdificacaoEmAndamento")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("MaquinaEmMontagemInstalacao")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<int>("Natureza");
+
+                    b.Property<string>("Numero")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Observacoes")
                         .HasMaxLength(250);
@@ -43,19 +55,34 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<int?>("OrdemDeInvestimentoId");
 
                     b.Property<string>("Planta")
-                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("Propriedade");
+                    b.Property<bool>("ProntoParaUso")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
-                    b.Property<int>("Quantidade");
+                    b.Property<int>("Propriedade")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(1);
+
+                    b.Property<int>("Quantidade")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Requisitante")
                         .HasMaxLength(50);
 
-                    b.Property<int>("SituacaoDoAtivo");
+                    b.Property<int>("SituacaoDoAtivo")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(1);
 
-                    b.Property<int>("SituacaoParaUso");
+                    b.Property<bool>("UsoNoAdministrativo")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("UsoNoProcessoFabril")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.HasKey("Id");
 

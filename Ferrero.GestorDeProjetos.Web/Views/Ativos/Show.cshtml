@@ -1,0 +1,195 @@
+@model Ferrero.GestorDeProjetos.Web.Models.ViewModels.AtivoViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Formulario de Ativo (Versão para Impressão)</title>
+
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900" rel="stylesheet">
+
+        <!-- Icon fonts -->
+        <link rel="stylesheet" href="~/vendor/fonts/fontawesome.css">
+        <link rel="stylesheet" href="~/vendor/fonts/ionicons.css">
+        <link rel="stylesheet" href="~/vendor/fonts/linearicons.css">
+        <link rel="stylesheet" href="~/vendor/fonts/open-iconic.css">
+        <link rel="stylesheet" href="~/vendor/fonts/pe-icon-7-stroke.css">
+
+        <!-- Core stylesheets -->
+        <link rel="stylesheet" href="~/vendor/css/rtl/bootstrap.css" class="theme-settings-bootstrap-css">
+        <link rel="stylesheet" href="~/vendor/css/rtl/appwork.css" class="theme-settings-appwork-css">
+        <link rel="stylesheet" href="~/vendor/css/rtl/theme-corporate.css" class="theme-settings-theme-css">
+        <link rel="stylesheet" href="~/vendor/css/rtl/colors.css" class="theme-settings-colors-css">
+        <link rel="stylesheet" href="~/vendor/css/rtl/uikit.css">
+        <link rel="stylesheet" href="~/css/application.css">
+
+        <!-- Load polyfills -->
+        <script src="~/vendor/js/polyfills.js"></script>
+        <script>document['documentMode']===10&&document.write('<script src="https://polyfill.io/v3/polyfill.min.js?features=Intl.~locale.en"><\/script>')</script>
+
+        <script src="~/vendor/js/material-ripple.js"></script>
+        <script src="~/vendor/js/layout-helpers.js"></script>
+
+        <!-- Theme settings -->
+        <!-- This file MUST be included after core stylesheets and layout-helpers.js in the <head> section -->
+        <script src="~/vendor/js/theme-settings.js"></script>
+        <script>
+            window.themeSettings = new ThemeSettings({
+            cssPath: '~/vendor/css/rtl/',
+            themesPath: '~/vendor/css/rtl/'
+            });
+        </script>
+
+        <!-- Core scripts -->
+        <script src="~/vendor/js/pace.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <!-- Libs -->
+        <link rel="stylesheet" href="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.css">
+        <style>
+            html,
+            body {
+                background: #fff !important;
+            }
+
+            body> :not(.form-print) {
+                display: none !important;
+            }
+
+            .form-print {
+                min-width: 768px !important;
+                font-size: 15px !important;
+            }
+
+            .form-print * {
+                border-color: #aaa !important;
+                color: #000 !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="page-loader">
+            <div class="bg-primary"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="form-print">
+
+            <h1>Formulário Criação Imobilizado (WIP)</h1>
+            <h6>Informações para criação de código de imobilizado. (*) Preenchimento mandatório</h6>
+
+            @Html.DisplayNameFor(model => model.Descricao)
+            @Html.DisplayFor(model => model.Descricao)
+            <br/>
+            @Html.DisplayNameFor(model => model.CentroDeCustoNome)
+            @Html.DisplayFor(model => model.CentroDeCustoNome)
+            <br/>
+            @Html.DisplayNameFor(model => model.OrdemDeInvestimentoNumero)
+            @Html.DisplayFor(model => model.OrdemDeInvestimentoNumero)
+            <br/>
+            @Html.DisplayNameFor(model => model.Planta)
+            @Html.DisplayFor(model => model.Planta)
+            <br/>
+            @Html.DisplayNameFor(model => model.Quantidade)
+            @Html.DisplayFor(model => model.Quantidade)
+            <br/>
+            @Html.DisplayNameFor(model => model.Divisao)
+            <label>Industrial</label><input type="checkbox" checked="@(Model.Divisao == 1 ? true:false)" />
+            <label>Comercial</label><input type="checkbox"  checked="@(Model.Divisao == 2 ? true:false)"  />
+            <br/>
+            @Html.DisplayNameFor(model => model.Natureza)
+            <label>Serviço</label><input type="checkbox" checked="@((Model.Natureza == 1 || Model.Natureza == 3) ? true:false)" />
+            <label>Itens, materiais e/ou máquinas</label><input type="checkbox"  checked="@((Model.Natureza == 2 || Model.Natureza == 3) ? true:false)"  />
+            <br/>
+            @Html.DisplayNameFor(model => model.Propriedade)
+            <label>Bem Próprio</label><input type="checkbox" checked="@((Model.Propriedade == 1) ? true:false)" />
+            <label>Benfeitorias em Propriedade de Terceiros</label><input type="checkbox"  checked="@((Model.Propriedade == 2) ? true:false)"  />
+            <br/>
+            
+            <h6>Importante: Em caso deste bem se tratar de benfeitoria em propriedade de terceiros, anexar o contrato
+                de aluguel e/ou documento equivalente que indique o prazo de vigência</h6>
+            </h6>
+            <h6>Preencha com um X as opções correspondentes ao ativo que está sendo comprado</h6>
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <label asp-for="UsoNoAdministrativo" class="custom-control-label"></label>
+                    <input type="checkbox"  asp-for="UsoNoAdministrativo" class="custom-control-input" />
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <label asp-for="UsoNoProcessoFabril" class="custom-control-label"></label>
+                    <input type="checkbox"  asp-for="UsoNoProcessoFabril" class="custom-control-input" />
+                    
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <label asp-for="ProntoParaUso" class="custom-control-label"></label>
+                    <input type="checkbox"  asp-for="ProntoParaUso" class="custom-control-input" />
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <label asp-for="MaquinaEmMontagemInstalacao" class="custom-control-label"></label>
+                    <input type="checkbox"  asp-for="MaquinaEmMontagemInstalacao" class="custom-control-input" />
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <label asp-for="EdificacaoEmAndamento" class="custom-control-label"></label>
+                    <input type="checkbox"  asp-for="EdificacaoEmAndamento" class="custom-control-input" />
+                </label>
+            </div>
+
+            @Html.DisplayNameFor(model => model.Observacoes)
+            @Html.DisplayFor(model => model.Observacoes)
+
+            <h6>Data da solicitação: </h6>
+
+
+
+            @Html.DisplayNameFor(model => model.Requisitante)
+            @Html.DisplayFor(model => model.Requisitante) (*) Nome e Assinatura
+
+            <h6>Preenchimento exclusivo da contabilidade</h6>
+
+            <h6>Número do Ativo WIP Criado:</h6>
+
+            <h6>Todas as solicitações deverão obrigatoriamente ser solicitadas via e-mail para DLL-BRA08-Contabilidade-AtivoImobilizado</h6>
+
+            <h6>A contabilidade tem o prazo de até 24 horas para criação dos dados mestres solicitados.</h6>
+
+        </div>
+    </body>
+    <!-- Core scripts -->
+    <script src="~/vendor/libs/popper/popper.js"></script>
+    <script src="~/vendor/js/bootstrap.js"></script>
+    <script src="~/vendor/js/sidenav.js"></script>
+
+    <!-- Libs -->
+    <script src="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <!-- Application -->
+    <script src="~/js/application.js"></script>
+    <script>
+        // -------------------------------------------------------------------------
+        // Print on window load
+        $(function () {
+            window.print();
+        });
+    </script>
+</html>

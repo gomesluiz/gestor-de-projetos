@@ -5,6 +5,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models
     /// </summary>
     public class Ativo {
     public int Id { get; set; }
+    public string Numero {get; set;}
     public string Descricao { get; set; }
     public OrdemDeInvestimento OrdemDeInvestimento { get; set; }
     public CentroDeCusto CentroDeCusto { get; set; }
@@ -13,8 +14,11 @@ namespace Ferrero.GestorDeProjetos.Web.Models
     public int Divisao { get; set; } 
     public int Natureza {get; set; }
     public int Propriedade { get; set; }
-    public int DestinoDeUso { get; set; }
-    public int SituacaoParaUso { get; set; }
+    public bool UsoNoAdministrativo { get; set; }
+    public bool UsoNoProcessoFabril { get; set; }
+    public bool ProntoParaUso { get; set; }
+    public bool MaquinaEmMontagemInstalacao { get; set; }
+    public bool EdificacaoEmAndamento {get; set;}
     public string Observacoes { get; set; }
     public string Requisitante { get; set; }    
     public int SituacaoDoAtivo { get; set; }

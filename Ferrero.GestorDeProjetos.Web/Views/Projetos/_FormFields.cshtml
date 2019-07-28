@@ -1,7 +1,7 @@
 @model Ferrero.GestorDeProjetos.Web.Models.ViewModels.ProjetoViewModel
 <div class="form-group">
     <label asp-for="Nome" class="form-label"></label><span class="text-danger">&nbsp;*</span>
-    <input asp-for="Nome" class="form-control" />
+    <input asp-for="Nome" class="form-control bootstrap-maxlength-field" maxlength="50"/>
     <span asp-validation-for="Nome" class="text-danger"></span>
 </div>
 <div class="form-group">

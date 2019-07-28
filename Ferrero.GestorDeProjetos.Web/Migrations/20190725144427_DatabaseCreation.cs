@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    public partial class CreateDatabase : Migration
+    public partial class DatabaseCreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,20 +51,25 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "Ativos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
-                    Descricao = table.Column<string>(maxLength: 50, nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Numero = table.Column<string>(maxLength: 10, nullable: true),
+                    Descricao = table.Column<string>(maxLength: 50, nullable: true),
                     OrdemDeInvestimentoId = table.Column<int>(nullable: true),
                     CentroDeCustoId = table.Column<int>(nullable: true),
-                    Planta = table.Column<string>(maxLength: 50, nullable: false),
-                    Quantidade = table.Column<int>(nullable: false),
-                    Divisao = table.Column<int>(nullable: false),
+                    Planta = table.Column<string>(maxLength: 50, nullable: true),
+                    Quantidade = table.Column<int>(nullable: false, defaultValue: 1),
+                    Divisao = table.Column<int>(nullable: false, defaultValue: 1),
                     Natureza = table.Column<int>(nullable: false),
-                    Propriedade = table.Column<int>(nullable: false),
-                    DestinoDeUso = table.Column<int>(nullable: false),
-                    SituacaoParaUso = table.Column<int>(nullable: false),
+                    Propriedade = table.Column<int>(nullable: false, defaultValue: 1),
+                    UsoNoAdministrativo = table.Column<bool>(nullable: false, defaultValue: false),
+                    UsoNoProcessoFabril = table.Column<bool>(nullable: false, defaultValue: false),
+                    ProntoParaUso = table.Column<bool>(nullable: false, defaultValue: false),
+                    MaquinaEmMontagemInstalacao = table.Column<bool>(nullable: false, defaultValue: false),
+                    EdificacaoEmAndamento = table.Column<bool>(nullable: false, defaultValue: false),
                     Observacoes = table.Column<string>(maxLength: 250, nullable: true),
                     Requisitante = table.Column<string>(maxLength: 50, nullable: true),
-                    SituacaoDoAtivo = table.Column<int>(nullable: false)
+                    SituacaoDoAtivo = table.Column<int>(nullable: false, defaultValue: 1)
                 },
                 constraints: table =>
                 {

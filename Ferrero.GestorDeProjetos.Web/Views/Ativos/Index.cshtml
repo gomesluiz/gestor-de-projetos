@@ -48,6 +48,9 @@
             <td class="text-center"><span class=" badge badge-outline-danger">@Html.DisplayFor(modelItem => item.DescricaoDaSituacaoDoAtivo)</span></td>
           }
           <td class="text-center">
+              <a asp-action="Show" class="btn btn-success btn-sm" asp-route-id="@item.Id">
+                <span class="ion ion-md-print">
+              </a>
               <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
                 <span class="ion ion-md-create">
               </a>

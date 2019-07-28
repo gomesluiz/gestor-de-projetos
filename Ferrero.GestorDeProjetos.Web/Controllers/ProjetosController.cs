@@ -25,13 +25,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             try
             {   
-                var projetos = await _unitOfWork.Portifolio.FindAsync(includeProperties:"OrdemDeInvestimento");
+                var projetos = await _unitOfWork
+                    .Portifolio
+                    .FindAsync(includeProperties:"OrdemDeInvestimento");
                 
                 var projetosViewModels = new List<ProjetoViewModel>();
+               
                 foreach(Projeto projeto in  projetos){
                     projetosViewModels.Add(ConvertToViewModel(projeto));
                 }
-
+            
                 return View(projetosViewModels);
             }
             catch (DbException)

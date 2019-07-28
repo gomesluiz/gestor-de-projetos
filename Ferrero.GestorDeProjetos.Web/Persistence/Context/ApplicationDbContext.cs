@@ -29,33 +29,45 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
       builder.Entity<Ativo>(entity =>
       {
         entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id)
-          .ValueGeneratedNever()
-          .IsRequired();
+        entity.Property(e => e.Numero)
+          .HasMaxLength(10);
         entity.Property(e => e.Descricao)
-          .HasMaxLength(50)
-          .IsRequired();  
+          .HasMaxLength(50);
         entity.Property(e => e.Planta)
-          .HasMaxLength(50)
-          .IsRequired();
+          .HasMaxLength(50);
         entity.Property(e => e.Quantidade)
-          .IsRequired();
+          .IsRequired()
+          .HasDefaultValue(1);
         entity.Property(e => e.Divisao)
-          .IsRequired();  
+          .IsRequired()
+          .HasDefaultValue(1);
         entity.Property(e => e.Natureza)
           .IsRequired();
         entity.Property(e => e.Propriedade)
-          .IsRequired();
-        entity.Property(e => e.DestinoDeUso)
-          .IsRequired();
-        entity.Property(e => e.SituacaoParaUso)
-          .IsRequired();
+          .IsRequired()
+          .HasDefaultValue(1);
+        entity.Property(e => e.UsoNoAdministrativo)
+          .IsRequired()
+          .HasDefaultValue(false);
+        entity.Property(e => e.UsoNoProcessoFabril)
+          .IsRequired()
+          .HasDefaultValue(false);
+        entity.Property(e => e.ProntoParaUso)
+          .IsRequired()
+          .HasDefaultValue(false);
+        entity.Property(e => e.MaquinaEmMontagemInstalacao)
+          .IsRequired()
+          .HasDefaultValue(false);
+        entity.Property(e => e.EdificacaoEmAndamento)
+          .IsRequired()
+          .HasDefaultValue(false);
         entity.Property(e => e.Observacoes)
           .HasMaxLength(250);
         entity.Property(e => e.Requisitante)
           .HasMaxLength(50);
         entity.Property(e => e.SituacaoDoAtivo)
-          .IsRequired();
+          .IsRequired()
+          .HasDefaultValue(1);
       });
 
       // Model CentroDeCusto
