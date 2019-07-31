@@ -9,6 +9,7 @@ using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using jsreport.AspNetCore;
 using jsreport.Local;
 using jsreport.Binary;
+using System.Runtime.InteropServices;
 
 namespace Ferrero.GestorDeProjetos.UI.Web
 {
@@ -38,7 +39,9 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddJsReport(new LocalReporting()
-                .UseBinary(JsReportBinary.GetBinary())
+                .UseBinary(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)  ? 
+                            JsReportBinary.GetBinary() : 
+                            jsreport.Binary.Linux.JsReportBinary.GetBinary())
                 .AsUtility()
                 .Create());
 

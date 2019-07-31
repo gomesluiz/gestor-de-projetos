@@ -29,7 +29,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
     [Display(Name = "Ordem de Investimento")]
     public int OrdemDeInvestimentoId { get; set; }
     
-    [Display(Name = "OrdemDeInvestimento")]
+    [Display(Name = "Ordem de Investimento")]
     public string OrdemDeInvestimentoNumero { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite a planta do ativo.")]
@@ -87,12 +87,12 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
     public bool MaquinaEmMontagemInstalacao { get; set; }
     // true - Máquina em montagem e instalação 
 
-    [Display(Name = "Edificações em anadamento (contruções, ampliações civis")]
+    [Display(Name = "Edificações em anadamento (contruções, ampliações civis)")]
     public bool EdificacaoEmAndamento {get; set;}
     // true Edificação em andamento
 
     [StringLength(250, ErrorMessage = "As observações devem possuir no máximo 250 caracteres.")]
-    [Display(Name = "Observações")]
+    [Display(Name = "Observações Gerais")]
     public string Observacoes { get; set; }
 
     [Required(ErrorMessage = "Por favor, digite o nome do requisitante do ativo.")]
