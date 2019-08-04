@@ -34,6 +34,21 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Links",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<string>(nullable: true),
+                    SourceTaskId = table.Column<int>(nullable: false),
+                    TargetTaskId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Links", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrdensDeInvestimento",
                 columns: table => new
                 {
@@ -45,6 +60,24 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrdensDeInvestimento", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tasks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Text = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<int>(nullable: false),
+                    Progress = table.Column<decimal>(nullable: false),
+                    ParentId = table.Column<int>(nullable: true),
+                    Type = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -229,6 +262,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Links");
+
+            migrationBuilder.DropTable(
                 name: "NotasFiscais");
 
             migrationBuilder.DropTable(
@@ -236,6 +272,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             migrationBuilder.DropTable(
                 name: "ResumosFinanceiros");
+
+            migrationBuilder.DropTable(
+                name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "Fornecedores");

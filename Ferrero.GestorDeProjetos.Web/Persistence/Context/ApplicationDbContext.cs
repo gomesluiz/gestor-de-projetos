@@ -5,7 +5,7 @@ using Ferrero.GestorDeProjetos.Web.Models;
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
 {
     public class ApplicationDbContext : DbContext
-  {
+    {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : base(options) { }
 
@@ -17,6 +17,9 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
     public DbSet<ResumoFinanceiro> ResumosFinanceiros { get; set; }
     public DbSet<RequisicaoDeCompra> RequisicoesDeCompra { get; set; }
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
+    public DbSet<Task> Tasks { get; set; }
+    public DbSet<Link> Links { get; set; }
+
 
     // Queries ad-hocs.
     //public DbQuery<LancamentoFinanceiro> ResumosFinanceiros {get; set;}

@@ -1,12 +1,11 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Ferrero.GestorDeProjetos.Web.Models {
-  /// <summary>
-  /// Esta classe contém os atributos e métodos de um fornecedor.
-  /// </summary>
-  public class Fornecedor {
+namespace Ferrero.GestorDeProjetos.Web.Models
+{
+    /// <summary>
+    /// Esta classe contém os atributos e métodos de um fornecedor.
+    /// </summary>
+    public class Fornecedor {
 
     [Required(ErrorMessage = "Por favor, digite o código do fornecedor.")]
     public int Id { get; set; }

@@ -167,6 +167,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult Gantt()
+        {
+            return View();
+        }
+
         ///<summary>
         /// Finds Projeto class object by Id.
         ///</summary>

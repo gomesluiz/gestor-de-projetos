@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190725144427_DatabaseCreation")]
+    [Migration("20190804011017_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,6 +119,23 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fornecedores");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Link", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("SourceTaskId");
+
+                    b.Property<int>("TargetTaskId");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Links");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.NotaFiscal", b =>
@@ -254,6 +271,29 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasIndex("OrdemDeInvestimentoId");
 
                     b.ToTable("ResumosFinanceiros");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Task", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Duration");
+
+                    b.Property<int?>("ParentId");
+
+                    b.Property<decimal>("Progress");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<string>("Text");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>

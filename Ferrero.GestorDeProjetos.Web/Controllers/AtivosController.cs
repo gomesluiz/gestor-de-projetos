@@ -9,8 +9,7 @@ using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
-using jsreport.AspNetCore;
-using jsreport.Types;
+using Task = System.Threading.Tasks.Task;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
