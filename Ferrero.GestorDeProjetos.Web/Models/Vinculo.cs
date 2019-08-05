@@ -2,7 +2,7 @@ using System;
 
 namespace Ferrero.GestorDeProjetos.Web.Models
 {
-    public class Link
+    public class Vinculo
     {
         public int Id { get; set; }
         public string Type { get; set; }

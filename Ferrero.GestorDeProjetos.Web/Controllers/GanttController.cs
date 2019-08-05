@@ -22,8 +22,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             return new
             {
-                data    = db.Tasks.ToList().Select(t => (TaskViewModel)t),
-                links   = db.Links.ToList().Select(t => (LinkViewModel)t)
+                data    = db.Atividades.ToList().Select(t => (AtividadeViewModel)t),
+                links   = db.Vinculos.ToList().Select(t => (VinculoViewModel)t)
             };
         }
     }

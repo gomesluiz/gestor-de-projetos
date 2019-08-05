@@ -11,42 +11,42 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     [Produces("application/json")]
     [Route("api/link")]
-    public class LinksController : Controller
+    public class VinculosController : Controller
     {
-        private readonly ApplicationDbContext db;
+        private readonly ApplicationDbContext _context;
 
-        public LinksController(ApplicationDbContext context)
+        public VinculosController(ApplicationDbContext context)
         {
-            db    = context;
+            _context    = context;
         }
  
         // GET api/Link
         [HttpGet]
-        public IEnumerable<LinkViewModel> Get()
+        public IEnumerable<VinculoViewModel> Get()
         {
-            return db.Links
+            return _context.Vinculos
                 .ToList()
-                .Select(t => (LinkViewModel)t);
+                .Select(t => (VinculoViewModel)t);
         }
  
         // GET api/Link/5
         [HttpGet("{id}")]
-        public LinkViewModel Get(int id)
+        public VinculoViewModel Get(int id)
         {
-            return (LinkViewModel)db
-                .Links
+            return (VinculoViewModel)_context
+                .Vinculos
                 .Find(id);
         }
  
         // PUT api/Link/5
         [HttpPut("{id}")]
-        public ObjectResult Put(int id, LinkViewModel linkViewModel)
+        public ObjectResult Put(int id, VinculoViewModel vinculoViewModel)
         {
-            var clientLink = (Link)linkViewModel;
-            clientLink.Id = id;
+            var vinculo = (Vinculo)vinculoViewModel;
+            vinculo.Id = id;
 
-            db.Entry(clientLink).State = EntityState.Modified;
-            db.SaveChanges();
+            _context.Entry(vinculo).State = EntityState.Modified;
+            _context.SaveChanges();
  
             return Ok(new
             {
@@ -56,16 +56,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
  
         // POST api/Task
         [HttpPost]
-        public IActionResult Post(LinkViewModel linkViewModel)
+        public IActionResult Post(VinculoViewModel vinculoViewModel)
         {
-            var newLink = (Link)linkViewModel;
+            var vinculo = (Vinculo)vinculoViewModel;
  
-            db.Links.Add(newLink);
-            db.SaveChanges();
+            _context.Vinculos.Add(vinculo);
+            _context.SaveChanges();
  
             return Ok(new
             {
-                tid = newLink.Id,
+                tid = vinculo.Id,
                 action = "inserted"
             });
         }
@@ -74,11 +74,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteLink(int id)
         {
-            var link = db.Links.Find(id);
-            if (link != null)
+            var vinculo = _context.Vinculos.Find(id);
+            if (vinculo != null)
             {
-                db.Links.Remove(link);
-                db.SaveChanges();
+                _context.Vinculos.Remove(vinculo);
+                _context.SaveChanges();
             }
  
             return Ok(new

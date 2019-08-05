@@ -9,6 +9,24 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Atividades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Text = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<int>(nullable: false),
+                    Progress = table.Column<decimal>(nullable: false),
+                    ParentId = table.Column<int>(nullable: true),
+                    Type = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Atividades", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CentrosDeCusto",
                 columns: table => new
                 {
@@ -34,21 +52,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Links",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Type = table.Column<string>(nullable: true),
-                    SourceTaskId = table.Column<int>(nullable: false),
-                    TargetTaskId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Links", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrdensDeInvestimento",
                 columns: table => new
                 {
@@ -63,21 +66,18 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tasks",
+                name: "Vinculos",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Text = table.Column<string>(nullable: true),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    Duration = table.Column<int>(nullable: false),
-                    Progress = table.Column<decimal>(nullable: false),
-                    ParentId = table.Column<int>(nullable: true),
-                    Type = table.Column<string>(nullable: true)
+                    Type = table.Column<string>(nullable: true),
+                    SourceTaskId = table.Column<int>(nullable: false),
+                    TargetTaskId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.PrimaryKey("PK_Vinculos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -262,7 +262,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Links");
+                name: "Atividades");
 
             migrationBuilder.DropTable(
                 name: "NotasFiscais");
@@ -274,7 +274,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "ResumosFinanceiros");
 
             migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "Vinculos");
 
             migrationBuilder.DropTable(
                 name: "Fornecedores");

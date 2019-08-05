@@ -1,15 +1,15 @@
 namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
 {
-    public class LinkViewModel
+    public class VinculoViewModel
     {
         public int id { get; set; }
         public string type { get; set; }
         public int source { get; set; }
         public int target { get; set; }
  
-        public static explicit operator LinkViewModel(Link link)
+        public static explicit operator VinculoViewModel(Vinculo link)
         {
-            return new LinkViewModel
+            return new VinculoViewModel
             {
                 id = link.Id,
                 type = link.Type,
@@ -18,9 +18,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
             };
         }
  
-        public static explicit operator Link(LinkViewModel link)
+        public static explicit operator Vinculo(VinculoViewModel link)
         {
-            return new Link
+            return new Vinculo
             {
                 Id = link.id,
                 Type = link.type,

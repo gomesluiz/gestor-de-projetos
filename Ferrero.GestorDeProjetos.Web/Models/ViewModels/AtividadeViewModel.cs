@@ -2,7 +2,7 @@ using System;
 
 namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
 {
-    public class TaskViewModel
+    public class AtividadeViewModel
     {
         public int id { get; set; }
         public string text { get; set; }
@@ -17,9 +17,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
             set { }
         }
  
-        public static explicit operator TaskViewModel(Task task)
+        public static explicit operator AtividadeViewModel(Atividade task)
         {
-            return new TaskViewModel
+            return new AtividadeViewModel
             {
                 id = task.Id,
                 text = task.Text,
@@ -31,9 +31,9 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
             };
         }
  
-        public static explicit operator Task(TaskViewModel task)
+        public static explicit operator Atividade(AtividadeViewModel task)
         {
-            return new Task
+            return new Atividade
             {
                 Id = task.id,
                 Text = task.text,

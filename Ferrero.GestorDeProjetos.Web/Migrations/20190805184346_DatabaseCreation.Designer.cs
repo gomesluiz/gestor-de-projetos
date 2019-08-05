@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190804011017_DatabaseCreation")]
+    [Migration("20190805184346_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,29 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Atividade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Duration");
+
+                    b.Property<int?>("ParentId");
+
+                    b.Property<decimal>("Progress");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<string>("Text");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Atividades");
+                });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
                 {
@@ -119,23 +142,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fornecedores");
-                });
-
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Link", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("SourceTaskId");
-
-                    b.Property<int>("TargetTaskId");
-
-                    b.Property<string>("Type");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Links");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.NotaFiscal", b =>
@@ -273,27 +279,21 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.ToTable("ResumosFinanceiros");
                 });
 
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Task", b =>
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Vinculo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Duration");
+                    b.Property<int>("SourceTaskId");
 
-                    b.Property<int?>("ParentId");
-
-                    b.Property<decimal>("Progress");
-
-                    b.Property<DateTime>("StartDate");
-
-                    b.Property<string>("Text");
+                    b.Property<int>("TargetTaskId");
 
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Vinculos");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>

@@ -2,7 +2,7 @@ using System;
 
 namespace Ferrero.GestorDeProjetos.Web.Models
 {
-    public class Task
+    public class Atividade
     {
         public int Id { get; set; }
         public string Text { get; set; }

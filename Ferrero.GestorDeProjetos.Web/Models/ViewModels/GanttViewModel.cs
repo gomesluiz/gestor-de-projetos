@@ -4,7 +4,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
 {
     public class GanttViewModel
     {
-        public IEnumerable<TaskViewModel> data { get; set; }
-        public IEnumerable<LinkViewModel> links { get; set; }
+        public IEnumerable<AtividadeViewModel> data { get; set; }
+        public IEnumerable<VinculoViewModel> links { get; set; }
     }
 }

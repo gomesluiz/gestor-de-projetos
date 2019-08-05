@@ -17,8 +17,8 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
     public DbSet<ResumoFinanceiro> ResumosFinanceiros { get; set; }
     public DbSet<RequisicaoDeCompra> RequisicoesDeCompra { get; set; }
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
-    public DbSet<Task> Tasks { get; set; }
-    public DbSet<Link> Links { get; set; }
+    public DbSet<Atividade> Atividades { get; set; }
+    public DbSet<Vinculo> Vinculos { get; set; }
 
 
     // Queries ad-hocs.
