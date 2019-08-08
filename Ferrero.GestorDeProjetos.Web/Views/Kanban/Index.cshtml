@@ -1,0 +1,62 @@
+@model Ferrero.GestorDeProjetos.Web.Models.Kanban.QuadroViewModel
+@{
+    ViewData["Title"] = "Todos as Tarefas";
+}
+@section Styles {
+}
+
+@section Scripts {
+  <!-- Dependencies -->
+  <script src="~/js/pages_kanban-board.js"></script>
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<!-- CONTENT -->
+<h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
+  <div><span class="text-muted font-weight-light">Todas/</span>Tarefas</div>
+  <a type="button" class="btn btn-primary rounded-pill d-block" asp-action="Create" asp-controller="Projetos">
+    <span class="ion ion-md-add"></span>&nbsp;Tarefa
+  </a>
+</h4>
+
+<div class="layout-content">
+    <!-- Content -->
+    <div class="container-fluid flex-grow-1 container-p-y">
+        <div class="form-row">
+            @foreach (var lista in Model.Listas) {
+                <div class="col-md">
+                    <div class="card mb-3 @lista.Estilo">
+                        <h6 class="card-header text-center">@lista.Nome</h6>
+                        @foreach(var tarefa in lista.Tarefas){
+                            <div class="kanban-box px-2 pt-2">
+                                <div class="ui-bordered p-2 mb-2">
+                                    <div class="kanban-board-actions btn-group float-right ml-2">
+                                    <button type="button" class="btn btn-default btn-xs rounded-pill icon-btn borderless md-btn-flat hide-arrow dropdown-toggle" data-toggle="dropdown"><i class="ion ion-ios-more"></i></button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item" href="javascript:void(0)">Edit</a>
+                                        <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+                                    </div>
+                                    </div>
+                                    @tarefa.Titulo
+                                </div>
+                            </div>
+                        }
+                    
+                        @if (lista.PodeAdicionar){
+                            <div class="card-footer text-center py-2">
+                                <a href="javascript:void(0)"><i class="ion ion-md-add"></i>&nbsp; Tarefa</a>
+                            </div>
+                        }
+
+                        @if (lista.PodeRemoverTodasTarefas){
+                            <div class="card-footer text-center py-2">
+                                <a href="javascript:void(0)"><i class="ion ion-md-trash"></i>&nbsp; Tarefas completas</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>

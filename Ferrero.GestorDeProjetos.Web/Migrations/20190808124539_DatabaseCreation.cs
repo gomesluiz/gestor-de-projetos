@@ -194,6 +194,28 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tarefas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Titulo = table.Column<string>(nullable: true),
+                    Descricao = table.Column<string>(nullable: true),
+                    ListaId = table.Column<int>(nullable: false),
+                    ProjetoId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tarefas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tarefas_Projetos_ProjetoId",
+                        column: x => x.ProjetoId,
+                        principalTable: "Projetos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "NotasFiscais",
                 columns: table => new
                 {
@@ -257,6 +279,11 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "IX_ResumosFinanceiros_OrdemDeInvestimentoId",
                 table: "ResumosFinanceiros",
                 column: "OrdemDeInvestimentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tarefas_ProjetoId",
+                table: "Tarefas",
+                column: "ProjetoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -268,10 +295,10 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "NotasFiscais");
 
             migrationBuilder.DropTable(
-                name: "Projetos");
+                name: "ResumosFinanceiros");
 
             migrationBuilder.DropTable(
-                name: "ResumosFinanceiros");
+                name: "Tarefas");
 
             migrationBuilder.DropTable(
                 name: "Vinculos");
@@ -281,6 +308,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             migrationBuilder.DropTable(
                 name: "RequisicoesDeCompra");
+
+            migrationBuilder.DropTable(
+                name: "Projetos");
 
             migrationBuilder.DropTable(
                 name: "Ativos");

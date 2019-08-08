@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
+namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
 {
     public class GanttViewModel
     {

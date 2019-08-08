@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.Gantt;
+using Ferrero.GestorDeProjetos.Web.Models.Kanban;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
 {
@@ -19,12 +21,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
     public DbSet<NotaFiscal> NotasFiscais { get; set; }
     public DbSet<Atividade> Atividades { get; set; }
     public DbSet<Vinculo> Vinculos { get; set; }
-
-
-    // Queries ad-hocs.
-    //public DbQuery<LancamentoFinanceiro> ResumosFinanceiros {get; set;}
-    //public DbQuery<Intervalo> IntervaloDeData {get; set;}
-
+    public DbSet<Tarefa> Tarefas { get; set; }
+    
+    
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
        
@@ -183,6 +183,12 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
           .IsRequired();
         entity.Property(e => e.Valor)
           .IsRequired();
+      });
+
+      // Model Tarefa
+      builder.Entity<Tarefa>(entity =>
+      {
+        entity.HasKey(e => e.Id);
       });
     }  
   }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ferrero.GestorDeProjetos.Web.Models
+namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
 {
     public class Atividade
     {

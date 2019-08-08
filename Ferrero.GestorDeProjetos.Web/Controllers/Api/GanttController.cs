@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
+using Ferrero.GestorDeProjetos.Web.Models.Gantt;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using System.Linq;
 
-namespace Ferrero.GestorDeProjetos.Web.Controllers
+namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/gantt")]

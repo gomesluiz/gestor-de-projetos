@@ -172,6 +172,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
+        public IActionResult Kanban()
+        {
+            return View();
+        }
+
         ///<summary>
         /// Finds Projeto class object by Id.
         ///</summary>

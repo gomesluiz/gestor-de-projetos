@@ -51,7 +51,7 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             
 
             // required for dhtmx.Gantt
-            app.UseGanttErrorMiddleware();
+            //app.UseGanttErrorMiddleware();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             ///////////////////////////

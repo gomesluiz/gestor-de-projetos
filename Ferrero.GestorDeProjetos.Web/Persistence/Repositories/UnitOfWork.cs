@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.Kanban;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
@@ -18,6 +19,8 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         private Repository<Projeto> _portifolio;
         private Repository<RequisicaoDeCompra> _requisicoes;
         private Repository<ResumoFinanceiro> _resumos;
+
+        private Repository<Tarefa> _tarefas;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -108,6 +111,18 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                     this._resumos = new Repository<ResumoFinanceiro>(_context);
                 }
                 return _resumos;
+            }
+        }
+
+        public Repository<Tarefa> Tarefas
+        {
+            get
+            {
+                if (this._tarefas == null)
+                {
+                    this._tarefas = new Repository<Tarefa>(_context);
+                }
+                return _tarefas;
             }
         }
         public async Task<int> SaveAsync()
