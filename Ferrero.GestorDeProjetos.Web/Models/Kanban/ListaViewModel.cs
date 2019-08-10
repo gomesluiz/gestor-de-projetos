@@ -7,13 +7,13 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Kanban
         public string Nome { get; set; }
 
         public string Estilo { get; set; }
-        public IList<Tarefa> Tarefas { get; set; }
+        public IList<TarefaViewModel> Tarefas { get; set; }
 
         public bool PodeAdicionar { get; set; }
 
         public bool PodeRemoverTodasTarefas { get; set; }
 
-        public ListaViewModel(string nome, IList<Tarefa> tarefas, string estilo
+        public ListaViewModel(string nome, IList<TarefaViewModel> tarefas, string estilo
             , bool adiciona, bool removeTodasTarefas)
         {
             Nome    = nome;

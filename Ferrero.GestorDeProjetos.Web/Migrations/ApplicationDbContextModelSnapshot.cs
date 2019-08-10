@@ -165,13 +165,16 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Descricao");
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(250);
 
                     b.Property<int>("ListaId");
 
-                    b.Property<int?>("ProjetoId");
+                    b.Property<int>("ProjetoId");
 
-                    b.Property<string>("Titulo");
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -330,7 +333,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 {
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
                         .WithMany()
-                        .HasForeignKey("ProjetoId");
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.NotaFiscal", b =>

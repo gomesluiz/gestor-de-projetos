@@ -7,7 +7,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Kanban
     {
         public List<ListaViewModel> Listas { get; set; }
 
-        public QuadroViewModel(IList<Tarefa> tarefas)
+        public QuadroViewModel(IEnumerable<TarefaViewModel> tarefas)
         {
             Listas = new List<ListaViewModel>();
             

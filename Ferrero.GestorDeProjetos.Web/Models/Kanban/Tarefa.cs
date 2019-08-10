@@ -10,6 +10,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Kanban
         // 1 - A Fazer; 2 - Fazendo; 3 - Feito
         public int ListaId { get; set; } 
 
+        public int ProjetoId   { get; set;}
         public Projeto Projeto { get; set; }
     }
 }
