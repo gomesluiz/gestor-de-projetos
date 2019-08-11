@@ -1,0 +1,27 @@
+@model Ferrero.GestorDeProjetos.Web.Models.Kanban.TarefaViewModel
+
+<div class="form-group">
+    <label asp-for="Titulo" class="control-label"></label><span class="text-danger">&nbsp;*</span>
+    <input asp-for="Titulo" class="form-control bootstrap-maxlength-field" maxlength="50" />
+    <span asp-validation-for="Titulo" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+  <label asp-for="Descricao" class="control-label"></label>
+  <textarea asp-for="Descricao" class="form-control bootstrap-maxlength-field" maxlength="250"></textarea>
+  <span asp-validation-for="Descricao" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+  <label asp-for="ListaId" class="control-label"></label><span class="text-danger">&nbsp;*</span>
+  <select asp-for="ListaId" class="form-control">
+    <option value="1">A FAZER</option>
+    <option value="2">FAZENDO</option>
+    <option value="3">FEITO</option>
+  </select>
+  <span asp-validation-for="ListaId" class="text-danger"></span>
+</div>
+
+<input type="hidden" asp-for="ProjetoId" />
+
+<p><span class="text-danger">*</span>&nbsp;Campos obrigatórios</p>

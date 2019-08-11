@@ -1,0 +1,45 @@
+@model Ferrero.GestorDeProjetos.Web.Models.Kanban.TarefaViewModel
+
+@{
+    ViewData["Title"] = "Nova Tarefa";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css">
+}
+
+@section Scripts {
+  <!-- Dependencies -->
+  <script src="~/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
+  <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
+  <script src="~/js/forms_extras.js"></script>
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<!-- Layout content -->
+<div class="layout-content">
+ <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">Nova /</span> Tarefa
+    </h4>
+    <div class="card mb-4">
+      <h6 class="card-header">Informações Básicas</h6>
+      <div class="card-body">
+        <form asp-action="Create">
+          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+          @{await Html.RenderPartialAsync("_FormFields.cshtml");}
+          <div class="text-right mt-3">
+            <a href="@Url.RouteUrl("Default", new { action = "Show", controller = "Kanban" , projetoId = ViewBag.ProjetoId})" class="btn btn-default">
+              <span class="ion ion-md-close" aria-hidden="true"></span>&nbsp;Cancelar
+            </a>
+            <button class="btn btn-primary" type="submit">
+              <span class="ion ion-md-add" aria-hidden="true"></span>&nbsp;Tarefa 
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

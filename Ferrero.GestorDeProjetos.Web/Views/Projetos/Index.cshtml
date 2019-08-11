@@ -27,10 +27,15 @@
       <thead>
           <tr>
               <th>@Html.DisplayNameFor(model => model.Nome)           </th>
+              <!--
               <th class="text-center">@Html.DisplayNameFor(model => model.DataDeInicio)   </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.DataDeTermino)  </th>
+              -->
               <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento.Numero)  </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
+              <th class="text-center">Resumo</th>
+              <th class="text-center">Gantt</th>
+              <th class="text-center">Kanban</th>
               <th></th>
           </tr>
       </thead>
@@ -39,14 +44,30 @@
         <tr>
           <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
+          <!--
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento.Numero) </td>
+          -->
           <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
           <td class="text-center">
             <a href="@Url.RouteUrl("Default", new { action = "show", controller = "dashboard" , id = item.Id})" 
-                    class="btn btn-success btn-sm"> 
-                    <span class="ion ion-md-stats"></span>
+                    class="btn btn-outline-dark btn-sm"> 
+                    <span class="ion ion-md-analytics"></span>
             </a>
+          </td>
+          <td class="text-center">
+            <a href="@Url.RouteUrl("Default", new { action = "Gantt", controller = "Projetos"})" 
+                class="btn btn-outline-dark btn-sm"> 
+                <span class="ion ion-md-stats"></span>
+            </a>
+          </td>
+          <td class="text-center">
+            <a href="@Url.RouteUrl("Default", new { action = "Show", controller = "Kanban" , projetoId = item.Id})" 
+                class="btn btn-outline-dark btn-sm"> 
+                <span class="ion ion-md-checkbox-outline"></span>
+            </a>
+          </td>
+          <td class="text-center">
             <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
               <span class="ion ion-md-create">
             </a>

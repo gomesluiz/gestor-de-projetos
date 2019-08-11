@@ -5,11 +5,14 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Kanban
 {
     public class QuadroViewModel
     {
+        public int ProjetoId { get; set; }
         public List<ListaViewModel> Listas { get; set; }
 
-        public QuadroViewModel(IEnumerable<TarefaViewModel> tarefas)
+        public QuadroViewModel(int projetoId, IEnumerable<TarefaViewModel> tarefas)
         {
             Listas = new List<ListaViewModel>();
+
+            ProjetoId = projetoId;
             
             var aFazer  = new ListaViewModel("A Fazer"  , tarefas.Where(t => t.ListaId == 1).ToList(), "border-danger", true, false);
             var fazendo = new ListaViewModel("Fazendo"  , tarefas.Where(t => t.ListaId == 2).ToList(), "border-warning", false, false);
