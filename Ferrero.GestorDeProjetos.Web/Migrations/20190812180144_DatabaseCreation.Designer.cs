@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190810212340_DatabaseCreation")]
+    [Migration("20190812180144_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,6 +104,36 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CentrosDeCusto");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Documento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Arquivo")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(250);
+
+                    b.Property<int>("ProjetoId");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Versao")
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjetoId");
+
+                    b.ToTable("Documentos");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Fornecedor", b =>
@@ -281,7 +311,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<string>("Proposta")
                         .IsRequired()
-                        .HasMaxLength(250);
+                        .HasMaxLength(500);
 
                     b.HasKey("Id");
 
@@ -320,6 +350,35 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.ToTable("ResumosFinanceiros");
                 });
 
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<bool>("IsAdmin");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(25);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuarios");
+                });
+
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
                 {
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", "CentroDeCusto")
@@ -329,6 +388,14 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
                         .WithMany()
                         .HasForeignKey("OrdemDeInvestimentoId");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Documento", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                        .WithMany()
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Kanban.Tarefa", b =>

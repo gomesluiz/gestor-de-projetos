@@ -1,0 +1,23 @@
+@model Ferrero.GestorDeProjetos.Web.Models.Domain.DocumentoViewModel
+
+<div class="form-group">
+    <label asp-for="Titulo" class="control-label"></label><span class="text-danger">&nbsp;*</span>
+    <input asp-for="Titulo" class="form-control bootstrap-maxlength-field" maxlength="50" />
+    <span asp-validation-for="Titulo" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+  <label asp-for="Descricao" class="control-label"></label>
+  <textarea asp-for="Descricao" class="form-control bootstrap-maxlength-field" maxlength="250"></textarea>
+  <span asp-validation-for="Descricao" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+  <label asp-for="Versao" class="control-label"></label>
+  <textarea asp-for="Versao" class="form-control bootstrap-maxlength-field" maxlength="10"></textarea>
+  <span asp-validation-for="Versao" class="text-danger"></span>
+</div>
+
+<input type="hidden" asp-for="ProjetoId" />
+
+<p><span class="text-danger">*</span>&nbsp;Campos obrigatórios</p>

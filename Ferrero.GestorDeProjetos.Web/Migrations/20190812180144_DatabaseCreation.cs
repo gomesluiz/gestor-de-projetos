@@ -66,6 +66,23 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Usuarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Login = table.Column<string>(maxLength: 25, nullable: false),
+                    Nome = table.Column<string>(maxLength: 50, nullable: false),
+                    Email = table.Column<string>(maxLength: 50, nullable: false),
+                    Senha = table.Column<string>(maxLength: 128, nullable: false),
+                    IsAdmin = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vinculos",
                 columns: table => new
                 {
@@ -180,7 +197,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     NumeroDaOrdemDeCompra = table.Column<long>(nullable: true),
                     Descricao = table.Column<string>(maxLength: 250, nullable: true),
                     AtivoId = table.Column<int>(nullable: true),
-                    Proposta = table.Column<string>(maxLength: 250, nullable: false)
+                    Proposta = table.Column<string>(maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,6 +208,29 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         principalTable: "Ativos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Documentos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Titulo = table.Column<string>(maxLength: 50, nullable: false),
+                    Descricao = table.Column<string>(maxLength: 250, nullable: true),
+                    Versao = table.Column<string>(maxLength: 10, nullable: false),
+                    Arquivo = table.Column<string>(maxLength: 500, nullable: false),
+                    ProjetoId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Documentos_Projetos_ProjetoId",
+                        column: x => x.ProjetoId,
+                        principalTable: "Projetos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -256,6 +296,11 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 column: "OrdemDeInvestimentoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Documentos_ProjetoId",
+                table: "Documentos",
+                column: "ProjetoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_NotasFiscais_FornecedorId",
                 table: "NotasFiscais",
                 column: "FornecedorId");
@@ -292,6 +337,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "Atividades");
 
             migrationBuilder.DropTable(
+                name: "Documentos");
+
+            migrationBuilder.DropTable(
                 name: "NotasFiscais");
 
             migrationBuilder.DropTable(
@@ -299,6 +347,9 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tarefas");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Vinculos");

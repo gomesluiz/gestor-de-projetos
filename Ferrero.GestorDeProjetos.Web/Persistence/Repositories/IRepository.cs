@@ -13,10 +13,9 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
     {
         void Add(TEntity entity);
         void Update (TEntity entity);
-        void Remove(int id);
         void Remove (TEntity entity);
-        TEntity Get(int id);
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        TEntity Get (int id);
+
         IEnumerable<TEntity> Find(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,

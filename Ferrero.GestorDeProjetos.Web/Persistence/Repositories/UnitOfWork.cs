@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Models.Kanban;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 
@@ -13,14 +14,16 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
     {
         private ApplicationDbContext _context;
         private Repository<Ativo> _ativos;
+        private Repository<Documento> _documentos;
         private Repository<Fornecedor> _fornecedores;
         private Repository<NotaFiscal> _notas;
         private Repository<OrdemDeInvestimento> _investimentos;
         private Repository<Projeto> _portifolio;
         private Repository<RequisicaoDeCompra> _requisicoes;
         private Repository<ResumoFinanceiro> _resumos;
-
         private Repository<Tarefa> _tarefas;
+        private Repository<Usuario> _usuarios;
+        
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -36,6 +39,19 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                     this._ativos = new Repository<Ativo>(_context);
                 }
                 return _ativos;
+            }
+        }
+
+        public Repository<Documento> Documentos
+        {
+            get
+            {
+
+                if (this._documentos == null)
+                {
+                    this._documentos = new Repository<Documento>(_context);
+                }
+                return _documentos;
             }
         }
 
@@ -113,7 +129,6 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                 return _resumos;
             }
         }
-
         public Repository<Tarefa> Tarefas
         {
             get
@@ -123,6 +138,17 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
                     this._tarefas = new Repository<Tarefa>(_context);
                 }
                 return _tarefas;
+            }
+        }
+        public Repository<Usuario> Usuarios
+        {
+            get
+            {
+                if (this._usuarios == null)
+                {
+                    this._usuarios = new Repository<Usuario>(_context);
+                }
+                return _usuarios;
             }
         }
         public async Task<int> SaveAsync()

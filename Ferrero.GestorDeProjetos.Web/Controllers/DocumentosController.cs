@@ -4,44 +4,38 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Ferrero.GestorDeProjetos.Web.Models.Kanban;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 
-
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-    public class KanbanController : Controller
+    public class DocumentosController : Controller
     {
-        private readonly UnitOfWork _db;
-        public KanbanController(ApplicationDbContext context)
+        private readonly UnitOfWork _context;
+        public DocumentosController(ApplicationDbContext context)
         {
-            _db = new UnitOfWork(context);
+            _context = new UnitOfWork(context);
         }
 
-        // GET: QuadroViewModel
+        // GET: DocumentoViewModel
         public async Task<IActionResult> Show(int projetoId)
         {
             try
             {   
-                var tarefas = await _db
-                    .Tarefas
+                var documentos = await _context
+                    .Documentos
                     .FindAsync(
                           e => e.ProjetoId == projetoId
                         , includeProperties: "Projeto"
                     );
                 
-                return View(new QuadroViewModel
-                    (   projetoId
-                        , tarefas.ToList().Select(t => (TarefaViewModel)t)
-                    )
-                );
+                return View(documentos.ToList().Select(d=> (DocumentoViewModel)d));
             }
-
             catch (DbException e)
             {
                 ModelState.AddModelError(""
-                    , "Não é possível exibir as tarefas. " 
+                    , "Não é possível exibir os documentos do projeto. " 
                     + "Motivo: " + e.Message + ". "  
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
@@ -49,60 +43,58 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // GET: Kanban/Create
+        // GET: Documento/Create
         public IActionResult Create(int projetoId)
         {
-            ViewBag.ProjetoId = projetoId;    
+            ViewBag.Projeto = _context.Portifolio.Get(projetoId);
+            
             return View();
         }
 
-        // POST: Tarefa/Create
+        // POST: Documento/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TarefaViewModel tarefaViewModel)
+        public async Task<IActionResult> Create(DocumentoViewModel documentoViewModel)
         {
             if (ModelState.IsValid)
             {
                 try 
                 {
-                    var tarefa = (Tarefa) tarefaViewModel;
-                    _db.Tarefas.Add(tarefa);
-                    await _db.SaveAsync();
+                    _context.Documentos.Add((Documento) documentoViewModel);
+                    await _context.SaveAsync();
 
-                    return RedirectToAction(nameof(Show), new { projetoId = tarefa.ProjetoId });
+                    return RedirectToAction(nameof(Show), new { projetoId = documentoViewModel.ProjetoId });
                 }
                 catch(DbException e)
                 {
                     ModelState.AddModelError(""
-                        , "Não é possível incluir esta nota fiscal. " 
+                        , "Não é possível incluir este documento. " 
                         + "Motivo: " + e.Message + ". "
                         + "Tente novamente, e se o problema persistir " 
                         + "entre em contato com o administrador do sistema.");  
                 }
             }
 
-            ViewBag["ProjetotId"] = tarefaViewModel.ProjetoId;
-            return View(tarefaViewModel);
+            ViewBag.Projeto = _context.Portifolio.Get(documentoViewModel.ProjetoId);
+            return View(documentoViewModel);
         }
 
-        // GET: Kanban/Edit/{id}
+        // GET: Documento/Edit/{id}
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
             try
             {
-                var tarefa = await FindTarefaBy(id);
-                if (tarefa == null) return NotFound();
+                var documento = await FindDocumentoBy(id);
+                if (documento == null) return NotFound();
             
-                var tarefaViewModel = (TarefaViewModel) tarefa;
-
-                return View(tarefaViewModel);
+                return View((DocumentoViewModel) documento);
             }
             catch(DbException e)
             {
                 ModelState.AddModelError(""
-                    , "Não é possível editar esta nota fiscal. " 
+                    , "Não é possível editar este documento. " 
                     + "Motivo: " + e.Message + ". "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
@@ -111,38 +103,36 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // POST: Kanban/Edit/{id}
+        // POST: Documento/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TarefaViewModel tarefaViewModel)
+        public async Task<IActionResult> Edit(int id, DocumentoViewModel documentoViewModel)
         {
-            if (id != tarefaViewModel.Id) return NotFound();
+            if (id != documentoViewModel.Id) return NotFound();
          
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var tarefa = (Tarefa) tarefaViewModel;
-                   
-                    _db.Tarefas.Update(tarefa);
-                    await _db.SaveAsync();
+                    _context.Documentos.Update((Documento) documentoViewModel);
+                    await _context.SaveAsync();
 
-                    return RedirectToAction(nameof(Show), new { projetoId = tarefa.ProjetoId });
+                    return RedirectToAction(nameof(Show), new { projetoId = documentoViewModel.ProjetoId });
                 }
                 catch (DbUpdateException e)
                 {
                     ModelState.AddModelError(""
-                    , "Não é possível editar esta nota fiscal. " 
+                    , "Não é possível editar este documento. " 
                     + "Motivo: " + e.Message + ". "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
                 }
             }
 
-            return View(tarefaViewModel);
+            return View(documentoViewModel);
         }
 
-        // GET: Kanban/Delete/5
+        // GET: Documento/Delete/5
         public async Task<IActionResult> Delete(int? id, String errorMessage="")
         {
             if (id == null) return NotFound();
@@ -150,7 +140,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             if (errorMessage != "")
             {
                 ModelState.AddModelError(""
-                    , "Não é possível remover esta nota fiscal. " 
+                    , "Não é possível remover este documento. " 
                     + "Motivo: " + errorMessage + ". "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
@@ -158,16 +148,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
             try
             {  
-                var tarefa = await FindTarefaBy(id);
-                if (tarefa == null) return NotFound();
+                var documento = await FindDocumentoBy(id);
+                if (documento == null) return NotFound();
 
-                var tarefaViewModel = (TarefaViewModel) tarefa;
-                return View(tarefaViewModel);
+                return View((DocumentoViewModel) documento);
             }
             catch(DbException e)
             {
                 ModelState.AddModelError(""
-                    , "Não é possível excluir esta nota fiscal. " 
+                    , "Não é possível excluir este documento. " 
                     + "Motivo: " + e.Message + ". "
                     + "Tente novamente, e se o problema persistir "  
                     + "entre em contato com o administrador do sistema.");
@@ -181,26 +170,26 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Tarefa tarefa;
+            Documento documento;
             try
             {
-                tarefa = await FindTarefaBy(id);
-                _db.Tarefas.Remove(tarefa);
-                await _db.SaveAsync();
+                documento = await FindDocumentoBy(id);
+                _context.Documentos.Remove(documento);
+                await _context.SaveAsync();
             }
             catch(DbUpdateException e)
             {
                 return RedirectToAction(nameof(Delete), new { id = id, errorMessage = e.Message });  
             }
-            return RedirectToAction(nameof(Show), new { projetoId = tarefa.ProjetoId });
+            return RedirectToAction(nameof(Show), new { projetoId = documento.ProjetoId });
         }
 
-        private async Task<Tarefa> FindTarefaBy(int? id)
+        private async Task<Documento> FindDocumentoBy(int? id)
         {
-            var tarefas = await _db.Tarefas
+            var documentos = await _context.Documentos
                 .FindAsync(e => e.Id == id, includeProperties: "Projeto");
 
-            return tarefas.FirstOrDefault();
+            return documentos.FirstOrDefault();
         }
     }
 }

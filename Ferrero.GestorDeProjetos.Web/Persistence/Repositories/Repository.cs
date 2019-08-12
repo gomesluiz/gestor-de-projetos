@@ -28,11 +28,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             _entities.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
-        public void Remove(int id)
-        {
-            TEntity entity = _entities.Find(id);
-            this.Remove(entity);
-        }
+        
         public void Remove(TEntity entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
@@ -41,13 +37,10 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             }
             _entities.Remove(entity);
         }
+        
         public TEntity Get(int id)
         {
             return _entities.Find(id);
-        }
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
-        {
-            return await _entities.ToListAsync();
         }
         public IEnumerable<TEntity> Find(
             Expression<Func<TEntity, bool>> filter = null,
@@ -62,7 +55,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             }
 
             foreach(var property in includeProperties.Split
-                (new char[]{ ','}, StringSplitOptions.RemoveEmptyEntries))
+                (new char[]{','}, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(property);
             }
