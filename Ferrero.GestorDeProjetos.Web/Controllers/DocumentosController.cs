@@ -30,7 +30,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                         , includeProperties: "Projeto"
                     );
                 
-                return View(documentos.ToList().Select(d=> (DocumentoViewModel)d));
+                return View(new PastaViewModel(projetoId
+                    , documentos.Select(d=> (DocumentoViewModel)d)
+                    )
+                );
             }
             catch (DbException e)
             {
@@ -165,7 +168,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // POST: Tarefa/Delete/5
+        // POST: Documento/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

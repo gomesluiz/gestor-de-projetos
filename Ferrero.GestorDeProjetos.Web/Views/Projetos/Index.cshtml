@@ -33,9 +33,12 @@
               -->
               <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento.Numero)  </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
+              <!--
               <th class="text-center">Resumo</th>
               <th class="text-center">Gantt</th>
               <th class="text-center">Kanban</th>
+              -->
+              <th></th>
               <th></th>
           </tr>
       </thead>
@@ -43,31 +46,34 @@
     @foreach (var item in Model) {
         <tr>
           <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
-          <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
           <!--
+          <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
-          <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento.Numero) </td>
           -->
+          <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento.Numero) </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
           <td class="text-center">
             <a href="@Url.RouteUrl("Default", new { action = "show", controller = "dashboard" , id = item.Id})" 
-                    class="btn btn-outline-dark btn-sm"> 
-                    <span class="ion ion-md-analytics"></span>
+                    class="btn btn-link btn-sm"> 
+                    Resumo
             </a>
-          </td>
-          <td class="text-center">
+            |
             <a href="@Url.RouteUrl("Default", new { action = "Gantt", controller = "Projetos"})" 
-                class="btn btn-outline-dark btn-sm"> 
-                <span class="ion ion-md-stats"></span>
+                class="btn btn-link btn-sm"> 
+                Gantt
             </a>
-          </td>
-          <td class="text-center">
+            |
             <a href="@Url.RouteUrl("Default", new { action = "Show", controller = "Kanban" , projetoId = item.Id})" 
-                class="btn btn-outline-dark btn-sm"> 
-                <span class="ion ion-md-checkbox-outline"></span>
+                class="btn btn-link btn-sm">
+                Kanban
+            </a>
+            |
+            <a href="@Url.RouteUrl("Default", new { action = "Show", controller = "Documentos" , projetoId = item.Id})" 
+                class="btn btn-link btn-sm">
+                Documentos
             </a>
           </td>
-          <td class="text-center">
+          <td class="text-center">  
             <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">
               <span class="ion ion-md-create">
             </a>

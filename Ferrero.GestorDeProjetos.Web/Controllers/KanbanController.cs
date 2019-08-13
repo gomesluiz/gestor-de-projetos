@@ -8,7 +8,6 @@ using Ferrero.GestorDeProjetos.Web.Models.Kanban;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 
-
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class KanbanController : Controller
