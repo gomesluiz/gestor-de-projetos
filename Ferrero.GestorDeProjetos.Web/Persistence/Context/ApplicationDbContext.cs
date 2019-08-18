@@ -1,12 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Models.Gantt;
 using Ferrero.GestorDeProjetos.Web.Models.Kanban;
-using Ferrero.GestorDeProjetos.Web.Models.Domain;
+using Ferrero.GestorDeProjetos.Web.Models.Security;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<Usuario>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
@@ -23,10 +27,13 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
         public DbSet<Vinculo> Vinculos { get; set; }
         public DbSet<Tarefa> Tarefas { get; set; }
         public DbSet<Documento> Documentos { get; set; }
+        
         public DbSet<Usuario> Usuarios { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             // Model Ativo
             builder.Entity<Ativo>(entity =>
             {
@@ -212,24 +219,44 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
                 entity.HasOne(p => p.Projeto);
             });
 
-            // Model Documento
+            // Security Models
             builder.Entity<Usuario>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Login)
+                entity.ToTable(name: "Users");  
+                entity.Property(e => e.FullName)
                     .IsRequired()
-                    .HasMaxLength(25);
-                entity.Property(e => e.Nome)
-                    .IsRequired()
-                    .HasMaxLength(50);
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(50);
-                entity.Property(e => e.Senha)
-                    .IsRequired()
-                    .HasMaxLength(128);
-                entity.Property(e => e.IsAdmin)
-                    .IsRequired();
+                    .HasMaxLength(50);       
+            });
+
+            builder.Entity<IdentityRole>(entity =>
+            {
+                entity.ToTable(name: "Roles");
+            });
+
+            builder.Entity<IdentityUserRole<string>>(entity =>
+            {
+                entity.ToTable("UserRoles");
+            });
+
+            builder.Entity<IdentityUserClaim<string>>(entity =>
+            {
+                entity.ToTable("UserClaims");
+            });
+
+            builder.Entity<IdentityUserLogin<string>>(entity =>
+            {
+                entity.ToTable("UserLogins");
+            });
+
+            builder.Entity<IdentityRoleClaim<string>>(entity =>
+            {
+                entity.ToTable("RoleClaims");
+
+            });
+
+            builder.Entity<IdentityUserToken<string>>(entity =>
+            {
+                entity.ToTable("UserTokens");
             });
         }  
     }

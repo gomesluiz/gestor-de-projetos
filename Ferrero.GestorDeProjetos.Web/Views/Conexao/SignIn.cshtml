@@ -1,0 +1,44 @@
+﻿@model Ferrero.GestorDeProjetos.Web.Models.Security.LoginViewModel
+
+@{
+    ViewData["Title"] = "Conexão";
+    Layout = "Layouts/_LayoutBlank";
+}
+
+@section Styles {
+    <!-- Page -->
+    <link rel="stylesheet" href="~/vendor/css/pages/authentication.css">
+}
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<div class="authentication-wrapper authentication-1 px-4">
+    <div class="authentication-inner py-5">
+
+        <!-- Logo -->
+        <div class="d-flex justify-content-center align-items-center">
+            <h1 class="text-primary">SgP</h1>
+        </div>
+        <!-- / Logo -->
+
+        <!-- Form -->
+        <form class="my-5" asp-action="Login" asp-controller="Conexao">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>:
+                <input asp-for="UserName" class="form-control">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label d-flex justify-content-between align-items-end"></label>:
+                <input asp-for="Password" class="form-control">
+            </div>
+            <div class="d-flex justify-content-between align-items-center m-0">
+                <label class="custom-control m-0"></label>
+                <button type="submit" class="btn btn-primary">Conectar-me</button>
+            </div>
+        </form>
+        <!-- / Form -->
+    </div>
+</div>

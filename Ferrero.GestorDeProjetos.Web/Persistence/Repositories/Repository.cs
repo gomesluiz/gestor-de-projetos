@@ -38,10 +38,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             _entities.Remove(entity);
         }
         
-        public TEntity Get(int id)
-        {
-            return _entities.Find(id);
-        }
+
         public IEnumerable<TEntity> Find(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -74,6 +71,20 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         {
             
             return await Task.FromResult(Find(filter, orderBy, includeProperties));
+        }
+
+        public TEntity Get(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "")
+        {
+            var entities = Find(filter, orderBy, includeProperties);
+            return entities.FirstOrDefault();
+        }
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+        {
+            var entities = await FindAsync(filter, orderBy, includeProperties);
+            return entities.FirstOrDefault();
         }
     }
 }

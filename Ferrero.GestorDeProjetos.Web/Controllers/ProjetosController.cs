@@ -8,9 +8,11 @@ using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 using System.Data.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
+  [Authorize]
   public class ProjetosController : Controller
     {
         private readonly UnitOfWork _unitOfWork;

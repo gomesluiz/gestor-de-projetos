@@ -1,16 +1,11 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Ferrero.GestorDeProjetos.Web.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+        public IActionResult Index() => Redirect("/Conexao/SignIn");
+/* 
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -35,5 +30,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+*/
     }
 }

@@ -189,7 +189,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             catch(DbUpdateException e)
             {
-                return RedirectToAction(nameof(Delete), new { id = id, errorMessage = e.Message });  
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
             return RedirectToAction(nameof(Show), new { projetoId = tarefa.ProjetoId });
         }

@@ -49,7 +49,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Documento/Create
         public IActionResult Create(int projetoId)
         {
-            ViewBag.Projeto = _context.Portifolio.Get(projetoId);
+            ViewBag.Projeto = _context.Portifolio.Get(p => p.Id == projetoId);
             
             return View();
         }
@@ -78,7 +78,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
             }
 
-            ViewBag.Projeto = _context.Portifolio.Get(documentoViewModel.ProjetoId);
+            ViewBag.Projeto = _context.Portifolio.Get(p => p.Id == documentoViewModel.ProjetoId);
             return View(documentoViewModel);
         }
 
@@ -182,7 +182,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             catch(DbUpdateException e)
             {
-                return RedirectToAction(nameof(Delete), new { id = id, errorMessage = e.Message });  
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
             return RedirectToAction(nameof(Show), new { projetoId = documento.ProjetoId });
         }

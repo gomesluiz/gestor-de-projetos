@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Models.Kanban;
+using Ferrero.GestorDeProjetos.Web.Models.Security;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 
 namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
