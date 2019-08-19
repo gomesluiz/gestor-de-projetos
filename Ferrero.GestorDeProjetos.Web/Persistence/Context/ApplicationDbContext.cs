@@ -27,7 +27,6 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
         public DbSet<Vinculo> Vinculos { get; set; }
         public DbSet<Tarefa> Tarefas { get; set; }
         public DbSet<Documento> Documentos { get; set; }
-        
         public DbSet<Usuario> Usuarios { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)

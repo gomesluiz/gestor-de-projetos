@@ -1,25 +1,36 @@
 using System;
 using System.Data.Common;
 using System.Linq;
+
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Ferrero.GestorDeProjetos.Web.Models.Helpers;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class DocumentosController : Controller
     {
         private readonly UnitOfWork _context;
-        public DocumentosController(ApplicationDbContext context)
+        private readonly IHostingEnvironment _environment;
+        private readonly string _pathToStore;
+
+        public DocumentosController(ApplicationDbContext context, IHostingEnvironment environment)
         {
             _context = new UnitOfWork(context);
+            _environment = environment;
+            _pathToStore = Path.Combine(_environment.WebRootPath, "docs", "projetos");
         }
 
         // GET: DocumentoViewModel
-        public async Task<IActionResult> Show(int projetoId)
+        public async Task<IActionResult> Show(int projetoId, string message)
         {
             try
             {   
@@ -30,18 +41,21 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                         , includeProperties: "Projeto"
                     );
                 
-                return View(new PastaViewModel(projetoId
-                    , documentos.Select(d=> (DocumentoViewModel)d)
-                    )
+                ViewBag.StatusMessage = message;
+                return View(
+                        new PastaViewModel(
+                            projetoId
+                            , documentos.Select(d=> (DocumentoViewModel)d)
+                        )
                 );
             }
             catch (DbException e)
             {
-                ModelState.AddModelError(""
-                    , "Não é possível exibir os documentos do projeto. " 
-                    + "Motivo: " + e.Message + ". "  
+                ViewBag.StatusMessage =
+                      "Erro: Não é possível exibir os documentos do projeto. " 
+                    + "Motivo: " + e.Message + " "  
                     + "Tente novamente, e se o problema persistir " 
-                    + "entre em contato com o administrador do sistema.");
+                    + "entre em contato com o administrador do sistema.";
             }
             return View();
         }
@@ -49,30 +63,42 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Documento/Create
         public IActionResult Create(int projetoId)
         {
-            ViewBag.Projeto = _context.Portifolio.Get(p => p.Id == projetoId);
-            
+            ViewBag.Projeto = _context.Portifolio.Get(p => p.Id == projetoId);            
             return View();
         }
 
         // POST: Documento/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DocumentoViewModel documentoViewModel)
+        public async Task<IActionResult> Create(DocumentoViewModel documentoViewModel, IFormFile Arquivo)
         {
             if (ModelState.IsValid)
             {
                 try 
                 {
-                    _context.Documentos.Add((Documento) documentoViewModel);
-                    await _context.SaveAsync();
+                    var response = await FileUploadHelper.DoUpload(Arquivo, _pathToStore, documentoViewModel.Arquivo);
+                    if (response.IsOk())
+                    {
+                        documentoViewModel.Arquivo = response.FileName;
+                        _context.Documentos.Add((Documento) documentoViewModel);
+                        await _context.SaveAsync();
 
-                    return RedirectToAction(nameof(Show), new { projetoId = documentoViewModel.ProjetoId });
+                        return RedirectToAction(nameof(Show)
+                            , new { projetoId = documentoViewModel.ProjetoId
+                                , message = string.Format("Documento [ {0} ] incluído com sucesso!"
+                                    , documentoViewModel.Titulo) });
+                    }
+                    ModelState.AddModelError(""
+                    , "Não é possível incluir este documento. " 
+                    + "Motivo: " + response.Message + " "
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
                 }
                 catch(DbException e)
                 {
                     ModelState.AddModelError(""
                         , "Não é possível incluir este documento. " 
-                        + "Motivo: " + e.Message + ". "
+                        + "Motivo: " + e.Message + " "
                         + "Tente novamente, e se o problema persistir " 
                         + "entre em contato com o administrador do sistema.");  
                 }
@@ -89,7 +115,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
             try
             {
-                var documento = await FindDocumentoBy(id);
+                var documento = await _context.Documentos.GetAsync(d => d.Id == id
+                                , includeProperties: "Projeto");
                 if (documento == null) return NotFound();
             
                 return View((DocumentoViewModel) documento);
@@ -98,7 +125,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 ModelState.AddModelError(""
                     , "Não é possível editar este documento. " 
-                    + "Motivo: " + e.Message + ". "
+                    + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
             }
@@ -109,7 +136,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // POST: Documento/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, DocumentoViewModel documentoViewModel)
+        public async Task<IActionResult> Edit(int id, DocumentoViewModel documentoViewModel, IFormFile Arquivo)
         {
             if (id != documentoViewModel.Id) return NotFound();
          
@@ -117,16 +144,31 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 try
                 {
-                    _context.Documentos.Update((Documento) documentoViewModel);
-                    await _context.SaveAsync();
+                    var response = await FileUploadHelper.DoUpload(Arquivo, _pathToStore, documentoViewModel.Arquivo);
+                    if (response.IsOk())
+                    {
+                        if (!String.IsNullOrEmpty(response.FileName))
+                            documentoViewModel.Arquivo = response.FileName;
 
-                    return RedirectToAction(nameof(Show), new { projetoId = documentoViewModel.ProjetoId });
+                        _context.Documentos.Update((Documento) documentoViewModel);
+                        await _context.SaveAsync();
+
+                        return RedirectToAction(nameof(Show)
+                            , new { projetoId = documentoViewModel.ProjetoId
+                                , message = string.Format("Documento [ {0} ] atualizado com sucesso !"
+                                    , documentoViewModel.Titulo) });
+                    }
+                    ModelState.AddModelError(""
+                    , "Não é possível editar este documento. " 
+                    + "Motivo: " + response.Message + " "
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
                 }
                 catch (DbUpdateException e)
                 {
                     ModelState.AddModelError(""
                     , "Não é possível editar este documento. " 
-                    + "Motivo: " + e.Message + ". "
+                    + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
                 }
@@ -144,14 +186,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 ModelState.AddModelError(""
                     , "Não é possível remover este documento. " 
-                    + "Motivo: " + errorMessage + ". "
+                    + "Motivo: " + errorMessage + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
             }
 
             try
             {  
-                var documento = await FindDocumentoBy(id);
+                var documento = await _context.Documentos.GetAsync(d => d.Id == id
+                                , includeProperties: "Projeto");
                 if (documento == null) return NotFound();
 
                 return View((DocumentoViewModel) documento);
@@ -160,7 +203,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 ModelState.AddModelError(""
                     , "Não é possível excluir este documento. " 
-                    + "Motivo: " + e.Message + ". "
+                    + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir "  
                     + "entre em contato com o administrador do sistema.");
             }
@@ -176,7 +219,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             Documento documento;
             try
             {
-                documento = await FindDocumentoBy(id);
+                documento = await _context.Documentos.GetAsync(d => d.Id == id);
                 _context.Documentos.Remove(documento);
                 await _context.SaveAsync();
             }
@@ -184,15 +227,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
-            return RedirectToAction(nameof(Show), new { projetoId = documento.ProjetoId });
+            return RedirectToAction(nameof(Show)
+                        , new { projetoId = documento.ProjetoId
+                                , message = string.Format("Documento [ {0} ] excluído com sucesso !"
+                                    , documento.Titulo) });
         }
 
-        private async Task<Documento> FindDocumentoBy(int? id)
+        public async Task<IActionResult> Download(string filename)
         {
-            var documentos = await _context.Documentos
-                .FindAsync(e => e.Id == id, includeProperties: "Projeto");
-
-            return documentos.FirstOrDefault();
+            var stream = await FileDownloadHelper.Download(_pathToStore, filename);
+            return File(stream, FileDownloadHelper.GetContentType(filename), filename);
         }
+        
     }
 }

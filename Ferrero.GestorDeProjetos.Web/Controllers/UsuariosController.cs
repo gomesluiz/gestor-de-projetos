@@ -1,5 +1,4 @@
 using System;
-using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +22,24 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: 
-        public IActionResult Index() => View(_manager.Users.Select(u => (UsuarioViewModel)u));
+        public IActionResult Index(string message)
+        {    
+            try
+            {
+                ViewBag.StatusMessage = message;
+                return View(_manager.Users.Select(u => (UsuarioViewModel)u));
+            }
+            catch(Exception e)
+            {
+                ViewBag.StatusMessage =
+                      "Erro: Não é possível exibir os usuários. " 
+                    + "Motivo: " + e.Message + " "
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.";
+            }
+            return View();
+
+        }
 
         // GET: Usuario/Create
         public IActionResult Create() => View();
@@ -33,26 +49,40 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UsuarioViewModel usuarioViewModel)
         {
+            if (String.IsNullOrEmpty(usuarioViewModel.Password) ||
+                (usuarioViewModel.Password.Length < 5)          ||
+                (usuarioViewModel.Password.Length > 15))
+            {
+                ModelState.AddModelError("Password"
+                        , string.Format("A senha do usuário deve possuir no máximo {0} e no mínimo {1} caracteres"
+                        , 15, 5));
+            }
+                                                   
             if (ModelState.IsValid)
             {
-                var usuario = _manager.FindByNameAsync(usuarioViewModel.UserName);
+                var usuario = await _manager.FindByNameAsync(usuarioViewModel.UserName);
                 if (usuario == null){
-                    IdentityResult resultado = await _manager.CreateAsync((Usuario) usuarioViewModel, usuarioViewModel.Password);
+                    usuario = (Usuario) usuarioViewModel;
+                    IdentityResult resultado = await _manager.CreateAsync(usuario, usuarioViewModel.Password);
                     if (resultado.Succeeded)
-                        return RedirectToAction(nameof(Index));
+                    {
+                        await _manager.AddToRoleAsync(usuario, "User");
+                        return RedirectToAction(nameof(Index)
+                            , new { message = string.Format("Usuário {0} incluído com sucesso!"
+                            , usuarioViewModel.UserName)});
+                    }
                     else 
                     {
                         foreach (IdentityError erro in resultado.Errors)
                         ModelState.AddModelError("", erro.Description);
                     }
                 } else {
-                    ModelState.AddModelError("UserName", "Este usuário já existe!");
+                    ModelState.AddModelError("UserName"
+                        , string.Format("Usuário {0} já existe!"
+                        ,   usuarioViewModel.UserName));
                     return View(usuarioViewModel);
                 }
-            
-                return RedirectToAction(nameof(Index));
             }
-
             return View(usuarioViewModel);
         }
  
@@ -71,7 +101,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             catch(Exception e)
             {
                 ModelState.AddModelError(""
-                    , "Não é possível editar este documento. " 
+                    , "Não é possível editar este usuário. " 
                     + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema.");
@@ -87,19 +117,45 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             if (id != usuarioViewModel.Id) return NotFound();
 
+            if (!String.IsNullOrEmpty(usuarioViewModel.Password) &&
+                ((usuarioViewModel.Password.Length < 5)         ||
+                 (usuarioViewModel.Password.Length > 15)))
+            {
+                ModelState.AddModelError("Password"
+                        , string.Format("A senha do usuário deve possuir no máximo {0} e no mínimo {1} caracteres"
+                        , 15, 5));
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     var usuario = await _manager.FindByIdAsync(id); 
-                    usuario.UserName = usuarioViewModel.UserName;
-                    usuario.FullName = usuarioViewModel.Nome;
-                    usuario.Email    = usuarioViewModel.Email;
-                    usuario.PasswordHash = _hasher.HashPassword(usuario, usuarioViewModel.Password);
-                    
-                    await _manager.UpdateAsync(usuario);
-                    
-                    return RedirectToAction(nameof(Index));
+                    if (usuario.UserName != usuarioViewModel.UserName)
+                    {
+                        var outroUsuario = await _manager.FindByNameAsync(usuarioViewModel.UserName);
+                        if (outroUsuario != null)
+                        {
+                            ModelState.AddModelError("UserName"
+                                , string.Format("Outro usuário {0} já existe!"
+                                ,   usuarioViewModel.UserName));
+                        }
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        usuario.UserName = usuarioViewModel.UserName;
+                        usuario.FullName = usuarioViewModel.Nome;
+                        usuario.Email    = usuarioViewModel.Email;
+                        if (!String.IsNullOrEmpty(usuarioViewModel.Password))
+                            usuario.PasswordHash = _hasher.HashPassword(usuario, usuarioViewModel.Password);
+                        
+                        await _manager.UpdateAsync(usuario);
+                        
+                        return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Usuário {0} atualizado com sucesso!"
+                                , usuarioViewModel.UserName)});
+                    }
                 }
                 catch (Exception e)
                 {
@@ -128,22 +184,24 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     + "entre em contato com o administrador do sistema.");
             }
 
-            try
-            {  
-                var usuario = await _manager.FindByIdAsync(id);
-                if (usuario == null) return NotFound();
-
-                return View((UsuarioViewModel) usuario);
-            }
-            catch(DbException e)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(""
-                    , "Não é possível excluir este usuário. " 
-                    + "Motivo: " + e.Message + ". "
-                    + "Tente novamente, e se o problema persistir "  
-                    + "entre em contato com o administrador do sistema.");
-            }
+                try
+                {  
+                    var usuario = await _manager.FindByIdAsync(id);
+                    if (usuario == null) return NotFound();
 
+                    return View((UsuarioViewModel) usuario);
+                }
+                catch(Exception e)
+                {
+                    ModelState.AddModelError(""
+                        , "Não é possível excluir este usuário. " 
+                        + "Motivo: " + e.Message + " "
+                        + "Tente novamente, e se o problema persistir "  
+                        + "entre em contato com o administrador do sistema.");
+                }
+            }
             return View();
         }
 
@@ -162,7 +220,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)
+                            , new { message = string.Format("Usuário {0} excluído com sucesso!"
+                            , usuario.UserName)});
         }
     }
     

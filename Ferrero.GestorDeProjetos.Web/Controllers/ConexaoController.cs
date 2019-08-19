@@ -16,7 +16,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         private UserManager<Usuario>    _userManager;
         private SignInManager<Usuario>  _signInManager;
         
-        public ConexaoController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
+        public ConexaoController(UserManager<Usuario> userManager
+            , SignInManager<Usuario> signInManager)
         {
             _userManager   = userManager;
             _signInManager = signInManager;
@@ -34,7 +35,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(LoginViewModel loginViewModel)
+        public async Task<IActionResult> SignIn(SignInViewModel loginViewModel)
         {
             if (ModelState.IsValid)
             {

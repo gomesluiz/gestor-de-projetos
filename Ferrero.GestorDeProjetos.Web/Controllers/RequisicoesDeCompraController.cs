@@ -14,11 +14,10 @@ using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Models.Helpers;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
-using Task = System.Threading.Tasks.Task;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
-    public class RequisicoesDeCompraController : Controller
+  public class RequisicoesDeCompraController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -323,8 +322,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 return;
             }
             
-            FileUploadHelper uploader = new FileUploadHelper();
-            fileName = await uploader.SaveFileAsync(
+            fileName = await FileUploadHelper.SaveFileAsync(
                 Proposta
                 , pathToUpload
                 , "proposta_" + viewModel.Numero + ".pdf"
@@ -337,9 +335,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         /// </summary>
         public async Task<IActionResult> Download(string filename)
         {
-            var downloader = new FileDownloadHelper();
-            var stream = await downloader.Download(_pathToStore, filename);
-            return File(stream, downloader.GetContentType(filename), filename);
+            var stream = await FileDownloadHelper.Download(_pathToStore, filename);
+            return File(stream, FileDownloadHelper.GetContentType(filename), filename);
         }
     }
 }

@@ -25,10 +25,10 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Security
         [Display(Name = "E-mail")]
         public string Email { get; set; }
         
-        [Required(ErrorMessage = "Digite a senha do usuário.")]
-        [StringLength(10
-            , MinimumLength = 6
-            , ErrorMessage  = "A Senha do usuário deve possuir no máximo {1} e no mínimo {2} caracteres.")]
+        //[Required(ErrorMessage = "Digite a senha do usuário.")]
+        //[StringLength(15
+        //    , MinimumLength = 5
+        //    , ErrorMessage  = "A Senha do usuário deve possuir no máximo {1} e no mínimo {2} caracteres.")]
         [Display(Name = "Senha")]
         public string Password { get; set; }
         

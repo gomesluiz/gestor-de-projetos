@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Ferrero.GestorDeProjetos.Web.Models.Security;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Ferrero.GestorDeProjetos.UI.Web
 {
@@ -26,35 +27,13 @@ namespace Ferrero.GestorDeProjetos.UI.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /* 
-            services.AddTransient<IAuthorizationHandler, AllowUsersHandler>();
-            services.AddTransient<IAuthorizationHandler, AllowPrivateHandler>();
-            services.AddAuthorization(opts => {
-                opts.AddPolicy("SgPManager", policy => {
-                    policy.RequireRole("Manager");
-                    policy.RequireClaim("SgP", "Sistema de Gestao de Projetos");
-                });
-            });
-            services.AddAuthorization(opts => {
-                opts.AddPolicy("AllowTom", policy => {
-                    policy.AddRequirements(new AllowUserPolicy("tom"));
-                });
-            });
-            services.AddAuthorization(opts => {
-                opts.AddPolicy("PrivateAccess", policy => {
-                    policy.AddRequirements(new AllowPrivatePolicy());
-                });
-            });
-            */
             services.AddDefaultIdentity<Usuario>(options =>
             {
                 // Password settings
                 options.Password.RequireDigit = false;
-                //options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
-                //options.Password.RequiredUniqueChars = 6;
                 
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
@@ -68,14 +47,6 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            /* 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            */
-            
             //Setting the Account Login page
             services.ConfigureApplicationCookie(options =>
             {
@@ -91,11 +62,10 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
-            //services.AddDefaultIdentity<Usuario>()
-            //    .AddRoles<IdentityRole>() 
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            //
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -118,16 +88,15 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             app.UseStaticFiles();
             ////////////////////////
             
+            app.UseSession();
             app.UseAuthentication();
-            app.UseCookiePolicy();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
+            app.UseCookiePolicy();
             CreateUserRoles(services).Wait();
         }
 

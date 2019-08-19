@@ -14,6 +14,7 @@
   <script src="~/vendor/libs/vanilla-text-mask/vanilla-text-mask.js"></script>
   <script src="~/vendor/libs/vanilla-text-mask/text-mask-addons.js"></script>
   <script src="~/js/forms_extras.js"></script>
+  <script src="~/js/forms_file-upload.js"></script>
   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
@@ -27,7 +28,7 @@
     <div class="card mb-4">
       <h6 class="card-header">Informações Básicas</h6>
       <div class="card-body">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
           @{await Html.RenderPartialAsync("_FormFields.cshtml");}
           <div class="text-right mt-3">

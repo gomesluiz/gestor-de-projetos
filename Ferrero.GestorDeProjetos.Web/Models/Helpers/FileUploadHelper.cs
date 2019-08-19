@@ -5,9 +5,34 @@ using Microsoft.AspNetCore.Http;
 
 namespace Ferrero.GestorDeProjetos.Web.Models.Helpers
 {
-    public class FileUploadHelper
+    public static class FileUploadHelper
     {
-        public async Task<string> SaveFileAsync(IFormFile file, string pathToUpload
+        public static async Task<UploadDownloadResponse> DoUpload(IFormFile content, string uploadPath, string localFileName)
+        { 
+
+            try{
+                if (localFileName != null && content == null)
+                    return new UploadDownloadResponse (UploadDownloadResponse.STATUS_OK);
+
+                if (content == null || content.Length == 0)
+                    return new UploadDownloadResponse(UploadDownloadResponse.STATUS_NOK
+                        , "Arquivo não foi selecionado!");
+
+                if (FileDownloadHelper.GetContentType(content.FileName) == null){
+                    return new UploadDownloadResponse(UploadDownloadResponse.STATUS_NOK
+                        , "Extensão do arquivo inválida!");
+                }
+                var remoteFileName = await FileUploadHelper.SaveFileAsync(content, uploadPath, localFileName);
+
+                return new UploadDownloadResponse(UploadDownloadResponse.STATUS_OK,
+                    fileName: remoteFileName);
+                } 
+            catch (Exception e)
+            {
+                return new UploadDownloadResponse(UploadDownloadResponse.STATUS_NOK, e.Message);
+            }
+        }
+        public static async Task<string> SaveFileAsync(IFormFile file, string pathToUpload
             , string renameFileTo = "")
         {
             
@@ -29,24 +54,24 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Helpers
             return fileName;
         }
 
-        public string GetFileName(IFormFile file, bool buildUniqueName)
+        public static string GetFileName(IFormFile file, bool buildUniqueName)
         {
             string fileName     = string.Empty;
             string fileExtension = Path.GetExtension(file.FileName);
             if (buildUniqueName)
             {
-                string strUniqueName = GetUniqueName("doc_");
+                string strUniqueName = GetUniqueName("file_");
                 fileName = strUniqueName + fileExtension;
             } 
             else 
             {
-                string strFileName = "oc_" + Path.GetFileNameWithoutExtension(file.FileName);
+                string strFileName = "file_" + Path.GetFileNameWithoutExtension(file.FileName);
                 fileName = strFileName;
             }
             return fileName;
         }
         
-        private string GetFileExtension(IFormFile file)
+        private static string GetFileExtension(IFormFile file)
         {
             string fileExtension;
             fileExtension = (file != null) ?
@@ -55,7 +80,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Helpers
             return fileExtension;
         }
 
-        private string GetUniqueName(string preFix)
+        private static string GetUniqueName(string preFix)
         {
             string uniqueName = preFix + DateTime.Now.ToString()
                 .Replace("/", "-")

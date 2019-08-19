@@ -1,0 +1,11 @@
+@{  var message = (string)ViewBag.StatusMessage;
+
+    if (!String.IsNullOrEmpty(message)) 
+    { 
+        var statusMessageClass = message.StartsWith("Erro:") ? "danger" : "success"; 
+        <div class="alert alert-@statusMessageClass alert-dismissible" role="alert"> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> 
+            @message
+        </div>
+    }
+} 

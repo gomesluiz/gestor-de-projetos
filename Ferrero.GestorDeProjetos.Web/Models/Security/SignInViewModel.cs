@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ferrero.GestorDeProjetos.Web.Models.Security
 {
-    public class LoginViewModel
+    public class SignInViewModel
     {
         
         [Required(ErrorMessage = "Por favor, digite o usuário.")]
