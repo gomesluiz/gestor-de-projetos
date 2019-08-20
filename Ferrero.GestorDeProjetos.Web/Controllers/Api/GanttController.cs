@@ -1,7 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Ferrero.GestorDeProjetos.Web.Models.Gantt;
-using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+
+using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.Gantt;
+using Ferrero.GestorDeProjetos.Web.Extensions;
+using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
 {
@@ -9,21 +12,28 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
     [Route("api/gantt")]
     public class GanttController : ControllerBase
     {
-        private ApplicationDbContext db;
+        private ApplicationDbContext _context;
 
         public GanttController(ApplicationDbContext context)
         {
-            db    = context;
+            _context    = context;
         }
  
         // GET api/Task
         [HttpGet]
         public object Get()
         {
+            var projeto   = (Projeto) HttpContext
+                .Session
+                .GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
             return new
             {
-                data    = db.Atividades.ToList().Select(t => (AtividadeViewModel)t),
-                links   = db.Vinculos.ToList().Select(t => (VinculoViewModel)t)
+                data = _context.Atividades
+                    .ToList()
+                    .Where(t => t.ProjetoId == projeto.Id)
+                    .Select(t => (AtividadeViewModel)t),
+                    
+                links = _context.Vinculos.ToList().Select(t => (VinculoViewModel)t)
             };
         }
     }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Ferrero.GestorDeProjetos.Web.Models.Security;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 
 namespace Ferrero.GestorDeProjetos.UI.Web
 {
@@ -21,7 +22,6 @@ namespace Ferrero.GestorDeProjetos.UI.Web
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -65,6 +65,7 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddDistributedMemoryCache();
             services.AddSession();
         }
 

@@ -16,7 +16,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
             get { return true; }
             set { }
         }
- 
+        public int projeto_id { get; set; }
         public static explicit operator AtividadeViewModel(Atividade task)
         {
             return new AtividadeViewModel
@@ -27,7 +27,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
                 duration = task.Duration,
                 parent = task.ParentId,
                 type = task.Type,
-                progress = task.Progress
+                progress = task.Progress,
+                projeto_id = task.ProjetoId
             };
         }
  
@@ -41,7 +42,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
                 Duration = task.duration,
                 ParentId = task.parent,
                 Type = task.type,
-                Progress = task.progress
+                Progress = task.progress,
+                ProjetoId = task.projeto_id
             };
         }
     }

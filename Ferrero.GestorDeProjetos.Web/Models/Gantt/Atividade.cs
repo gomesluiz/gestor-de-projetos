@@ -11,5 +11,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
         public decimal Progress { get; set; }
         public int? ParentId { get; set; }
         public string Type { get; set; }
+        public int ProjetoId { get; set; }
+        public Projeto Projeto { get; set; }
     }
 }

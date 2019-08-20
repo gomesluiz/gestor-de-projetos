@@ -1,25 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
-using System.Data.Common;
-using Microsoft.AspNetCore.Authorization;
+using Ferrero.GestorDeProjetos.Web.Extensions;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
   [Authorize]
   public class ProjetosController : Controller
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly UnitOfWork _context;
 
         public ProjetosController(ApplicationDbContext context)
         {
-            _unitOfWork = new UnitOfWork(context);
+            _context = new UnitOfWork(context);
         }
 
         // GET: Projetos
@@ -27,7 +30,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             try
             {   
-                var projetos = await _unitOfWork
+                var projetos = await _context
                     .Portifolio
                     .FindAsync(includeProperties:"OrdemDeInvestimento");
                 
@@ -37,6 +40,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     projetosViewModels.Add(ConvertToViewModel(projeto));
                 }
             
+                HttpContext.Session.Remove(Projeto.PROJETO_SESSION_ID);
                 return View(projetosViewModels);
             }
             catch (DbException)
@@ -61,8 +65,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           {
             try
             {   
-              _unitOfWork.Portifolio.Add(ConvertToModel(viewModel));
-              await _unitOfWork.SaveAsync();
+              _context.Portifolio.Add(ConvertToModel(viewModel));
+              await _context.SaveAsync();
               return RedirectToAction(nameof(Index));
             }
             catch(DbException)
@@ -108,9 +112,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 try
                 {
                     var projeto = ConvertToModel(viewModel);
-                    _unitOfWork.Portifolio.Update(projeto);
-                    _unitOfWork.Investimentos.Update(projeto.OrdemDeInvestimento);
-                    await _unitOfWork.SaveAsync();
+                    _context.Portifolio.Update(projeto);
+                    _context.Investimentos.Update(projeto.OrdemDeInvestimento);
+                    await _context.SaveAsync();
                 }
                 catch (DbException)
                 {
@@ -158,9 +162,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 var projeto = await FindProjetoBy(id);
 
-                _unitOfWork.Portifolio.Remove(projeto);
-                _unitOfWork.Investimentos.Remove(projeto.OrdemDeInvestimento);
-                await _unitOfWork.SaveAsync();
+                _context.Portifolio.Remove(projeto);
+                _context.Investimentos.Remove(projeto.OrdemDeInvestimento);
+                await _context.SaveAsync();
             }
             catch(DbException)
             {
@@ -169,8 +173,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Gantt()
+        public async Task<IActionResult> Gantt(int id)
         {
+            var projeto = await _context
+                  .Portifolio
+                  .GetAsync(p => p.Id == id, includeProperties: "OrdemDeInvestimento");
+        
+            HttpContext.Session.SetObjectAsJson(Projeto.PROJETO_SESSION_ID, projeto);
             return View();
         }
 
@@ -184,7 +193,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         ///</summary>
         private async Task<Projeto> FindProjetoBy(int? id)
         {
-            var projetos = await _unitOfWork.Portifolio.FindAsync(
+            var projetos = await _context.Portifolio.FindAsync(
                 projeto => projeto.Id == id
                 , includeProperties:"OrdemDeInvestimento");
 

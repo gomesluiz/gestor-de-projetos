@@ -161,6 +161,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<decimal>("Progress");
 
+                    b.Property<int>("ProjetoId");
+
                     b.Property<DateTime>("StartDate");
 
                     b.Property<string>("Text");
@@ -168,6 +170,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Atividades");
                 });
@@ -529,6 +533,14 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Documento", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                        .WithMany()
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Gantt.Atividade", b =>
                 {
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
                         .WithMany()

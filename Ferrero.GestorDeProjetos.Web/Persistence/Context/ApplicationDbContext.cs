@@ -186,6 +186,12 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
                     .IsRequired();
             });
 
+            // Model Atividade
+            builder.Entity<Atividade>(entity =>
+            {
+                entity.HasOne(p => p.Projeto);
+            });
+
             // Model Tarefa
             builder.Entity<Tarefa>(entity =>
             {

@@ -3,10 +3,9 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
-    <link href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css"
-          rel="stylesheet" type="text/css" />
+    <link href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css"rel="stylesheet" type="text/css" />
     <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
-    <!--<script src="https://cdn.dhtmlx.com/gantt/edge/locale/locale_pt.js"></script>-->
+    <script src="https://cdn.dhtmlx.com/gantt/edge/locale/locale_pt.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
             var zoomConfig = {
@@ -39,7 +38,7 @@
                         min_column_width:120,
                         scales:[
                             {unit: "month", format: "%F, %Y"},
-                            {unit: "week", format: "Week #%W"}
+                            {unit: "week", format: "Semana #%W"}
                         ]
                     },
                     {
@@ -69,13 +68,17 @@
             };
 
             gantt.ext.zoom.init(zoomConfig);
-            gantt.ext.zoom.setLevel("year");
+            gantt.ext.zoom.setLevel("day");
             gantt.ext.zoom.attachEvent("onAfterZoom", function(level, config){
                 document.querySelector(".gantt_radio[value='" +config.name+ "']").checked = true;
             });
 
             // specifying the date format
             gantt.config.date_format = "%Y-%m-%d %H:%i";
+            gantt.config.date_grid = "%d-%m-%Y";
+            today = new Date();
+            gantt.config.start_date = new Date(today.getFullYear(), today.getMonth()+1, today.getDate());
+
             // initializing gantt
             gantt.init("gantt_here");
  
@@ -95,20 +98,20 @@
         <input type="button" value="Zoom In" onclick="zoomIn()">
         <input type="button" value="Zoom Out" onclick="zoomOut()">
 
-        <input type="radio" id="scale1" class="gantt_radio" name="scale" value="day">
-        <label for="scale1">Day scale</label>
+        <input type="radio" id="scale1" class="gantt_radio" name="scale" value="day" checked>
+        <label for="scale1">Dia</label>
 
         <input type="radio" id="scale2" class="gantt_radio" name="scale" value="week">
-        <label for="scale2">Week scale</label>
+        <label for="scale2">Semana</label>
 
         <input type="radio" id="scale3" class="gantt_radio" name="scale" value="month">
-        <label for="scale3">Month scale</label>
+        <label for="scale3">Mês</label>
 
         <input type="radio" id="scale4" class="gantt_radio" name="scale" value="quarter">
-        <label for="scale4">Quarter scale</label>
+        <label for="scale4">Trimestre</label>
 
-        <input type="radio" id="scale5" class="gantt_radio" name="scale" value="year" checked>
-        <label for="scale5">Year scale</label>
+        <input type="radio" id="scale5" class="gantt_radio" name="scale" value="year" >
+        <label for="scale5">Ano</label>
     </form>
     <div id="gantt_here" style="width: 100%; height: 100vh;"></div>
     <script>

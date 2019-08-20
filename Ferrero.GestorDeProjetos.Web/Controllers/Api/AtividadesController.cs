@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 
+using Ferrero.GestorDeProjetos.Web.Extensions;
 using Ferrero.GestorDeProjetos.Web.Models.Gantt;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
+using Ferrero.GestorDeProjetos.Web.Models;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
 {
@@ -22,8 +24,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<AtividadeViewModel> Get()
         {
+            var projeto   = (Projeto) HttpContext.Session.GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
+
             return _context.Atividades
                 .ToList()
+                .Where(t => t.ProjetoId == projeto.Id)
                 .Select(t => (AtividadeViewModel)t);
         }
  
@@ -40,6 +45,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
         [HttpPut("{id}")]
         public IActionResult Put(int id, AtividadeViewModel atividadeViewModel)
         {
+
             var updatedAtividade = (Atividade)atividadeViewModel;
 
             var dbAtividade = _context.Atividades.Find(id);
@@ -63,7 +69,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
         public ObjectResult Post(AtividadeViewModel atividadeViewModel)
         {
             var atividade = (Atividade)atividadeViewModel;
- 
+            
+            var projeto   = (Projeto) HttpContext
+                .Session
+                .GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
+
+            atividade.ProjetoId = projeto.Id;
             _context.Atividades.Add(atividade);
             _context.SaveChanges();
  

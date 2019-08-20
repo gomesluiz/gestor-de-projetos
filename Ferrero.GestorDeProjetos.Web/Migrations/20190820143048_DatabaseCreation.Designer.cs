@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190818005427_InitialDatabaseCreation")]
-    partial class InitialDatabaseCreation
+    [Migration("20190820143048_DatabaseCreation")]
+    partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -163,6 +163,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
                     b.Property<decimal>("Progress");
 
+                    b.Property<int>("ProjetoId");
+
                     b.Property<DateTime>("StartDate");
 
                     b.Property<string>("Text");
@@ -170,6 +172,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Atividades");
                 });
@@ -531,6 +535,14 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Documento", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                        .WithMany()
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Gantt.Atividade", b =>
                 {
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
                         .WithMany()

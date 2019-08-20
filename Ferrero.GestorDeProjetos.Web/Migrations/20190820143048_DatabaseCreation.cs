@@ -4,28 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
-    public partial class InitialDatabaseCreation : Migration
+    public partial class DatabaseCreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Atividades",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Text = table.Column<string>(nullable: true),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    Duration = table.Column<int>(nullable: false),
-                    Progress = table.Column<decimal>(nullable: false),
-                    ParentId = table.Column<int>(nullable: true),
-                    Type = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Atividades", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "CentrosDeCusto",
                 columns: table => new
@@ -340,6 +322,31 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Atividades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Text = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<int>(nullable: false),
+                    Progress = table.Column<decimal>(nullable: false),
+                    ParentId = table.Column<int>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    ProjetoId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Atividades", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Atividades_Projetos_ProjetoId",
+                        column: x => x.ProjetoId,
+                        principalTable: "Projetos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Documentos",
                 columns: table => new
                 {
@@ -413,6 +420,11 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Atividades_ProjetoId",
+                table: "Atividades",
+                column: "ProjetoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ativos_CentroDeCustoId",
