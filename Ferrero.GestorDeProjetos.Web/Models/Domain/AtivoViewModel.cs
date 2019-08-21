@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels 
+namespace Ferrero.GestorDeProjetos.Web.Models.Domain 
 {
   /// <summary>
   /// Esta classe contém os atributos e métodos de um Ativo.
@@ -97,8 +97,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
 
     [Required(ErrorMessage = "Por favor, digite o nome do requisitante do ativo.")]
     [StringLength(50, ErrorMessage = "O nome do requisitante deve possuir no máximo 50 caracteres.")]
-    public string Requisitante { get; set; }    
- 
+    public string Requisitante { get; set; }
+
     [Display(Name = "Situação")]
     public int SituacaoDoAtivo { get; set; }
     // 0 - Não Informado, 1 - Solicitado, 2 - Não Transferido, 3 - Transferido.
@@ -124,7 +124,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
         }
     }
 
-    public AtivoViewModel()
+    public AtivoViewModel(){}
+    public AtivoViewModel(string nomeDoUsuario)
     {
         Planta      = "INDUSTRIAL";
         Quantidade  = 1;
@@ -136,6 +137,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
         ProntoParaUso = false;
         MaquinaEmMontagemInstalacao = false;
         EdificacaoEmAndamento = false;
+        Requisitante = nomeDoUsuario;
     }
   }
 }

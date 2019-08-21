@@ -1,4 +1,5 @@
 using System;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 
 namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
 {

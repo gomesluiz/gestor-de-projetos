@@ -43,6 +43,7 @@
 @section Scripts {
     <!-- Dependencies -->
     <script src="~/vendor/libs/chartjs/chartjs.js"></script>
+    <script src="~/vendor/libs/chartjs/chartjs-plugin-labels.js"></script>
     <script src="~/vendor/libs/datatables/datatables.js"></script>
     <script src="~/js/tables_datatables.js"></script>
     <script>
@@ -57,7 +58,15 @@
                 success: function(result) {
                     var chart = new Chart(ctx, {
                             type: 'doughnut',
-                            data: result
+                            data: result,
+                            options : { plugins: {
+                                            labels: {
+                                                render: 'percentage',
+                                                fontColor: ['white', 'white', 'white', 'white'],
+                                                precision: 2
+                                            } 
+                                        }
+                            }
                     });
                 }
             });

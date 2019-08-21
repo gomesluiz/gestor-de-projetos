@@ -6,6 +6,7 @@ using Ferrero.GestorDeProjetos.Web.Extensions;
 using Ferrero.GestorDeProjetos.Web.Models.Gantt;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Models;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
 {
@@ -24,7 +25,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<AtividadeViewModel> Get()
         {
-            var projeto   = (Projeto) HttpContext.Session.GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
+            var projeto   = (Projeto) HttpContext
+                .Session
+                .GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
 
             return _context.Atividades
                 .ToList()

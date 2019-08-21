@@ -88,21 +88,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vinculos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Type = table.Column<string>(nullable: true),
-                    SourceTaskId = table.Column<int>(nullable: false),
-                    TargetTaskId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Vinculos", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Ativos",
                 columns: table => new
                 {
@@ -392,6 +377,28 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Vinculos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<string>(nullable: true),
+                    SourceTaskId = table.Column<int>(nullable: false),
+                    TargetTaskId = table.Column<int>(nullable: false),
+                    ProjetoId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vinculos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vinculos_Projetos_ProjetoId",
+                        column: x => x.ProjetoId,
+                        principalTable: "Projetos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "NotasFiscais",
                 columns: table => new
                 {
@@ -509,6 +516,11 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vinculos_ProjetoId",
+                table: "Vinculos",
+                column: "ProjetoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -553,13 +565,13 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 name: "RequisicoesDeCompra");
 
             migrationBuilder.DropTable(
-                name: "Projetos");
-
-            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Projetos");
 
             migrationBuilder.DropTable(
                 name: "Ativos");

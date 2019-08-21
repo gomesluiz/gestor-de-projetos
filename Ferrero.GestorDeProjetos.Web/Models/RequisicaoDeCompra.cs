@@ -1,11 +1,13 @@
 using System;
-using System.ComponentModel.DataAnnotations;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 
-namespace Ferrero.GestorDeProjetos.Web.Models {
-  /// <summary>
-  /// Esta classe contém os atributos e métodos de uma requisição de compra.
-  /// </summary>
-  public class RequisicaoDeCompra {
+namespace Ferrero.GestorDeProjetos.Web.Models
+{
+    /// <summary>
+    /// Esta classe contém os atributos e métodos de uma requisição 
+    /// de compra.
+    /// </summary>
+    public class RequisicaoDeCompra {
     public int Id { get; set; }
     public long Numero { get; set; }
     public DateTime Data { get; set; }

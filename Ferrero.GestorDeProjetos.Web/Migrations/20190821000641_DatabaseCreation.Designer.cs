@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190820143048_DatabaseCreation")]
+    [Migration("20190821000641_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,6 +136,36 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.ToTable("Documentos");
                 });
 
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Projeto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Concluido");
+
+                    b.Property<DateTime>("DataDeInicio")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataDeTermino")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("OrdemDeInvestimentoId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrdemDeInvestimentoId");
+
+                    b.ToTable("Projetos");
+                });
+
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Fornecedor", b =>
                 {
                     b.Property<int>("Id")
@@ -184,6 +214,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ProjetoId");
+
                     b.Property<int>("SourceTaskId");
 
                     b.Property<int>("TargetTaskId");
@@ -191,6 +223,8 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Vinculos");
                 });
@@ -263,36 +297,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrdensDeInvestimento");
-                });
-
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Concluido");
-
-                    b.Property<DateTime>("DataDeInicio")
-                        .HasColumnType("DATETIME");
-
-                    b.Property<DateTime>("DataDeTermino")
-                        .HasColumnType("DATETIME");
-
-                    b.Property<string>("Descricao")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<int?>("OrdemDeInvestimentoId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrdemDeInvestimentoId");
-
-                    b.ToTable("Projetos");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.RequisicaoDeCompra", b =>
@@ -536,15 +540,30 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Documento", b =>
                 {
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Domain.Projeto", "Projeto")
                         .WithMany()
                         .HasForeignKey("ProjetoId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Projeto", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
+                        .WithMany()
+                        .HasForeignKey("OrdemDeInvestimentoId");
+                });
+
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Gantt.Atividade", b =>
                 {
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Domain.Projeto", "Projeto")
+                        .WithMany()
+                        .HasForeignKey("ProjetoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Gantt.Vinculo", b =>
+                {
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Domain.Projeto", "Projeto")
                         .WithMany()
                         .HasForeignKey("ProjetoId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -552,7 +571,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Kanban.Tarefa", b =>
                 {
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Projeto", "Projeto")
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Domain.Projeto", "Projeto")
                         .WithMany()
                         .HasForeignKey("ProjetoId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -567,13 +586,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.RequisicaoDeCompra", "RequisicaoDeCompra")
                         .WithMany()
                         .HasForeignKey("RequisicaoDeCompraId");
-                });
-
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Projeto", b =>
-                {
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.OrdemDeInvestimento", "OrdemDeInvestimento")
-                        .WithMany()
-                        .HasForeignKey("OrdemDeInvestimentoId");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.RequisicaoDeCompra", b =>

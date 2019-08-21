@@ -1,4 +1,4 @@
-@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.ViewModels.ProjetoViewModel>
+@model IEnumerable<Ferrero.GestorDeProjetos.Web.Models.Domain.ProjetoViewModel>
 @{
     ViewData["Title"] = "Todos os projetos";
 }
@@ -33,11 +33,8 @@
               -->
               <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento.Numero)  </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
-              <!--
-              <th class="text-center">Resumo</th>
-              <th class="text-center">Gantt</th>
-              <th class="text-center">Kanban</th>
-              -->
+              <th></th>
+              <th></th>
               <th></th>
               <th></th>
           </tr>
@@ -57,17 +54,20 @@
                     class="btn btn-link btn-sm"> 
                     Resumo
             </a>
-            |
+          </td>
+          <td class="text-center">
             <a href="@Url.RouteUrl("Default", new { action = "Gantt", controller = "Projetos", id = item.Id})" 
                 class="btn btn-link btn-sm"> 
                 Gantt
             </a>
-            |
+          </td>
+          <td class="text-center">
             <a href="@Url.RouteUrl("Default", new { action = "Show", controller = "Kanban" , projetoId = item.Id})" 
                 class="btn btn-link btn-sm">
                 Kanban
             </a>
-            |
+          </td>
+          <td class="text-center">
             <a href="@Url.RouteUrl("Default", new { action = "Show", controller = "Documentos" , projetoId = item.Id})" 
                 class="btn btn-link btn-sm">
                 Documentos

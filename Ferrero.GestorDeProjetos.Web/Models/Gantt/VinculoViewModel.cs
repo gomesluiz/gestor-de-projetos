@@ -6,6 +6,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
         public string type { get; set; }
         public int source { get; set; }
         public int target { get; set; }
+        public int projeto_id { get; set; }
  
         public static explicit operator VinculoViewModel(Vinculo link)
         {
@@ -14,7 +15,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
                 id = link.Id,
                 type = link.Type,
                 source = link.SourceTaskId,
-                target = link.TargetTaskId
+                target = link.TargetTaskId,
+                projeto_id = link.ProjetoId
             };
         }
  
@@ -25,7 +27,8 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Gantt
                 Id = link.id,
                 Type = link.type,
                 SourceTaskId = link.source,
-                TargetTaskId = link.target
+                TargetTaskId = link.target,
+                ProjetoId = link.projeto_id
             };
         }
     }

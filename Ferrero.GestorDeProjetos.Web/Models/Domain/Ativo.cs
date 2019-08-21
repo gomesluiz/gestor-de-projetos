@@ -1,4 +1,4 @@
-namespace Ferrero.GestorDeProjetos.Web.Models
+namespace Ferrero.GestorDeProjetos.Web.Models.Domain
 {
     /// <summary>
     /// Esta classe contém os atributos e métodos de um Ativo.

@@ -24,6 +24,7 @@
         "bootstrap-slider": "~10.6.1",
         "bootstrap-table": "~1.14.2",
         "chartist": "~0.11.0",
+        "chartjs-plugin-labels": "^1.1.0",
         "cropper": "~4.0.0-beta",
         "datatables.net-bs4": "~1.10.16",
         "dragula": "~3.7.2",

@@ -12,6 +12,7 @@ using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
 using Ferrero.GestorDeProjetos.Web.Extensions;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {

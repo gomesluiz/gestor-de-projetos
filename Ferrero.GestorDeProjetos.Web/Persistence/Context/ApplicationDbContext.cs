@@ -192,6 +192,12 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
                 entity.HasOne(p => p.Projeto);
             });
 
+            // Model Vinculo
+            builder.Entity<Vinculo>(entity =>
+            {
+                entity.HasOne(p => p.Projeto);
+            });
+
             // Model Tarefa
             builder.Entity<Tarefa>(entity =>
             {

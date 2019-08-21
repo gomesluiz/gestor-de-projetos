@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 
-namespace Ferrero.GestorDeProjetos.Web.Models.ViewModels
+namespace Ferrero.GestorDeProjetos.Web.Models.Domain
 {
     /// <summary>
     /// Esta classe contém os atributos e métodos de uma view de projeto.

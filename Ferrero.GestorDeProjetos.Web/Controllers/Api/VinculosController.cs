@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Ferrero.GestorDeProjetos.Web.Models.Gantt;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
+using Ferrero.GestorDeProjetos.Web.Extensions;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
 {
@@ -23,8 +25,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<VinculoViewModel> Get()
         {
+            var projeto = (Projeto) HttpContext
+                .Session
+                .GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
+                
             return _context.Vinculos
                 .ToList()
+                .Where(t => t.ProjetoId == projeto.Id)
                 .Select(t => (VinculoViewModel)t);
         }
  
@@ -56,9 +63,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers.Api
         // POST api/Task
         [HttpPost]
         public IActionResult Post(VinculoViewModel vinculoViewModel)
-        {
+        {   
+            var projeto = (Projeto) HttpContext
+                .Session
+                .GetObjectFromJson<Projeto>(Projeto.PROJETO_SESSION_ID);
+
             var vinculo = (Vinculo)vinculoViewModel;
- 
+            vinculo.ProjetoId = projeto.Id;
             _context.Vinculos.Add(vinculo);
             _context.SaveChanges();
  

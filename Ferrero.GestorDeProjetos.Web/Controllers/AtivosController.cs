@@ -1,28 +1,32 @@
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
+using Ferrero.GestorDeProjetos.Web.Models.Security;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
-using Ferrero.GestorDeProjetos.Web.Models;
-using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Hosting;
-using Task = System.Threading.Tasks.Task;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class AtivosController : Controller
     {
         private readonly ApplicationDbContext _context;
-        
         private readonly IHostingEnvironment _env;
-        public AtivosController(ApplicationDbContext context
-                                , IHostingEnvironment hostingEnvironment)
+        private readonly UserManager<Usuario> _manager;
+        public AtivosController(  ApplicationDbContext context
+                                , UserManager<Usuario> manager
+                                , IHostingEnvironment env)
         {
             _context    = context;
-            _env = hostingEnvironment;
+            _manager    = manager;
+            _env = env;
         }
 
         // GET: Ativos
@@ -44,11 +48,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Ativos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var usuario = await _manager.GetUserAsync(User);
             PopulateOrdensDeInvestimentoDropDownList();
             PopulateCentrosDeCustoDropDownList();
-            return View(new AtivoViewModel());
+            return View(new AtivoViewModel(usuario.FullName));
         }
 
         [HttpGet]
@@ -256,7 +261,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         private  AtivoViewModel ConvertToViewModel(Ativo ativo)
         {
-          return new AtivoViewModel {
+          return new AtivoViewModel() {
                 Id = ativo.Id,
                 Numero = ativo.Numero,
                 Descricao = ativo.Descricao,
