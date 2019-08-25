@@ -32,8 +32,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             try
             {   
                 var projetos = await _context
-                    .Portifolio
-                    .FindAsync(includeProperties:"OrdemDeInvestimento");
+                    .Projetos
+                    .FindAsync(includeProperties: typeof(OrdemDeInvestimento).Name);
                 
                 var projetosViewModels = new List<ProjetoViewModel>();
                
@@ -46,17 +46,20 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             catch (DbException)
             {
-                ModelState.AddModelError("", "Não é possível exibit os projetos. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError(""
+                        , "Não é possível exibit os projetos. "  
+                        + "Tente novamente, e se o problema persistir " 
+                        + "entre em contato com o administrador do sistema.");
             }
             return View();
         }
+
         // GET: Projetos/Create
         public IActionResult Create()
         {
             return View();
         }
+
         // POST: Projetos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,15 +69,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           {
             try
             {   
-              _context.Portifolio.Add(ConvertToModel(viewModel));
+              _context.Projetos.Add(ConvertToModel(viewModel));
               await _context.SaveAsync();
               return RedirectToAction(nameof(Index));
             }
             catch(DbException)
             {
-                ModelState.AddModelError("", "Não é possível incluir este projeto. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                      "Não é possível incluir este projeto. "  
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema."
+                );
             }
           }
           return View(viewModel);
@@ -94,9 +99,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             catch (DbException)
             {
-                ModelState.AddModelError("", "Não é possível editar este projeto. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError(""
+                    , "Não é possível editar este projeto. "  
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema."
+                );
             }
             return View();
         }
@@ -113,15 +120,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 try
                 {
                     var projeto = ConvertToModel(viewModel);
-                    _context.Portifolio.Update(projeto);
+                    _context.Projetos.Update(projeto);
                     _context.Investimentos.Update(projeto.OrdemDeInvestimento);
                     await _context.SaveAsync();
                 }
                 catch (DbException)
                 {
-                    ModelState.AddModelError("", "Não é possível editar este projeto. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");   
+                    ModelState.AddModelError(""
+                        , "Não é possível editar este projeto. " 
+                        + "Tente novamente, e se o problema persistir " 
+                        + "entre em contato com o administrador do sistema."
+                    );   
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -129,14 +138,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Projetos/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
+        public async Task<IActionResult> Delete(int? id, string message="")
         {
             if (id == null) return NotFound();
-            if (saveChangesError.GetValueOrDefault())
+            if (message != "")
             {
-                ModelState.AddModelError("", "Não é possível remover este projeto. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError(""
+                    , "Não é possível remover este projeto. " 
+                    + "Motivo: " + message + " "
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema."
+                );
             }
             try
             { 
@@ -147,9 +159,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
             catch(DbException)
             {
-                ModelState.AddModelError("", "Não é possível remover este projeto. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError(""
+                    , "Não é possível remover este projeto. " 
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema."
+                );
             }
             return View();
         }
@@ -163,13 +177,26 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 var projeto = await FindProjetoBy(id);
 
-                _context.Portifolio.Remove(projeto);
-                _context.Investimentos.Remove(projeto.OrdemDeInvestimento);
-                await _context.SaveAsync();
+                var ativo = await _context.Ativos.GetAsync(
+                    a => a.OrdemDeInvestimento.Id == projeto.OrdemDeInvestimento.Id,
+                    includeProperties: typeof(OrdemDeInvestimento).Name);
+
+                if (ativo == null)
+                {
+                    _context.Investimentos.Remove(projeto.OrdemDeInvestimento);
+                    _context.Projetos.Remove(projeto);    
+                    await _context.SaveAsync();
+                }
+                else 
+                {
+                    return RedirectToAction(nameof(Delete)
+                        , new { id = id, message = "Este projeto possui ativos associados a ele." }
+                    );
+                }
             }
-            catch(DbException)
+            catch(DbException e)
             {
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
             return RedirectToAction(nameof(Index));
         }
@@ -177,8 +204,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         public async Task<IActionResult> Gantt(int id)
         {
             var projeto = await _context
-                  .Portifolio
-                  .GetAsync(p => p.Id == id, includeProperties: "OrdemDeInvestimento");
+                  .Projetos
+                  .GetAsync(p => p.Id == id, includeProperties: typeof(OrdemDeInvestimento).Name);
         
             HttpContext.Session.SetObjectAsJson(Projeto.PROJETO_SESSION_ID, projeto);
             return View();
@@ -194,9 +221,9 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         ///</summary>
         private async Task<Projeto> FindProjetoBy(int? id)
         {
-            var projetos = await _context.Portifolio.FindAsync(
+            var projetos = await _context.Projetos.FindAsync(
                 projeto => projeto.Id == id
-                , includeProperties:"OrdemDeInvestimento");
+                , includeProperties: typeof(OrdemDeInvestimento).Name);
 
             return projetos.FirstOrDefault();
         }

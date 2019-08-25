@@ -24,7 +24,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         public async Task<IActionResult> Show(int id)
         {
             var projetos = await _unitOfWork
-                .Portifolio
+                .Projetos
                 .FindAsync(e => e.Id == id, includeProperties: "OrdemDeInvestimento");
                 
             var projeto  = projetos.FirstOrDefault();

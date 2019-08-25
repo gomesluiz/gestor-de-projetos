@@ -63,7 +63,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         // GET: Documento/Create
         public IActionResult Create(int projetoId)
         {
-            ViewBag.Projeto = _context.Portifolio.Get(p => p.Id == projetoId);            
+            ViewBag.Projeto = _context.Projetos.Get(p => p.Id == projetoId);            
             return View();
         }
 
@@ -104,7 +104,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
             }
 
-            ViewBag.Projeto = _context.Portifolio.Get(p => p.Id == documentoViewModel.ProjetoId);
+            ViewBag.Projeto = _context.Projetos.Get(p => p.Id == documentoViewModel.ProjetoId);
             return View(documentoViewModel);
         }
 

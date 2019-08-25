@@ -27,12 +27,10 @@
       <thead>
           <tr>
               <th>@Html.DisplayNameFor(model => model.Nome)           </th>
-              <!--
-              <th class="text-center">@Html.DisplayNameFor(model => model.DataDeInicio)   </th>
-              <th class="text-center">@Html.DisplayNameFor(model => model.DataDeTermino)  </th>
-              -->
-              <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimento.Numero)  </th>
+              <th class="text-center">Início</th>
+              <th class="text-center">Término</th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Concluido)      </th>
+              <th></th>
               <th></th>
               <th></th>
               <th></th>
@@ -43,12 +41,13 @@
     @foreach (var item in Model) {
         <tr>
           <td>@Html.DisplayFor(modelItem => item.Nome)          </td>
-          <!--
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeInicio)  </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.DataDeTermino) </td>
-          -->
-          <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimento.Numero) </td>
-          <td class="text-center">@Html.DisplayFor(modelItem => item.Concluido)     </td>
+          @if(item.Concluido){
+            <td class="text-center"><span class=" badge badge-outline-primary">Sim</span></td>
+          } else {
+            <td class="text-center"><span class=" badge badge-outline-danger">Não</span></td>
+          }
           <td class="text-center">
             <a href="@Url.RouteUrl("Default", new { action = "show", controller = "dashboard" , id = item.Id})" 
                     class="btn btn-link btn-sm"> 

@@ -19,7 +19,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
         private Repository<Fornecedor> _fornecedores;
         private Repository<NotaFiscal> _notas;
         private Repository<OrdemDeInvestimento> _investimentos;
-        private Repository<Projeto> _portifolio;
+        private Repository<Projeto> _projetos;
         private Repository<RequisicaoDeCompra> _requisicoes;
         private Repository<ResumoFinanceiro> _resumos;
         private Repository<Tarefa> _tarefas;
@@ -95,16 +95,16 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Repositories
             }
         }
 
-        public Repository<Projeto> Portifolio
+        public Repository<Projeto> Projetos
         {
             get
             {
 
-                if (this._portifolio == null)
+                if (this._projetos == null)
                 {
-                    this._portifolio = new Repository<Projeto>(_context);
+                    this._projetos = new Repository<Projeto>(_context);
                 }
-                return _portifolio;
+                return _projetos;
             }
         }
         public Repository<RequisicaoDeCompra> Requisicoes
