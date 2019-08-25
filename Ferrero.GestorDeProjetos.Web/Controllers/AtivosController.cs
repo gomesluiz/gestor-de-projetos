@@ -1,3 +1,4 @@
+using System;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Models.Security;
@@ -15,6 +17,7 @@ using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
+    [Authorize]
     public class AtivosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -30,43 +33,80 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Ativos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string message)
         {   
            
-            var ativos = await _context.Ativos
-                .Include(e => e.CentroDeCusto)
-                .Include(e => e.OrdemDeInvestimento)
-                .AsNoTracking()
-                .ToListAsync();
+            try
+            {
+                var ativos = await _context.Ativos
+                    .Include(e => e.CentroDeCusto)
+                    .Include(e => e.OrdemDeInvestimento)
+                    .AsNoTracking()
+                    .ToListAsync();
 
-            var ativosViewModel = new List<AtivoViewModel>();
-            foreach(Ativo ativo in  ativos){
-                ativosViewModel.Add(ConvertToViewModel(ativo));
+                var ativosViewModel = new List<AtivoViewModel>();
+                foreach(Ativo ativo in  ativos){
+                    ativosViewModel.Add(ConvertToViewModel(ativo));
+                }
+
+                ViewBag.StatusMessage = message;
+                return View(await Task.FromResult(ativosViewModel.ToAsyncEnumerable()));
             }
-            
-            return View(await Task.FromResult(ativosViewModel.ToAsyncEnumerable()));
+            catch(Exception e)
+            {
+                ViewBag.StatusMessage =
+                          "Erro: Não é possível exibir os projetos. "  
+                        + "Motivo: " + e.Message + " " 
+                        + "Tente novamente, e se o problema persistir " 
+                        + "entre em contato com o administrador do sistema.";
+            }
+
+            return View();
         }
 
         // GET: Ativos/Create
         public async Task<IActionResult> Create()
         {
-            var usuario = await _manager.GetUserAsync(User);
-            PopulateOrdensDeInvestimentoDropDownList();
-            PopulateCentrosDeCustoDropDownList();
-            return View(new AtivoViewModel(usuario.FullName));
+            try
+            {
+                var usuario = await _manager.GetUserAsync(User);
+                PopulateOrdensDeInvestimentoDropDownList();
+                PopulateCentrosDeCustoDropDownList();
+                return View(new AtivoViewModel(usuario.FullName));
+            }
+            catch(Exception e)
+            {
+                ModelState.AddModelError("", "Não é possível incluir este ativo. " + 
+                    "Motivo: " + e.Message + " " +
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
+
+            return View();
         }
 
         [HttpGet]
         public async Task<IActionResult> Show(int id)
         {
-            var ativo =   await _context.Ativos
-                .Include(e => e.CentroDeCusto)
-                .Include(e => e.OrdemDeInvestimento)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == id);
-            
-            return View(ConvertToViewModel(ativo));
-    
+            try
+            {
+                var ativo =   await _context.Ativos
+                    .Include(e => e.CentroDeCusto)
+                    .Include(e => e.OrdemDeInvestimento)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.Id == id);
+
+                return View(ConvertToViewModel(ativo));
+            }
+            catch(Exception e)
+            {
+                ModelState.AddModelError("", "Não é possível imprimir este ativo. " + 
+                    "Motivo: " + e.Message + " " +
+                    "Tente novamente, e se o problema persistir " + 
+                    "entre em contato com o administrador do sistema.");
+            }
+
+            return View();
         }
 
         // POST: Ativos/Create
@@ -74,25 +114,31 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AtivoViewModel ativoViewModel)
         {
-            bool ExisteAtivo = _context.Ativos.Any(e => e.Numero == ativoViewModel.Numero);
-            if (ExisteAtivo == true)
+            if (!String.IsNullOrEmpty(ativoViewModel.Numero))
             {
-              ModelState.AddModelError("Numero", "Este número da ativo já foi utilizado!");
+                bool ExisteAtivo = _context.Ativos.Any(e => e.Numero == ativoViewModel.Numero);
+                if (ExisteAtivo == true)
+                {
+                    ModelState.AddModelError("Numero", "Este número da ativo já foi utilizado!");
+                }
             }
 
             if (ModelState.IsValid)
             {
                 try {
-                Ativo ativo = ConvertToModel(ativoViewModel);
-                _context.Add(ativo);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    Ativo ativo = ConvertToModel(ativoViewModel);
+                    _context.Add(ativo);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Ativo [{0}] incluído com sucesso!"
+                                , ativoViewModel.Numero)});
                 }
-                catch(DbUpdateException)
+                catch(DbUpdateException e)
                 {
-                  ModelState.AddModelError("", "Não é possível incluir este ativo. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                    ModelState.AddModelError("", "Não é possível incluir este ativo. " + 
+                        "Motivo: " + e.Message + " " +
+                        "Tente novamente, e se o problema persistir " + 
+                        "entre em contato com o administrador do sistema.");
                 }
             }
 
@@ -127,9 +173,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
               return View(ativoViewModel);
             }
-            catch(DbException)
+            catch(DbException e)
             {
               ModelState.AddModelError("", "Não é possível editar este ativo. " + 
+                    "Motivo: " + e.Message + " " +
                     "Tente novamente, e se o problema persistir " + 
                     "entre em contato com o administrador do sistema.");
             }
@@ -154,8 +201,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     Ativo ativo = ConvertToModel(ativoViewModel);
                     _context.Update(ativo);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Ativo [{0}] atualizado com sucesso!"
+                                , ativoViewModel.Numero)});
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!AtivoExists(ativoViewModel.Id))
                     {
@@ -163,12 +213,12 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     }
                     else
                     {
-                      ModelState.AddModelError("", "Não é possível editar este ativo. " + 
+                      ModelState.AddModelError("", "Não é possível editar este ativo. " +
+                        "Motivo: "  + e.Message + " " +
                         "Tente novamente, e se o problema persistir " + 
                         "entre em contato com o administrador do sistema.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
             PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
@@ -176,37 +226,40 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Ativos/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
+        public async Task<IActionResult> Delete(int? id, string message="")
         {
           if (id == null)
           {
               return NotFound();
           }
-          if (saveChangesError.GetValueOrDefault())
+          if (message != "")
           {
-            ModelState.AddModelError("", "Não é possível remover este ativo. " + 
-                  "Tente novamente, e se o problema persistir " + 
-                  "entre em contato com o administrador do sistema.");
+            ModelState.AddModelError(""
+                , "Não é possível remover este ativo. " 
+                + "Motivo : " + message + " "
+                + "Tente novamente, e se o problema persistir " 
+                + "entre em contato com o administrador do sistema.");
           }
           try
           {
-            var ativo = await _context.Ativos
-                .Include(e => e.CentroDeCusto)
-                .Include(e => e.OrdemDeInvestimento)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == id);
-            if (ativo == null)
-            {
-              return NotFound();
-            }
-            AtivoViewModel ativoViewModel = ConvertToViewModel(ativo);
-            PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
-            PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
-            return View(ativoViewModel);
+                var ativo = await _context.Ativos
+                    .Include(e => e.CentroDeCusto)
+                    .Include(e => e.OrdemDeInvestimento)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.Id == id);
+                if (ativo == null)
+                {
+                    return NotFound();
+                }
+                AtivoViewModel ativoViewModel = ConvertToViewModel(ativo);
+                PopulateOrdensDeInvestimentoDropDownList(ativoViewModel.OrdemDeInvestimentoId);
+                PopulateCentrosDeCustoDropDownList(ativoViewModel.CentroDeCustoId);
+                return View(ativoViewModel);
           }
-          catch(DbException)
+          catch(DbException e)
           {
             ModelState.AddModelError("", "Não é possível remover este ativo. " + 
+                  "Motivo: " + e.Message + " " +
                   "Tente novamente, e se o problema persistir " + 
                   "entre em contato com o administrador do sistema.");
           }
@@ -218,16 +271,33 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-          try{
-            var ativo = await _context.Ativos.FindAsync(id);
-            _context.Ativos.Remove(ativo);
-            await _context.SaveChangesAsync();
-          } 
-          catch(DbUpdateException)
-          {
-            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
-          }
-          return RedirectToAction(nameof(Index));
+            try{
+
+                var requisicao = await _context.RequisicoesDeCompra
+                        .Include(a => a.Ativo)
+                        .FirstOrDefaultAsync(r => r.Ativo.Id == id);
+
+                if (requisicao == null)
+                {
+                    var ativo = await _context.Ativos.FindAsync(id);
+                    _context.Ativos.Remove(ativo);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Ativo [{0}] foi excluído com sucesso!"
+                                , ativo.Numero)});
+                }
+                else 
+                {
+                    return RedirectToAction(nameof(Delete)
+                        , new { id = id, message = "Este ativo possui requisições associadas a ele." }
+                    );
+                }
+                
+            } 
+            catch(DbUpdateException e)
+            {
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });
+            }
         }
 
         private bool AtivoExists(int id)

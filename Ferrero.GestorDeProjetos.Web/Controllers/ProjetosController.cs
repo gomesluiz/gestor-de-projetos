@@ -27,7 +27,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Projetos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string message)
         {
             try
             {   
@@ -42,14 +42,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 }
             
                 HttpContext.Session.Remove(Projeto.PROJETO_SESSION_ID);
+                
+                ViewBag.StatusMessage = message;
                 return View(projetosViewModels);
             }
-            catch (DbException)
+            catch (DbException e)
             {
-                ModelState.AddModelError(""
-                        , "Não é possível exibit os projetos. "  
+                ViewBag.StatusMessage =
+                          "Erro: Não é possível exibir os projetos. "  
+                        + "Motivo: " + e.Message + " " 
                         + "Tente novamente, e se o problema persistir " 
-                        + "entre em contato com o administrador do sistema.");
+                        + "entre em contato com o administrador do sistema.";
             }
             return View();
         }
@@ -71,12 +74,16 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {   
               _context.Projetos.Add(ConvertToModel(viewModel));
               await _context.SaveAsync();
-              return RedirectToAction(nameof(Index));
+              return RedirectToAction(nameof(Index)
+                            , new { message = string.Format("Projeto [{0}] incluído com sucesso!"
+                            , viewModel.Nome)});
+              
             }
-            catch(DbException)
+            catch(DbException e)
             {
                 ModelState.AddModelError("", 
                       "Não é possível incluir este projeto. "  
+                    + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema."
                 );
@@ -97,10 +104,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
                 return View(ConvertToViewModel(projeto));
             }
-            catch (DbException)
+            catch (DbException e)
             {
                 ModelState.AddModelError(""
                     , "Não é possível editar este projeto. "  
+                    + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema."
                 );
@@ -123,16 +131,21 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     _context.Projetos.Update(projeto);
                     _context.Investimentos.Update(projeto.OrdemDeInvestimento);
                     await _context.SaveAsync();
+
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Projeto [{0}] atualizado com sucesso!"
+                                , viewModel.Nome)});
                 }
-                catch (DbException)
+                catch (DbException e)
                 {
                     ModelState.AddModelError(""
                         , "Não é possível editar este projeto. " 
+                        + "Motivo: " + e.Message + " "
                         + "Tente novamente, e se o problema persistir " 
                         + "entre em contato com o administrador do sistema."
                     );   
                 }
-                return RedirectToAction(nameof(Index));
+                
             }
             return View(viewModel);
         }
@@ -157,10 +170,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 
                 return View(ConvertToViewModel(projeto));
             }
-            catch(DbException)
+            catch(DbException e)
             {
                 ModelState.AddModelError(""
                     , "Não é possível remover este projeto. " 
+                    + "Motivo: " + e.Message + " "
                     + "Tente novamente, e se o problema persistir " 
                     + "entre em contato com o administrador do sistema."
                 );
@@ -193,12 +207,14 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                         , new { id = id, message = "Este projeto possui ativos associados a ele." }
                     );
                 }
+                return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Projeto [{0}] removido com sucesso!"
+                                , projeto.Nome)});
             }
             catch(DbException e)
             {
                 return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Gantt(int id)
