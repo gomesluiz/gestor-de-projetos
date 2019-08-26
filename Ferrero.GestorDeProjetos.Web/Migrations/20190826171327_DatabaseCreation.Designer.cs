@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190821000641_DatabaseCreation")]
+    [Migration("20190826171327_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,20 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CentrosDeCusto");
+                });
+
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Ativo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,19 +104,6 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.HasIndex("OrdemDeInvestimentoId");
 
                     b.ToTable("Ativos");
-                });
-
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", b =>
-                {
-                    b.Property<int>("Id");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CentrosDeCusto");
                 });
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Documento", b =>
@@ -527,7 +527,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Ativo", b =>
+            modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.Domain.Ativo", b =>
                 {
                     b.HasOne("Ferrero.GestorDeProjetos.Web.Models.CentroDeCusto", "CentroDeCusto")
                         .WithMany()
@@ -590,7 +590,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
 
             modelBuilder.Entity("Ferrero.GestorDeProjetos.Web.Models.RequisicaoDeCompra", b =>
                 {
-                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Ativo", "Ativo")
+                    b.HasOne("Ferrero.GestorDeProjetos.Web.Models.Domain.Ativo", "Ativo")
                         .WithMany()
                         .HasForeignKey("AtivoId");
                 });
