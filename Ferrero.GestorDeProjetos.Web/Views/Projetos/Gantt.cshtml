@@ -94,7 +94,17 @@
     </script>
 </head>
 <body>
+
+    <h4 class="d-flex justify-content-between align-items-center w-100 font-weight-bold py-3 mb-4">
+        <a type="button" class="btn btn-success rounded-pill d-block" 
+            href="@Url.RouteUrl("Default", new { action = "Index", controller = "Projetos"})">
+            <span class="ion ion-md-arrow-back"></span>&nbsp;Projetos
+        </a>
+        <div><span class="text-muted font-weight-light">Todas/</span>Atividades</div>
+    </h4>
+
     <form class="gantt_control">
+        
         <input type="button" value="Zoom In" onclick="zoomIn()">
         <input type="button" value="Zoom Out" onclick="zoomOut()">
 

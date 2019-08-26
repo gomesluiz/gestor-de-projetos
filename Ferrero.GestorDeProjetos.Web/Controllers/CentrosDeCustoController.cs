@@ -1,10 +1,13 @@
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
+using System;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
@@ -18,18 +21,22 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: CentrosDeCusto
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string message)
         {
             try 
             {
               var centros = await _context.CentrosDeCusto.ToListAsync(); 
+
+              ViewBag.StatusMessage = message;
               return View(centros);
             }
-            catch (DbException)
+            catch (DbException e)
             {
-              ModelState.AddModelError("", "Não é possível consultar os dados de centros de custo. " + 
-                "Tente novamente, e se o problema persistir " + 
-                "entre em contato com o administrador do sistema.");
+              ViewBag.StatusMessage = 
+                  "Erro: Não é possível consultar os dados de centros de custo. "  
+                + "Motivo: " + e.Message + " "
+                + "Tente novamente, e se o problema persistir " 
+                + "entre em contato com o administrador do sistema.";
             }
             return View();
         }
@@ -59,13 +66,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 {
                   _context.Add(centroDeCusto);
                   await _context.SaveChangesAsync();
-                  return RedirectToAction(nameof(Index));
+                  return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Centro de Custo [{0}] incluído com sucesso!"
+                                , centroDeCusto.Nome)});
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
-                  ModelState.AddModelError("", "Não é possível incluir este centro de custo. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                  ModelState.AddModelError("", 
+                        "Não é possível incluir este centro de custo. " 
+                    +   "Motivo: " + e.Message + " "
+                    +   "Tente novamente, e se o problema persistir " 
+                    +   "entre em contato com o administrador do sistema.");
                 }
             }
             return View(centroDeCusto);
@@ -87,11 +98,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               }
               return View(centroDeCusto);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-              ModelState.AddModelError("", "Não é possível modificar este ativo. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+              ModelState.AddModelError("", 
+                      "Não é possível modificar este ativo. " 
+                    + "Motivo: " + e.Message + " " 
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
             }
             return View();
         }
@@ -114,8 +127,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 {
                     _context.Update(centroDeCusto);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Centro de Custo [{0}] atualizado com sucesso!"
+                                , centroDeCusto.Nome)});
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!CentroDeCustoExists(centroDeCusto.Id))
                     {
@@ -123,28 +139,31 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Não é possível editar este centro de custo. " + 
-                          "Tente novamente, e se o problema persistir " + 
-                          "entre em contato com o administrador do sistema.");
+                        ModelState.AddModelError("", 
+                              "Não é possível editar este centro de custo. " 
+                            + "Motivo: " + e.Message + " "
+                            + "Tente novamente, e se o problema persistir "  
+                            + "entre em contato com o administrador do sistema.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(centroDeCusto);
         }
 
         // GET: CentrosDeCusto/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
+        public async Task<IActionResult> Delete(int? id, string message)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            if (saveChangesError.GetValueOrDefault())
+            if (!String.IsNullOrEmpty(message))
             {
-              ModelState.AddModelError("", "Não é possível remover este centro de custo. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+              ModelState.AddModelError("", 
+                      "Não é possível remover este centro de custo. " 
+                    + "Motivo: " + message + " "
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
             }
             try 
             {
@@ -156,11 +175,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               }
               return View(centroDeCusto);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-              ModelState.AddModelError("", "Não é possível consultar consultar dados deste centro de custo. " + 
-                          "Tente novamente, e se o problema persistir " + 
-                          "entre em contato com o administrador do sistema.");
+              ModelState.AddModelError("", 
+                          "Não é possível consultar consultar dados deste centro de custo. " 
+                          + "Motivo: " + e.Message + " "
+                          + "Tente novamente, e se o problema persistir " 
+                          + "entre em contato com o administrador do sistema.");
             }
             return View();
         }
@@ -171,15 +192,34 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
           try{
-            var centroDeCusto = await _context.CentrosDeCusto.FindAsync(id);
-            _context.CentrosDeCusto.Remove(centroDeCusto);
-            await _context.SaveChangesAsync();
+            
+            var centroDeCusto = await _context
+                .CentrosDeCusto
+                .FindAsync(id);
+
+            var ativo = await _context.Ativos
+                .Include(a => a.CentroDeCusto)
+                .FirstOrDefaultAsync(a => a.CentroDeCusto.Id == centroDeCusto.Id);
+
+            if (ativo == null)
+            {
+                _context.CentrosDeCusto.Remove(centroDeCusto);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index)
+                                    , new { message = string.Format("Centro de Custo [{0}] excluído com sucesso!"
+                                    , centroDeCusto.Nome)});
+            }
+            else
+            {
+                return RedirectToAction(nameof(Delete)
+                        , new { id = id, message = "Este centro de custo possui ativos associados a ele." }
+                    );
+            }
           } 
-          catch(DbUpdateException)
+          catch(DbUpdateException e)
           {
-            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });
           }
-          return RedirectToAction(nameof(Index));
         }
 
         private bool CentroDeCustoExists(int id)

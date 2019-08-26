@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Models;
+using System;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
@@ -18,18 +19,21 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: Fornecedores
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string message)
         {
             try 
             {
               var fornecedores = await _context.Fornecedores.ToListAsync();
+              ViewBag.StatusMessage = message;
               return View(fornecedores);
             } 
-            catch (DbException)
+            catch (DbException e)
             {
-              ModelState.AddModelError("", "Não é possível consultar os dados de fornecedores. " + 
+              ViewBag.StatusMessage =  
+                "Erro: Não é possível consultar os dados de fornecedores. " + 
+                "Motivo: " + e.Message + " " +
                 "Tente novamente, e se o problema persistir " + 
-                "entre em contato com o administrador do sistema.");
+                "entre em contato com o administrador do sistema.";
             }
             return View();
         }
@@ -52,11 +56,15 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               try{
                 _context.Add(fornecedor);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Fornecedor [{0}] incluído com sucesso!"
+                                , fornecedor.Nome)});
               }
-              catch (DbUpdateException)
+              catch (DbUpdateException e)
               {
-                ModelState.AddModelError("", "Não é possível incluir este fornecedor. " + 
+                ModelState.AddModelError("", 
+                  "Não é possível incluir este fornecedor. " + 
+                  "Motivo: " + e.Message + " " +
                   "Tente novamente, e se o problema persistir " + 
                   "entre em contato com o administrador do sistema.");
               }
@@ -80,9 +88,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               }
               return View(fornecedor);
             }
-            catch (DbException)
+            catch (DbException e)
             {
-              ModelState.AddModelError("", "Não é possível encontrar este fornecedor. " + 
+              ModelState.AddModelError("", 
+                  "Não é possível encontrar este fornecedor. " + 
+                  "Motivo: " + e.Message + " " +
                   "Tente novamente, e se o problema persistir " + 
                   "entre em contato com o administrador do sistema.");
             }
@@ -107,8 +117,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 {
                     _context.Update(fornecedor);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Fornecedor [{0}] atualizado com sucesso!"
+                                , fornecedor.Nome)});
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!FornecedorExists(fornecedor.Id))
                     {
@@ -116,26 +129,29 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Não é possível editar este fornecedor. " + 
+                        ModelState.AddModelError("", 
+                          "Não é possível editar este fornecedor. " + 
+                          "Motivo: " + e.Message + " " +
                           "Tente novamente, e se o problema persistir " + 
                           "entre em contato com o administrador do sistema.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(fornecedor);
         }
 
         // GET: Fornecedores/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
+        public async Task<IActionResult> Delete(int? id, string message)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            if (saveChangesError.GetValueOrDefault())
+            if (!String.IsNullOrEmpty(message))
             {
-              ModelState.AddModelError("", "Não é possível remover este fornecedor. " + 
+              ModelState.AddModelError("", 
+                    "Não é possível remover este fornecedor. " + 
+                    "Motivo: " + message + " " +
                     "Tente novamente, e se o problema persistir " + 
                     "entre em contato com o administrador do sistema.");
             }
@@ -149,9 +165,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
               }
               return View(fornecedor);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-              ModelState.AddModelError("", "Não é possível remover este fornecedor. " + 
+              ModelState.AddModelError("", 
+                    "Não é possível remover este fornecedor. " +
+                    "Motivo: " + e.Message + " " + 
                     "Tente novamente, e se o problema persistir " + 
                     "entre em contato com o administrador do sistema.");
             }
@@ -164,17 +182,33 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-          try
-          {
-            var fornecedor = await _context.Fornecedores.FindAsync(id);
-            _context.Fornecedores.Remove(fornecedor);
-            await _context.SaveChangesAsync();
-          }
-          catch(DbUpdateException)
-          {
-            return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
-          }
-          return RedirectToAction(nameof(Index));
+            try
+            {
+                var fornecedor = await _context.Fornecedores.FindAsync(id);
+
+                var nota = await _context.NotasFiscais
+                    .Include(f => f.Fornecedor)
+                    .FirstOrDefaultAsync(n => n.Fornecedor.Id == fornecedor.Id);
+
+                if (nota == null)
+                {
+                    _context.Fornecedores.Remove(fornecedor);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)
+                                        , new { message = string.Format("Fornecedor [{0}] incluído com sucesso!"
+                                        , fornecedor.Nome)});
+                }
+                else 
+                {
+                    return RedirectToAction(nameof(Delete)
+                        , new { id = id, message = "Este fornecedor possui notas fiscais associadas a ele." }
+                    );
+                }
+            }
+            catch(DbUpdateException e)
+            {
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
+            }
         }
         public ActionResult GetFornecedoresPorNome(string term)
         {
