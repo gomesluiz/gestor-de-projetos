@@ -4,39 +4,42 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Models.Helpers;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
+using Ferrero.GestorDeProjetos.Web.Models.Domain;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
   public class RequisicoesDeCompraController : Controller
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly UnitOfWork _context;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly string _pathToStore;
 
         public RequisicoesDeCompraController(ApplicationDbContext  context, 
                                              IHostingEnvironment hostingEnvironment)
         {
-            _unitOfWork = new UnitOfWork(context);
+            _context = new UnitOfWork(context);
             _hostingEnvironment = hostingEnvironment;
-            _pathToStore = Path.Combine(_hostingEnvironment.WebRootPath, "docs", "requisicoes");
+            _pathToStore = Path.Combine(_hostingEnvironment.WebRootPath, "docs", "arquivos");
         }
 
-        // GET: OrdensDeCompra
-        public async Task<IActionResult> Index()
+        // GET: RequisicoesDeCompra
+        public async Task<IActionResult> Index(string message)
         {
             try
             {   
-                var requisicoes = await _unitOfWork
+                var requisicoes = await _context
                     .Requisicoes
                     .FindAsync(includeProperties: "Ativo");
                 
@@ -45,28 +48,32 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     requisicoesViewModels.Add(ConvertToViewModel(requisicao));
                 }
 
+                ViewBag.StatusMessage = message;
                 return View(requisicoesViewModels);
             }
-            catch (DbException)
+            catch (DbException e)
             {
-                ModelState.AddModelError("", "Não é possível exibit as requisições de compra. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                ViewBag.StatusMessage = 
+                      "Não é possível exibir as requisições de compra. " 
+                    + "Tente novamente, e se o problema persistir " 
+                    + "Motivo: " + e.Message + " "
+                    + "entre em contato com o administrador do sistema.";
             }
             return View();
         }
 
-        // GET: OrdensDeCompra/Create
+        // GET: RequisicoesDeCompra/Create
         public IActionResult Create()
         {
             PopulateAtivosDropDownList();
             return View();
         }
 
-        // POST: OrdensDeCompra/Create
+        // POST: RequisicoesDeCompra/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RequisicaoDeCompraViewModel requisicaoViewModel
+        public async Task<IActionResult> Create(
+              RequisicaoDeCompraViewModel requisicaoViewModel
             , IFormFile Proposta)
         {
             if (RequisicaoDeCompraExists(requisicaoViewModel.Numero))
@@ -80,27 +87,33 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 {
                     await Upload(requisicaoViewModel, Proposta, _pathToStore);
                 }
-                catch(IOException)
+                catch(IOException e)
                 {
-                    ModelState.AddModelError("", "Não é possível gravar o documento de proposta. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                    ModelState.AddModelError("", 
+                          "Não é possível a proposta desta requisição de compra. " 
+                        + "Motivo: " + e.Message + " "
+                        + "Tente novamente, e se o problema persistir " 
+                        + "entre em contato com o administrador do sistema.");
                 }
 
                 if (ModelState.IsValid) 
                 {
                     try
                     {
-                        _unitOfWork.Requisicoes.Add(ConvertToModel(requisicaoViewModel));
-                        await _unitOfWork.SaveAsync();
+                        _context.Requisicoes.Add(ConvertToModel(requisicaoViewModel));
+                        await _context.SaveAsync();
 
-                        return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Requisição [{0}] incluída com sucesso!"
+                                , requisicaoViewModel.Numero)});
                     }
-                    catch (DbUpdateException)
+                    catch (DbUpdateException e)
                     {
-                        ModelState.AddModelError("", "Não é possível incluir esta requisição de compra. " + 
-                            "Tente novamente, e se o problema persistir " + 
-                            "entre em contato com o administrador do sistema.");  
+                        ModelState.AddModelError("", 
+                            "Não é possível incluir esta requisição de compra. " 
+                          + "Motivo: " + e.Message + " "
+                          + "Tente novamente, e se o problema persistir " 
+                          + "entre em contato com o administrador do sistema.");  
                     }
                 }
             }
@@ -124,17 +137,19 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
                 return View(requisicaoViewModel);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-                ModelState.AddModelError("", "Não é possível editar esta requisição de compra. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                    "Não é possível editar esta requisição de compra. "
+                    + "Motivo: " + e.Message + " " 
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
             }
 
             return View();
         }
 
-        // POST: OrdensDeCompra/Edit/5
+        // POST: RequisicoesDeCompra/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -148,11 +163,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 await Upload(requisicaoViewModel, Proposta, _pathToStore);
             } 
-            catch(IOException)
+            catch(IOException e)
             {
-                ModelState.AddModelError("", "Não é possível gravar a proposta da requisição de compra. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                    "Não é possível gravar a proposta desta requisição de compra. " 
+                    + "Motivo: " + e.Message + " "
+                    + "Tente novamente, e se o problema persistir "  
+                    + "entre em contato com o administrador do sistema.");
             }
 
             if (ModelState.IsValid)
@@ -161,33 +178,40 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 {
                     var requisicao = ConvertToModel(requisicaoViewModel);
 
-                    _unitOfWork.Requisicoes.Update(requisicao);
-                    await _unitOfWork.SaveAsync();
+                    _context.Requisicoes.Update(requisicao);
+                    await _context.SaveAsync();
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
-                    ModelState.AddModelError("", "Não é possível editar esta requisição de compra. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                    ModelState.AddModelError("", 
+                        "Não é possível editar esta requisição de compra. "
+                        + "Motivo: " + e.Message + " "
+                        + "Tente novamente, e se o problema persistir "  
+                        + "entre em contato com o administrador do sistema.");
                 }
-            }
 
-            if (ModelState.IsValid) return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Requisição [{0}] atualizada com sucesso!"
+                                , requisicaoViewModel.Numero)});
+
+            }
 
             PopulateAtivosDropDownList(requisicaoViewModel.AtivoId);  
             return View(requisicaoViewModel);
         }
 
-        // GET: OrdensDeCompra/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
+        // GET: RequisicoesDeCompra/Delete/5
+        public async Task<IActionResult> Delete(int? id, string message="")
         {
             if (id == null) return NotFound();
 
-            if (saveChangesError.GetValueOrDefault())
+            if (!String.IsNullOrEmpty(message))
             {
-                ModelState.AddModelError("", "Não é possível remover esta ordem de compra. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                        "Não é possível remover esta ordem de compra. " 
+                        + "Motivo: " + message + " "
+                        + "Tente novamente, e se o problema persistir " 
+                        + "entre em contato com o administrador do sistema.");
             }
             try
             {
@@ -198,71 +222,84 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 PopulateAtivosDropDownList(requisicaoDeCompraViewModel.AtivoId);  
                 return View(requisicaoDeCompraViewModel);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-                ModelState.AddModelError("", "Não é possível remover esta requisição de compra. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                        "Não é possível remover esta requisição de compra. " 
+                        + "Motivo: " + e.Message + " "
+                        + "Tente novamente, e se o problema persistir "  
+                        + "entre em contato com o administrador do sistema."
+                );
             }
 
             return View();
         }
 
-        // POST: OrdensDeCompra/Delete/5
+        // POST: RequisicoesDeCompra/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                var requisicao = await FindRequisicaoBy(id);
-                _unitOfWork.Requisicoes.Remove(requisicao);
-                await _unitOfWork.SaveAsync();
+                var nota = await _context.NotasFiscais
+                        .GetAsync(n => n.RequisicaoDeCompra.Id == id,
+                        includeProperties: typeof(RequisicaoDeCompra).Name);
 
-                System.IO.File.Delete(Path.Combine(_pathToStore, requisicao.Proposta));
+                if (nota == null)
+                {
+                    var requisicao = await FindRequisicaoBy(id);
+                    _context.Requisicoes.Remove(requisicao);
+                    await _context.SaveAsync();
+
+                    System.IO.File.Delete(Path.Combine(_pathToStore, requisicao.Proposta));
+                
+                    return RedirectToAction(nameof(Index)
+                        , new { message = string.Format("Requisição [{0}] removida com sucesso!"
+                        , requisicao.Numero)});
+                }
+                else 
+                {
+                    return RedirectToAction(nameof(Delete)
+                        , new { id = id, message = "Esta requisição possui notas fiscais associadas a ela." }
+                    );
+                }
+
             }
-            catch(DbUpdateException)
+            catch(DbUpdateException e)
             {
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
-            catch(IOException)
+            catch(IOException e)
             {
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });
             }
-            return RedirectToAction(nameof(Index));
+            
         }
 
-        /// <summary>
-        /// TODO:
-        /// </summary>
         private bool RequisicaoDeCompraExists(long numero)
         {
-            var requisicoes = _unitOfWork.Requisicoes
-                .Find(requisicao => requisicao.Numero == numero, includeProperties:"Ativo");
+            var requisicoes = _context.Requisicoes
+                .Find(requisicao => requisicao.Numero == numero
+                    , includeProperties: typeof(Ativo).Name);
 
             return requisicoes.Count() > 0;
         }
 
-        ///<summary>
-        /// TODO:
-        ///</summary>
         private async Task<RequisicaoDeCompra> FindRequisicaoBy(int? id)
         {
-            var requisicoes = await _unitOfWork.Requisicoes
+            var requisicoes = await _context.Requisicoes
                 .FindAsync(
                     requisicao => requisicao.Id == id
-                    , includeProperties:"Ativo"
+                    , includeProperties: typeof(Ativo).Name
                 );
 
             return requisicoes.FirstOrDefault();
         }
 
-        /// <summary>
-        /// TODO:
-        /// </summary>
         private void PopulateAtivosDropDownList(object ativoSelcionado = null)
         {
-            var ativos =  _unitOfWork.Ativos.Find();
+            var ativos =  _context.Ativos.Find();
             ViewBag.AtivoId = new SelectList(ativos, "Id", "Descricao", ativoSelcionado);
         }
 
@@ -277,14 +314,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     Data = DateTime.ParseExact(viewModel.Data, "dd/MM/yyyy", null),
                     NumeroDaOrdemDeCompra = viewModel.NumeroDaOrdemDeCompra,
                     Descricao = viewModel.Descricao,
-                    Ativo = _unitOfWork.Ativos.Find(ativo => ativo.Id == viewModel.AtivoId).FirstOrDefault(),
+                    Ativo = _context.Ativos.Find(ativo => ativo.Id == viewModel.AtivoId).FirstOrDefault(),
                     Proposta = viewModel.Proposta
                 };
         }
         
-        /// <summary>
-        /// TODO:
-        /// </summary>
         private RequisicaoDeCompraViewModel ConvertToViewModel(RequisicaoDeCompra model)
         {
         return new RequisicaoDeCompraViewModel {
@@ -298,9 +332,6 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 };
         }
 
-        /// <summary>
-        /// TODO:
-        /// </summary>
         private async Task Upload(RequisicaoDeCompraViewModel viewModel
             , IFormFile Proposta
             , string pathToUpload)
@@ -318,21 +349,14 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             
             string extensao = Path.GetExtension(Proposta.FileName);
             if (extensao != ".pdf"){
-                ModelState.AddModelError("", "Documento da ordem deve ser um  do tipo PDF!");
+                ModelState.AddModelError("", "O documento da proposta deve ser um  do tipo .pdf");
                 return;
             }
             
-            fileName = await FileUploadHelper.SaveFileAsync(
-                Proposta
-                , pathToUpload
-                , "proposta_" + viewModel.Numero + ".pdf"
-            );
+            fileName = await FileUploadHelper.SaveFileAsync(Proposta, pathToUpload);
             viewModel.Proposta = fileName;
         }
 
-        /// <summary>
-        /// TODO:
-        /// </summary>
         public async Task<IActionResult> Download(string filename)
         {
             var stream = await FileDownloadHelper.Download(_pathToStore, filename);

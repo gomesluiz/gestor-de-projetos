@@ -2,9 +2,11 @@ using System;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
@@ -15,33 +17,37 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
     public class NotasFiscaisController : Controller
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly UnitOfWork _context;
         public NotasFiscaisController(ApplicationDbContext context)
         {
-            _unitOfWork = new UnitOfWork(context);
+            _context = new UnitOfWork(context);
         }
 
         // GET: NotasFiscais
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string message)
         {
             try
             {   
-                var  notas = await _unitOfWork
+                var  notas = await _context
                     .NotasFiscais
-                    .FindAsync(includeProperties: "Fornecedor,RequisicaoDeCompra");
+                    .FindAsync(includeProperties: typeof(Fornecedor).Name 
+                        + "," + typeof(RequisicaoDeCompra).Name);
                 
                 var notasViewModels = new List<NotaFiscalViewModel>();
                 foreach(NotaFiscal nota in  notas){
                     notasViewModels.Add(ConvertToViewModel(nota));
                 }
 
+                ViewBag.StatusMessage = message;
                 return View(notasViewModels);
             }
-            catch (DbException)
+            catch (DbException e)
             {
-                ModelState.AddModelError("", "Não é possível exibir as notas fiscais. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                    "Não é possível exibir as notas fiscais. " 
+                    + "Motivo: " + e.Message + " " 
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
             }
             return View();
         }
@@ -71,18 +77,22 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 if (ModelState.IsValid)
                 {   
                     var notaFiscal = ConvertToModel(notaFiscalViewModel);
-                    _unitOfWork.NotasFiscais.Add(notaFiscal);
-                    await _unitOfWork.SaveAsync();
+                    _context.NotasFiscais.Add(notaFiscal);
+                    await _context.SaveAsync();
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Nota Fiscal [{0}] incluída com sucesso!"
+                                , notaFiscal.Numero)});
                 }
                 
             }
-            catch(DbException)
+            catch(DbException e)
             {
-                ModelState.AddModelError("", "Não é possível incluir esta nota fiscal. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");  
+                ModelState.AddModelError("", 
+                      "Não é possível incluir esta nota fiscal. " 
+                    + "Motivo: " + e.Message + " "  
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");  
             }
 
             PopulateRequisicoesDeCompraDropDownList(notaFiscalViewModel.RequisicaoDeCompraId);
@@ -105,11 +115,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
                 return View(notaFiscalViewModel);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-                ModelState.AddModelError("", "Não é possível editar esta nota fiscal. " + 
-                        "Tente novamente, e se o problema persistir " + 
-                        "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                        "Não é possível editar esta nota fiscal. "  
+                        + "Motivo: " + e.Message + " " 
+                        + "Tente novamente, e se o problema persistir "  
+                        + "entre em contato com o administrador do sistema.");
             }
             
             return View();
@@ -129,15 +141,20 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     notaFiscalViewModel.FornecedorId = await InsereFornecedor(notaFiscalViewModel);
                     NotaFiscal notaFiscal = ConvertToModel(notaFiscalViewModel);
                    
-                    _unitOfWork.NotasFiscais.Update(notaFiscal);
-                    await _unitOfWork.SaveAsync();
-                    return RedirectToAction(nameof(Index));
+                    _context.NotasFiscais.Update(notaFiscal);
+                    await _context.SaveAsync();
+
+                    return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Nota Fiscal [{0}] atualizada com sucesso!"
+                                , notaFiscal.Numero)});
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
-                    ModelState.AddModelError("", "Não é possível editar esta nota fiscal. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                    ModelState.AddModelError("", 
+                      "Não é possível editar esta nota fiscal. "  
+                    + "Motivo: " + e.Message + " " 
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
                 }
             }
             PopulateRequisicoesDeCompraDropDownList(notaFiscalViewModel.RequisicaoDeCompraId);
@@ -145,15 +162,17 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         }
 
         // GET: NotasFiscais/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
+        public async Task<IActionResult> Delete(int? id, string message="")
         {
             if (id == null) return NotFound();
 
-            if (saveChangesError.GetValueOrDefault())
+            if (!String.IsNullOrEmpty(message))
             {
-                ModelState.AddModelError("", "Não é possível remover esta nota fiscal. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                      "Não é possível remover esta nota fiscal. " 
+                    + "Motivo: " + message + " "
+                    + "Tente novamente, e se o problema persistir "  
+                    + "entre em contato com o administrador do sistema.");
             }
 
             try
@@ -165,11 +184,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 PopulateRequisicoesDeCompraDropDownList(notaFiscalViewModel.RequisicaoDeCompraId);
                 return View(notaFiscalViewModel);
             }
-            catch(DbException)
+            catch(DbException e)
             {
-                ModelState.AddModelError("", "Não é possível excluir esta nota fiscal. " + 
-                    "Tente novamente, e se o problema persistir " + 
-                    "entre em contato com o administrador do sistema.");
+                ModelState.AddModelError("", 
+                      "Não é possível excluir esta nota fiscal. " 
+                    + "Motivo: " + e.Message + " " 
+                    + "Tente novamente, e se o problema persistir "  
+                    + "entre em contato com o administrador do sistema.");
             }
 
             return View();
@@ -183,20 +204,23 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             try
             {
                 var notaFiscal = await FindNotaFiscalBy(id);
-                _unitOfWork.NotasFiscais.Remove(notaFiscal);
-                await _unitOfWork.SaveAsync();
+                _context.NotasFiscais.Remove(notaFiscal);
+                await _context.SaveAsync();
+
+                return RedirectToAction(nameof(Index)
+                                , new { message = string.Format("Nota Fiscal [{0}] removida com sucesso!"
+                                , notaFiscal.Numero)});
             }
-            catch(DbUpdateException)
+            catch(DbUpdateException e)
             {
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });  
+                return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
-            return RedirectToAction(nameof(Index));
         }
 
         private void PopulateRequisicoesDeCompraDropDownList(
             object requisicaoDeCompraSelecionada = null)
         {
-            var requisicoes = _unitOfWork
+            var requisicoes = _context
                 .Requisicoes
                 .Find(filter: e => e.NumeroDaOrdemDeCompra != null
                 , orderBy:e => e.OrderBy(s => s.NumeroDaOrdemDeCompra));
@@ -209,10 +233,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         private bool NotaFiscalExists(long numero, int FornecedorId)
         {
-            var notas = _unitOfWork.NotasFiscais
+            var notas = _context.NotasFiscais
                 .Find(requisicao => requisicao.Numero == numero 
                    && requisicao.Fornecedor.Id == FornecedorId,
-                   includeProperties: "Fornecedor");
+                   includeProperties: typeof(Fornecedor).Name);
 
             return notas.Count() > 0;
         }
@@ -225,27 +249,24 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
             if (fornecedor.Id == 0) 
             {
-                var fornecedores =  await _unitOfWork
+                var fornecedores =  await _context
                     .Fornecedores
                     .FindAsync(e => e.Nome.ToLower() == fornecedor.Nome.ToLower());
                 if ( fornecedores.Count() == 0 )
                 {
-                    _unitOfWork.Fornecedores.Add(fornecedor);
-                    await _unitOfWork.SaveAsync();
+                    _context.Fornecedores.Add(fornecedor);
+                    await _context.SaveAsync();
                 }
             }
             return fornecedor.Id;
         }
 
-        ///<summary>
-        /// TODO:
-        ///</summary>
         private async Task<NotaFiscal> FindNotaFiscalBy(int? id)
         {
-            var notas = await _unitOfWork
+            var notas = await _context
                 .NotasFiscais
                 .FindAsync(filter:e => e.Id == id,
-                           includeProperties: "Fornecedor,RequisicaoDeCompra");
+                    includeProperties: typeof(Fornecedor).Name + "," + typeof(RequisicaoDeCompra).Name);
 
             return notas.FirstOrDefault();
         }
@@ -255,11 +276,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                 Id = notaFiscalViewModel.Id,
                 Numero = notaFiscalViewModel.Numero,
                 DataDeLancamento = DateTime.ParseExact(notaFiscalViewModel.DataDeLancamento, "dd/MM/yyyy", null),
-                Fornecedor = _unitOfWork
+                Fornecedor = _context
                     .Fornecedores
                     .Find(e => e.Id == notaFiscalViewModel.FornecedorId)
                     .FirstOrDefault(),
-                RequisicaoDeCompra = _unitOfWork
+                RequisicaoDeCompra = _context
                     .Requisicoes
                     .Find(e => e.Id == notaFiscalViewModel.RequisicaoDeCompraId)
                     .FirstOrDefault(),
