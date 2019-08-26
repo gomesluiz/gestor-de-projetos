@@ -62,11 +62,12 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddDistributedMemoryCache();
             services.AddSession();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

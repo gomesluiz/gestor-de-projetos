@@ -217,11 +217,11 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             }
         }
 
-        public async Task<IActionResult> Gantt(int id)
+        public async Task<IActionResult> Gantt(int projetoId)
         {
             var projeto = await _context
                   .Projetos
-                  .GetAsync(p => p.Id == id, includeProperties: typeof(OrdemDeInvestimento).Name);
+                  .GetAsync(p => p.Id == projetoId, includeProperties: typeof(OrdemDeInvestimento).Name);
         
             HttpContext.Session.SetObjectAsJson(Projeto.PROJETO_SESSION_ID, projeto);
             return View();
