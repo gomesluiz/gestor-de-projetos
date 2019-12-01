@@ -38,7 +38,7 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Numero)
-                    .HasMaxLength(10);
+                    .HasMaxLength(12);
                 entity.Property(e => e.Descricao)
                     .HasMaxLength(50);
                 entity.Property(e => e.Planta)

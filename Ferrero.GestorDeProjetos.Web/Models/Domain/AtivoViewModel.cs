@@ -9,7 +9,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Domain
 
     public int Id { get; set; } 
 
-    [StringLength(10, ErrorMessage = "O número do ativo deve possuir no máximo 10 dígitos.")]
+    [StringLength(12, ErrorMessage = "O número do ativo deve possuir no máximo 12 dígitos.")]
     [Display(Name = "Número")]
     public string Numero { get; set; } 
     

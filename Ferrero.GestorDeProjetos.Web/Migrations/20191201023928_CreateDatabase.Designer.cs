@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferrero.GestorDeProjetos.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190826171327_DatabaseCreation")]
-    partial class DatabaseCreation
+    [Migration("20191201023928_CreateDatabase")]
+    partial class CreateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,7 +60,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<int>("Natureza");
 
                     b.Property<string>("Numero")
-                        .HasMaxLength(10);
+                        .HasMaxLength(12);
 
                     b.Property<string>("Observacoes")
                         .HasMaxLength(250);

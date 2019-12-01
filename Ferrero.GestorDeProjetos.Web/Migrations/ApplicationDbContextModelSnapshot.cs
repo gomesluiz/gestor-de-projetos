@@ -58,7 +58,7 @@ namespace Ferrero.GestorDeProjetos.Web.Migrations
                     b.Property<int>("Natureza");
 
                     b.Property<string>("Numero")
-                        .HasMaxLength(10);
+                        .HasMaxLength(12);
 
                     b.Property<string>("Observacoes")
                         .HasMaxLength(250);
