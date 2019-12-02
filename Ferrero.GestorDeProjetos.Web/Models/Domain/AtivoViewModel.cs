@@ -25,7 +25,7 @@ namespace Ferrero.GestorDeProjetos.Web.Models.Domain
     [Display(Name = "Centro de Custo")]
     public string CentroDeCustoNome { get; set; }
 
-    [Required(ErrorMessage = "Por favor, escola o numero da ordem de investimento.")]
+    [Required(ErrorMessage = "Por favor, escolha o numero da ordem de investimento.")]
     [Display(Name = "Ordem de Investimento")]
     public int OrdemDeInvestimentoId { get; set; }
     
