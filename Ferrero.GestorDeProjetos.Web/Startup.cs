@@ -81,7 +81,7 @@ namespace Ferrero.GestorDeProjetos.UI.Web
             {
                 app.UseDeveloperExceptionPage();
                 //app.UseExceptionHandler("/Error");
-                //app.UseHsts();
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
