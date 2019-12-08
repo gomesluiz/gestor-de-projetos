@@ -255,8 +255,10 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                       .Find(e => e.Numero == resumoViewModel.OrdemDeInvestimentoNumero);
                     if (ordemDeInvestimento.Count() == 0)
                     {
-                      ModelState.AddModelError("",  string.Format("A ordem de investimento [{0}] não ainda não foi cadastrada!",
-                        resumoViewModel.OrdemDeInvestimentoNumero));
+                      ModelState.AddModelError(""
+                        ,  string.Format("A ordem de investimento [{0}] não ainda não foi cadastrada no sistema!",
+                        resumoViewModel.OrdemDeInvestimentoNumero)
+                      );
                       break;
                     } 
                     else 
