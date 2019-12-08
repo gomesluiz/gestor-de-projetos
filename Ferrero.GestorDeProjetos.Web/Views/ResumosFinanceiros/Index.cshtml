@@ -19,6 +19,10 @@
   <a type="button" class="btn btn-primary rounded-pill d-block" asp-action="Create" asp-controller="ResumosFinanceiros">
     <span class="ion ion-md-add"></span>&nbsp;Resumo Financeiro
   </a>
+  <a type="button" class="btn btn-success rounded-pill d-block" 
+    href="@Url.RouteUrl("Default", new { action = "Import", controller = "ResumosFinanceiros"})">
+    <span class="ion ion-md-cloud-upload"></span>&nbsp;Resumos Financeiros
+  </a>
 </h4>
 
 <partial name="_StatusMessage" />
@@ -31,9 +35,9 @@
               <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimentoNumero)          </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Data)        </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.OrdemDeInvestimentoBudget)  </th>
+              <th class="text-center">@Html.DisplayNameFor(model => model.Actual)      </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Commitment)  </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Assigned)    </th>
-              <th class="text-center">@Html.DisplayNameFor(model => model.Actual)      </th>
               <th class="text-center">@Html.DisplayNameFor(model => model.Available)   </th>
               <th></th>
           </tr>
@@ -44,9 +48,9 @@
           <td class="text-center">@Html.DisplayFor(modelItem => item.OrdemDeInvestimentoNumero)            </td>
           <td class="text-center">@Html.DisplayFor(modelItem => item.Data)          </td>
           <td class="text-right">@Html.DisplayFor(modelItem => item.OrdemDeInvestimentoBudget)    </td>
+          <td class="text-right">@Html.DisplayFor(modelItem => item.Actual)        </td>
           <td class="text-right">@Html.DisplayFor(modelItem => item.Commitment)    </td>
           <td class="text-right">@Html.DisplayFor(modelItem => item.Assigned)      </td>
-          <td class="text-right">@Html.DisplayFor(modelItem => item.Actual)        </td>
           <td class="text-right">@Html.DisplayFor(modelItem => item.Available)     </td>
           <td class="text-right">
             <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">

@@ -7,11 +7,15 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Http;
 
 using Ferrero.GestorDeProjetos.Web.Models;
 using Ferrero.GestorDeProjetos.Web.Models.ViewModels;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
+using Ferrero.GestorDeProjetos.Web.Models.Helpers;
+using System.IO;
+using OfficeOpenXml;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
 {
@@ -53,14 +57,14 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // GET: Projetos/Create
+        // GET: ResumosFinanceiros/Create
         public IActionResult Create()
         {
             PopulateOrdensDeInvestimentoDropDownList();
             return View();
         }
 
-        // POST: Projetos/Create
+        // POST: ResumosFinanceiros/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ResumoFinanceiroViewModel viewModel)
@@ -88,7 +92,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
           return View(viewModel);
         }
 
-        // GET: Projetos/Edit/5
+        // GET: ResumosFinanceiros/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -112,7 +116,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // POST: Projetos/Edit/5
+        // POST: ResumosFinanceiros/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ResumoFinanceiroViewModel viewModel)
@@ -144,7 +148,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View(viewModel);
         }
 
-        // GET: Projetos/Delete/5
+        // GET: ResumosFinanceiros/Delete/5
         public async Task<IActionResult> Delete(int? id, string message)
         {
             if (id == null) return NotFound();
@@ -176,7 +180,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             return View();
         }
 
-        // POST: Projetos/Delete/5
+        // POST: ResumosFinanceiros/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -195,6 +199,103 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
             {
                 return RedirectToAction(nameof(Delete), new { id = id, message = e.Message });  
             }
+        }
+
+        // GET: ResumosFinanceiros/Import
+        public IActionResult Import()
+        {
+            return View();
+        }
+
+        // POST: ResumosFinanceiros/Import
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Import(PlanilhaResumoFinanceiroViewModel viewModel, IFormFile Arquivo)
+        {
+          if (Arquivo == null || Arquivo.Length <= 0)
+          {
+            ModelState.AddModelError("",  "O nome do arquivo Excel deverá ser fornecido");
+          } else {
+            if (!Path.GetExtension(Arquivo.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))  
+            {  
+              ModelState.AddModelError("",  "A extensão do arquivo Excel deverá ser .xlsx");  
+            }  
+          }
+
+          if (ModelState.IsValid)
+          {
+            try
+            {   
+              using (var stream = new MemoryStream())
+              {
+                await Arquivo.CopyToAsync(stream);
+                using(var package = new ExcelPackage(stream))
+                {
+                  ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                  var rowCount = worksheet.Dimension.Rows - 1;
+                  for (int row = 2; row <= rowCount; row++)
+                  {
+                    var resumoViewModel = new ResumoFinanceiroViewModel();
+
+                    var numero = worksheet.Cells[row, 1].Value.ToString().Trim();
+                    var actual = worksheet.Cells[row, 3].Value.ToString().Trim();
+                    var commitment = worksheet.Cells[row, 4].Value.ToString().Trim();
+                    var assigned   = worksheet.Cells[row, 5].Value.ToString().Trim();
+                    var available  = worksheet.Cells[row, 6].Value.ToString().Trim();;
+
+                    resumoViewModel.OrdemDeInvestimentoNumero = numero.Substring(0, 7);
+                    resumoViewModel.Data        = viewModel.Data;
+                    resumoViewModel.Actual      = decimal.Parse(actual ?? "0.0");
+                    resumoViewModel.Commitment  = decimal.Parse(commitment ?? "0.0");
+                    resumoViewModel.Assigned    = decimal.Parse(assigned ?? "0.0");
+                    resumoViewModel.Available   = decimal.Parse(available?? "0.0");
+
+                    var ordemDeInvestimento = _unitOfWork
+                      .Investimentos
+                      .Find(e => e.Numero == resumoViewModel.OrdemDeInvestimentoNumero);
+                    if (ordemDeInvestimento.Count() == 0)
+                    {
+                      ModelState.AddModelError("",  string.Format("A ordem de investimento [{0}] não ainda não foi cadastrada!",
+                        resumoViewModel.OrdemDeInvestimentoNumero));
+                      break;
+                    } 
+                    else 
+                    {
+                      var ordemArmazenada     = ordemDeInvestimento.FirstOrDefault();
+                      var resumosArmazenados  = _unitOfWork
+                        .Resumos.Find(
+                          r => r.OrdemDeInvestimento.Numero  == ordemArmazenada.Numero 
+                            && r.Data.ToString("dd/MM/yyyy") == viewModel.Data
+                        , includeProperties: typeof(OrdemDeInvestimento).Name
+                      );
+
+                      if (resumosArmazenados.Count() > 0)
+                        _unitOfWork.Resumos.Remove(resumosArmazenados.FirstOrDefault());
+
+                      resumoViewModel.OrdemDeInvestimentoId = ordemArmazenada.Id;
+                      _unitOfWork.Resumos.Add(ConvertToModel(resumoViewModel));
+                    }
+                  }
+                  if (ModelState.IsValid)
+                  {
+                    await _unitOfWork.SaveAsync();
+                    return RedirectToAction(nameof(Index)
+                      , new { message = string.Format("Importação da planilha [{0}] concluída com sucesso!"
+                      , Arquivo.FileName)});
+                  }
+                }
+              }
+            }
+            catch(DbException e)
+            {
+                ModelState.AddModelError("", 
+                      "Não é possível importar planilha de resumos financeiro. " 
+                    + "Motivo: " + e.Message + " "
+                    + "Tente novamente, e se o problema persistir " 
+                    + "entre em contato com o administrador do sistema.");
+            }
+          }
+          return View(viewModel);
         }
 
         private async Task<ResumoFinanceiro> FindResumoFinanceiroBy(int? id)

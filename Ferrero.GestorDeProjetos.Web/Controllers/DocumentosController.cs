@@ -1,17 +1,18 @@
 using System;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
-
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+
 using Microsoft.EntityFrameworkCore;
 
 using Ferrero.GestorDeProjetos.Web.Models.Domain;
 using Ferrero.GestorDeProjetos.Web.Persistence.Context;
 using Ferrero.GestorDeProjetos.Web.Persistence.Repositories;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using Microsoft.AspNetCore.Http;
 using Ferrero.GestorDeProjetos.Web.Models.Helpers;
 
 namespace Ferrero.GestorDeProjetos.Web.Controllers
