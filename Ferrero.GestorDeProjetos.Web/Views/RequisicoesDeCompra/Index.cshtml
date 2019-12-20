@@ -45,11 +45,14 @@
             <td>@Html.DisplayFor(modelItem => item.Data)</td>
             <td>@Html.DisplayFor(modelItem => item.NumeroDaOrdemDeCompra)</td>
             <td class="text-center">
-                <a  asp-action="Download" 
-                    asp-route-filename="@item.Proposta" 
-                    class="btn btn-success btn-sm"> 
-                    <span class="ion ion-md-download"></span>
-                </a>
+                @if (!(item.Proposta == null || String.IsNullOrEmpty(item.Proposta)))
+                {
+                    <a  asp-action="Download" 
+                        asp-route-filename="@item.Proposta" 
+                        class="btn btn-success btn-sm"> 
+                        <span class="ion ion-md-download"></span>
+                    </a>
+                }
             </td>
             <td class="text-center">
               <a asp-action="Edit" class="btn btn-warning btn-sm" asp-route-id="@item.Id">

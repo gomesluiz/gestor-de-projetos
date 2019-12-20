@@ -166,7 +166,6 @@ namespace Ferrero.GestorDeProjetos.Web.Persistence.Context
                 entity.Property(e => e.Descricao)
                     .HasMaxLength(250);
                 entity.Property(e => e.Proposta)
-                    .IsRequired()
                     .HasMaxLength(500);
             });
 

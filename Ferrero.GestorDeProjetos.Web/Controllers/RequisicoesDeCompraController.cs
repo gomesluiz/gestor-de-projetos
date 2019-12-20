@@ -83,17 +83,19 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    await Upload(requisicaoViewModel, Proposta, _pathToStore);
-                }
-                catch(IOException e)
-                {
-                    ModelState.AddModelError("", 
-                          "Não é possível a proposta desta requisição de compra. " 
-                        + "Motivo: " + e.Message + " "
-                        + "Tente novamente, e se o problema persistir " 
-                        + "entre em contato com o administrador do sistema.");
+                if (Proposta != null) {
+                    try
+                    {
+                        await Upload(requisicaoViewModel, Proposta, _pathToStore);
+                    }
+                    catch(IOException e)
+                    {
+                        ModelState.AddModelError("", 
+                            "Não é possível a proposta desta requisição de compra. " 
+                            + "Motivo: " + e.Message + " "
+                            + "Tente novamente, e se o problema persistir " 
+                            + "entre em contato com o administrador do sistema.");
+                    }
                 }
 
                 if (ModelState.IsValid) 
@@ -159,17 +161,20 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             if (id != requisicaoViewModel.Id) return NotFound();
 
-            try
+            if (Proposta != null)
             {
-                await Upload(requisicaoViewModel, Proposta, _pathToStore);
-            } 
-            catch(IOException e)
-            {
-                ModelState.AddModelError("", 
-                    "Não é possível gravar a proposta desta requisição de compra. " 
-                    + "Motivo: " + e.Message + " "
-                    + "Tente novamente, e se o problema persistir "  
-                    + "entre em contato com o administrador do sistema.");
+                try
+                {
+                    await Upload(requisicaoViewModel, Proposta, _pathToStore);
+                } 
+                catch(IOException e)
+                {
+                    ModelState.AddModelError("", 
+                        "Não é possível gravar a proposta desta requisição de compra. " 
+                        + "Motivo: " + e.Message + " "
+                        + "Tente novamente, e se o problema persistir "  
+                        + "entre em contato com o administrador do sistema.");
+                }
             }
 
             if (ModelState.IsValid)
@@ -252,7 +257,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
                     _context.Requisicoes.Remove(requisicao);
                     await _context.SaveAsync();
 
-                    System.IO.File.Delete(Path.Combine(_pathToStore, requisicao.Proposta));
+                    if (requisicao.Proposta != null)
+                        System.IO.File.Delete(Path.Combine(_pathToStore, requisicao.Proposta));
                 
                     return RedirectToAction(nameof(Index)
                         , new { message = string.Format("Requisição [{0}] removida com sucesso!"
@@ -279,7 +285,7 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
         private bool RequisicaoDeCompraExists(long numero)
         {
-            var requisicoes = _context.Requisicoes
+           var requisicoes = _context.Requisicoes
                 .Find(requisicao => requisicao.Numero == numero
                     , includeProperties: typeof(Ativo).Name);
 
@@ -340,12 +346,13 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
 
             if (viewModel.Proposta != null && Proposta == null)
                 return;
-
+/*
             if (Proposta == null || Proposta.Length == 0)
             {
                 ModelState.AddModelError("", "A proposta da requisicao não foi selecionada!");
                 return;
             }
+*/
             
             string extensao = Path.GetExtension(Proposta.FileName);
             if (extensao != ".pdf"){
