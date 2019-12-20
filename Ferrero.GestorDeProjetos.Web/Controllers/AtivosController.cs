@@ -368,9 +368,8 @@ namespace Ferrero.GestorDeProjetos.Web.Controllers
         {
             var centros = from cc in _context.CentrosDeCusto
                                    orderby cc.Id
-                                   select cc;
-            ViewBag.CentroDeCustoId = new SelectList(centros.AsNoTracking(), "Id", "Nome"
-              , centroDeCustoSelecionado);
+                                   select new {Id = cc.Id, Id_Nome = cc.Id + " " + cc.Nome};
+            ViewBag.CentroDeCustoId = new SelectList(centros.AsNoTracking(), "Id", "Id_Nome" , centroDeCustoSelecionado);
         }
     }
 }
